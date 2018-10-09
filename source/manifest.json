@@ -8,11 +8,16 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
+    "storage",
     "<all_urls>"
   ],
 
   "background": {
     "scripts": ["scripts/background.js"]
+  },
+
+  "options_ui": {
+    "page": "options/options.html"
   }
 
 }
