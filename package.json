@@ -1,0 +1,20 @@
+{
+  "name": "op-search",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "debug": "cd source && web-ext run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/sk_0520/op-search.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/sk_0520/op-search#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "web-ext": "^2.9.1"
+  }
+}
