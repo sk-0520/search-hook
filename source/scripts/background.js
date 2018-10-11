@@ -12,8 +12,6 @@ const output = {
 
 output.log("START");
 
-
-var setting = null;
 browser.storage.local.get('setting').then(
     loadSetting,
     function(error) {
@@ -21,6 +19,7 @@ browser.storage.local.get('setting').then(
     }
 );
 
+var setting = null;
 function loadSetting(result) {
     output.log("setting loading");
     setting = result.setting;
@@ -48,6 +47,11 @@ function loadSetting(result) {
 function requestGoogle(requestDetails) {
     output.log("Loading: " + requestDetails.url);
     output.debug(JSON.stringify(requestDetails));
+
+    if(!setting.google.isEnable) {
+        output.debug('disable google');
+        return;
+    }
 }
 
 
