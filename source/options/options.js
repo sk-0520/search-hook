@@ -31,6 +31,8 @@ function saveOptions(e) {
             }
         }
     });
+
+    runtime.reload();
 }
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
