@@ -76,7 +76,7 @@ function getNotItems() {
     for(var i = 0; i < children.length; i++) {
         const child = children[i];
 
-        var word = child.querySelector('[name=not-item-word]').value;
+        var word = child.querySelector('[name=engine-not-item-word]').value;
         if(!word || !word.length || !word.trim().length) {
             output.debug('ignore: empty word');
             continue;
@@ -85,8 +85,8 @@ function getNotItems() {
         var item = {
             word: word,
             service: {
-                google: child.querySelector('[name=not-item-service-google]').checked,
-                bing: child.querySelector('[name=not-item-service-bing]').checked
+                google: child.querySelector('[name=engine-not-item-service-google]').checked,
+                bing: child.querySelector('[name=engine-not-item-service-bing]').checked
             }
         };
         result.push(item);
@@ -101,23 +101,23 @@ function addNotItemFromInput(e) {
     e.preventDefault();
 
     var item = {
-        word: document.querySelector('#input-not-word').value,
+        word: document.querySelector('#engine-input-not-word').value,
         service: {
-            google: document.querySelector('#input-is-enabled-google').checked,
-            bing: document.querySelector('#input-is-enabled-bing').checked
+            google: document.querySelector('#engine-input-is-enabled-google').checked,
+            bing: document.querySelector('#engine-input-is-enabled-bing').checked
         }
     };
 
     output.debug(JSON.stringify(item));
     addNotItem(item);
 
-    document.querySelector('#input-not-word').value = '';
-    document.querySelector('#input-is-enabled-google').checked = true;
-    document.querySelector('#input-is-enabled-bing').checked = true;
+    document.querySelector('#engine-input-not-word').value = '';
+    document.querySelector('#engine-input-is-enabled-google').checked = true;
+    document.querySelector('#engine-input-is-enabled-bing').checked = true;
 }
 
 function getNotItemParentElement() {
-    return document.querySelector('#not-word-list');
+    return document.querySelector('#engine-not-word-list');
 }
 
 function addNotItem(item) {
@@ -129,7 +129,7 @@ function addNotItemCore(parent, item) {
 
     var wordInputElement = document.createElement('input');
     wordInputElement.value = item.word;
-    wordInputElement.setAttribute('name', 'not-item-word');
+    wordInputElement.setAttribute('name', 'engine-not-item-word');
     var wordElement = document.createElement('td');
     wordElement.appendChild(wordInputElement);
 
@@ -149,8 +149,8 @@ function addNotItemCore(parent, item) {
         return li;
     }
     var serviceGroupElement = document.createElement('ul');
-    serviceGroupElement.appendChild(serviceElementCreator('google', 'not-item-service-google', item.service.google));
-    serviceGroupElement.appendChild(serviceElementCreator('bing', 'not-item-service-bing', item.service.bing));
+    serviceGroupElement.appendChild(serviceElementCreator('google', 'engine-not-item-service-google', item.service.google));
+    serviceGroupElement.appendChild(serviceElementCreator('bing', 'engine-not-item-service-bing', item.service.bing));
 
     var serviceElement = document.createElement('td');
     serviceElement.appendChild(serviceGroupElement);
@@ -196,4 +196,4 @@ function saveOptions(e) {
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.querySelector('form').addEventListener('submit', saveOptions);
 
-document.querySelector('#command-add-not-item').addEventListener('click', addNotItemFromInput);
+document.querySelector('#command-engine-add-not-item').addEventListener('click', addNotItemFromInput);
