@@ -13,18 +13,26 @@ function restoreOptions() {
 }
 
 function restoreOptionsCore(result) {
-    let setting = result.setting;
+    var baseSetting = {
+        service: {
+            google: {
+                enabled: false,
+                searchCount: 10
+            },
+            bing: {
+                enabled: false,
+                searchCount: 10
+            }
+        },
+        notItems: []
+    };
+
+    var setting = result.setting;
     if(!setting) {
         // init
-        setting = {
-            service: {
-                google: {
-                    enabled: true,
-                    searchCount: 10
-                }
-            },
-            notItems: []
-        };
+        setting = baseSetting;
+    } else {
+        setting = Object.assign(baseSetting, setting);
     }
     setService(setting.service);
     setNotItems(setting.notItems);
@@ -34,6 +42,8 @@ function setService(setting) {
     document.querySelector('#service-is-enabled-google').checked = setting.google.enabled;
     document.querySelector('#service-google-search-count').value = setting.google.searchCount;
 
+    document.querySelector('#service-is-enabled-bing').checked = setting.bing.enabled;
+    document.querySelector('#service-bing-search-count').value = setting.bing.searchCount;
 }
 
 function getService() {
@@ -41,6 +51,10 @@ function getService() {
         google: {
             enabled: document.querySelector('#service-is-enabled-google').checked,
             searchCount: document.querySelector('#service-google-search-count').value
+        },
+        bing: {
+            enabled: document.querySelector('#service-is-enabled-bing').checked,
+            searchCount: document.querySelector('#service-bing-search-count').value
         }
     };
 }
@@ -166,9 +180,15 @@ function saveOptions(e) {
 
     browser.storage.local.set({
         setting: setting
-    });
+    }).then(
+        function(result) {
+            browser.runtime.reload();
+        },
+        function(error) {
+            output.error(error);
+        }
+    );
 
-    browser.runtime.reload();
 }
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
