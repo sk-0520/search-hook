@@ -30,10 +30,7 @@ function setService(serviceSetting) {
     function setGoogle(googleSetting) {
         document.querySelector('#service-is-enabled-google').checked = googleSetting.enabled;
         document.querySelector('#service-google-search-count').value = googleSetting.searchCount;
-
-        document.querySelector('#service-google-search-safe-off').checked = googleSetting.searchSafe === 'off';
-        document.querySelector('#service-google-search-safe-medium').checked = googleSetting.searchSafe === 'medium';
-        document.querySelector('#service-google-search-safe-high').checked = googleSetting.searchSafe === 'high';
+        document.querySelector('#service-google-search-safe').checked = googleSetting.searchSafe;
     }
 
     function setBing(bingSetting) {
@@ -47,28 +44,11 @@ function setService(serviceSetting) {
 
 function getService() {
 
-    function getGoogleSearchSafe() {
-        var selectors = [
-            '#service-google-search-safe-off',
-            '#service-google-search-safe-medium',
-            '#service-google-search-safe-high'
-        ];
-        for(var i = 0; i < selectors.length; i++) {
-            var selector = selectors[i];
-            var element = document.querySelector(selector);
-            if(element.checked) {
-                return element.value;
-            }
-        }
-
-        return 'medium';
-    }
-
     return {
         google: {
             enabled: document.querySelector('#service-is-enabled-google').checked,
             searchCount: document.querySelector('#service-google-search-count').value,
-            searchSafe: getGoogleSearchSafe()
+            searchSafe: document.querySelector('#service-google-search-safe').checked
         },
         bing: {
             enabled: document.querySelector('#service-is-enabled-bing').checked

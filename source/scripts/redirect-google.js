@@ -67,9 +67,11 @@ function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
         url.searchParams.append('num', googleSetting.searchCount)
     }
 
-    // 検索数の指定が無ければ設定値に書き換え
+    // セーフサーチの指定が無ければ設定値に書き換え
     if(!url.searchParams.has('safe')) {
-        url.searchParams.append('safe', googleSetting.searchSafe)
+        if(googleSetting.searchSafe) {
+            url.searchParams.append('safe', 'strict')
+        }
     }
 
     var rawQuery = url.searchParams.get('q');
