@@ -13,7 +13,11 @@
   ],
 
   "background": {
-    "scripts": ["scripts/logging.js", "scripts/background.js"]
+    "scripts": [
+        "scripts/common.js",
+        "scripts/redirect-google.js",
+        "scripts/redirect-background.js"
+    ]
   },
 
   "options_ui": {

@@ -17,26 +17,30 @@ function restoreOptionsCore(result) {
     if(!setting) {
         // init
         setting = {
-            global: {
-                enabled: {
-                    google: true
+            service: {
+                google: {
+                    enabled: true,
+                    searchCount: 10
                 }
             },
-            notItems: [ ]
+            notItems: []
         };
     }
-    setGlobal(setting.global);
+    setService(setting.service);
     setNotItems(setting.notItems);
 }
 
-function setGlobal(setting) {
-    document.querySelector('#is-enabled-google').checked = setting.enabled.google;
+function setService(setting) {
+    document.querySelector('#service-is-enabled-google').checked = setting.google.enabled;
+    document.querySelector('#service-google-search-count').value = setting.google.searchCount;
+
 }
 
-function getGlobal() {
+function getService() {
     return {
-        enabled: {
-            google: document.querySelector('#is-enabled-google').checked
+        google: {
+            enabled: document.querySelector('#service-is-enabled-google').checked,
+            searchCount: document.querySelector('#service-google-search-count').value
         }
     };
 }
@@ -156,7 +160,7 @@ function saveOptions(e) {
     e.preventDefault();
 
     const setting = {
-        global: getGlobal(),
+        service: getService(),
         notItems: getNotItems()
     };
 

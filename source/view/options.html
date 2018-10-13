@@ -10,9 +10,14 @@
 
     <form>
         <fieldset>
-            <legend>global</legend>
+            <legend>service</legend>
             <ul>
-                <li><label><input type="checkbox" id="is-enabled-google" />google</label></li>
+                <li>
+                    <label><input id="service-is-enabled-google" type="checkbox" />google</label>
+                    <ul>
+                        <li><label>count: <input id="service-google-search-count" type="number" min="10" max="100" step="10" /></label></li>
+                    </ul>
+                </li>
             </ul>
         </fieldset>
 
@@ -45,7 +50,7 @@
         <button type="submit">save</button>
     </form>
 
-    <script src="../scripts/logging.js"></script>
+    <script src="../scripts/common.js"></script>
     <script src="../scripts/options.js"></script>
 
 </body>
