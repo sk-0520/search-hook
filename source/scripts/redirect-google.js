@@ -51,11 +51,6 @@ function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
 
     var url = new URL(requestDetails.url);
 
-    // 検索数の指定が無ければ設定値に書き換え
-    if(!url.searchParams.has('num')) {
-        url.searchParams.append('num', googleSetting.searchCount)
-    }
-
     // まだ検索してないっぽければ無視
     if(!url.searchParams.has('q')) {
         return;
@@ -65,6 +60,16 @@ function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
     if(url.searchParams.has('start')) {
         outputGoogle.debug('ignore request');
         return;
+    }
+
+    // 検索数の指定が無ければ設定値に書き換え
+    if(!url.searchParams.has('num')) {
+        url.searchParams.append('num', googleSetting.searchCount)
+    }
+
+    // 検索数の指定が無ければ設定値に書き換え
+    if(!url.searchParams.has('safe')) {
+        url.searchParams.append('safe', googleSetting.searchSafe)
     }
 
     var rawQuery = url.searchParams.get('q');

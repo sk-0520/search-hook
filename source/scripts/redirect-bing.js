@@ -51,11 +51,6 @@ function requestBing(bingSetting, notItems, requestSet, requestDetails) {
 
     var url = new URL(requestDetails.url);
 
-    // // 検索数の指定が無ければ設定値に書き換え
-    // if(!url.searchParams.has('num')) {
-    //     url.searchParams.append('num', bingSetting.searchCount)
-    // }
-
     // まだ検索してないっぽければ無視
     if(!url.searchParams.has('q')) {
         return;
@@ -66,6 +61,11 @@ function requestBing(bingSetting, notItems, requestSet, requestDetails) {
         outputBing.debug('ignore request');
         return;
     }
+
+    // // 検索数の指定が無ければ設定値に書き換え
+    // if(!url.searchParams.has('num')) {
+    //     url.searchParams.append('num', bingSetting.searchCount)
+    // }
 
     var rawQuery = url.searchParams.get('q');
     outputBing.debug('raw: ' + rawQuery);

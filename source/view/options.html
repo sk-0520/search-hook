@@ -14,9 +14,22 @@
             <ul>
                 <li>
                     <label><input id="service-is-enabled-google" type="checkbox" />google</label>
-                    <ul>
-                        <li><label>count: <input id="service-google-search-count" type="number" min="10" max="100" step="10" /></label></li>
-                    </ul>
+                    <table>
+                        <tr>
+                            <td><label for="service-google-search-count">count</label></td>
+                            <td><input id="service-google-search-count" type="number" min="10" max="100" step="10" /></td>
+                        </tr>
+                        <tr>
+                            <td>safe</td>
+                            <td>
+                                <ul>
+                                    <li><label><input name="service-google-search-safe" id="service-google-search-safe-off" type="radio" value="off" />off</label></li>
+                                    <li><label><input name="service-google-search-safe" id="service-google-search-safe-medium" type="radio" value="medium" />medium</label></li>
+                                    <li><label><input name="service-google-search-safe" id="service-google-search-safe-high" type="radio" value="high" />high</label></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
                 </li>
                 <li>
                         <label><input id="service-is-enabled-bing" type="checkbox" />bing</label>

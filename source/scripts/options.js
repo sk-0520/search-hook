@@ -13,44 +13,62 @@ function restoreOptions() {
 }
 
 function restoreOptionsCore(result) {
-    var baseSetting = {
-        service: {
-            google: {
-                enabled: false,
-                searchCount: 10
-            },
-            bing: {
-                enabled: false
-                //searchCount: 10
-            }
-        },
-        notItems: []
-    };
+    var baseSetting = createBaseSetting();
 
     var setting = result.setting;
     if(!setting) {
         // init
         setting = baseSetting;
     } else {
-        setting = Object.assign(baseSetting, setting);
+        setting = merge(baseSetting, setting);
     }
     setService(setting.service);
     setNotItems(setting.notItems);
 }
 
-function setService(setting) {
-    document.querySelector('#service-is-enabled-google').checked = setting.google.enabled;
-    document.querySelector('#service-google-search-count').value = setting.google.searchCount;
+function setService(serviceSetting) {
+    function setGoogle(googleSetting) {
+        document.querySelector('#service-is-enabled-google').checked = googleSetting.enabled;
+        document.querySelector('#service-google-search-count').value = googleSetting.searchCount;
 
-    document.querySelector('#service-is-enabled-bing').checked = setting.bing.enabled;
-    //document.querySelector('#service-bing-search-count').value = setting.bing.searchCount;
+        document.querySelector('#service-google-search-safe-off').checked = googleSetting.searchSafe === 'off';
+        document.querySelector('#service-google-search-safe-medium').checked = googleSetting.searchSafe === 'medium';
+        document.querySelector('#service-google-search-safe-high').checked = googleSetting.searchSafe === 'high';
+    }
+
+    function setBing(bingSetting) {
+        document.querySelector('#service-is-enabled-bing').checked = bingSetting.enabled;
+        //document.querySelector('#service-bing-search-count').value = bingSetting.searchCount;
+    }
+
+    setGoogle(serviceSetting.google);
+    setBing(serviceSetting.bing);
 }
 
 function getService() {
+
+    function getGoogleSearchSafe() {
+        var selectors = [
+            '#service-google-search-safe-off',
+            '#service-google-search-safe-medium',
+            '#service-google-search-safe-high'
+        ];
+        for(var i = 0; i < selectors.length; i++) {
+            var selector = selectors[i];
+            var element = document.querySelector(selector);
+            if(element.checked) {
+                return element.value;
+            }
+        }
+
+        return 'medium';
+    }
+
     return {
         google: {
             enabled: document.querySelector('#service-is-enabled-google').checked,
-            searchCount: document.querySelector('#service-google-search-count').value
+            searchCount: document.querySelector('#service-google-search-count').value,
+            searchSafe: getGoogleSearchSafe()
         },
         bing: {
             enabled: document.querySelector('#service-is-enabled-bing').checked

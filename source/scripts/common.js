@@ -17,6 +17,48 @@ function createLogger(name) {
     }
 };
 
+function merge(src, overwite) {
+    if(!src) {
+        return src;
+    }
+    if(!overwite) {
+        return src;
+    }
+    //
+    for (var key in overwite) {
+        try {
+            if(overwite[key].constructor == Object ) {
+                src[key] = merge(src[key], overwite[key]);
+            } else {
+                src[key] = overwite[key];
+            }
+        } catch(e) {
+            src[key] = overwite[key];
+        }
+    }
+
+    return src;
+}
+
+function createBaseSetting() {
+    var baseSetting = {
+        service: {
+            google: {
+                enabled: false,
+                searchCount: 10,
+                searchSafe: "medium"
+            },
+            bing: {
+                enabled: false
+                //searchCount: 10
+            }
+        },
+        notItems: []
+    };
+
+    return baseSetting;
+}
+
 function splitQuery(service, query) {
     if(!query) {
         return [];
