@@ -1,3 +1,5 @@
+'use strict'
+
 function createLogger(name) {
     return {
         log: function(msg) {

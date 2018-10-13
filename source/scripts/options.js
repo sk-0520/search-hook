@@ -1,3 +1,5 @@
+'use strict'
+
 const output = createLogger('Options');
 
 function restoreOptions() {

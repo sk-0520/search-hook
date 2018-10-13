@@ -1,3 +1,5 @@
+'use strict'
+
 const output = createLogger('Background');
 output.log("START");
 
