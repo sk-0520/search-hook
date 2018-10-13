@@ -16,6 +16,7 @@
     "scripts": [
         "scripts/common.js",
         "scripts/redirect-google.js",
+        "scripts/redirect-bing.js",
         "scripts/redirect-background.js"
     ]
   },

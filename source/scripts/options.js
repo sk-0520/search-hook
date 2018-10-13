@@ -20,8 +20,8 @@ function restoreOptionsCore(result) {
                 searchCount: 10
             },
             bing: {
-                enabled: false,
-                searchCount: 10
+                enabled: false
+                //searchCount: 10
             }
         },
         notItems: []
@@ -43,7 +43,7 @@ function setService(setting) {
     document.querySelector('#service-google-search-count').value = setting.google.searchCount;
 
     document.querySelector('#service-is-enabled-bing').checked = setting.bing.enabled;
-    document.querySelector('#service-bing-search-count').value = setting.bing.searchCount;
+    //document.querySelector('#service-bing-search-count').value = setting.bing.searchCount;
 }
 
 function getService() {
@@ -53,8 +53,8 @@ function getService() {
             searchCount: document.querySelector('#service-google-search-count').value
         },
         bing: {
-            enabled: document.querySelector('#service-is-enabled-bing').checked,
-            searchCount: document.querySelector('#service-bing-search-count').value
+            enabled: document.querySelector('#service-is-enabled-bing').checked
+            //searchCount: document.querySelector('#service-bing-search-count').value
         }
     };
 }
@@ -87,7 +87,8 @@ function getNotItems() {
         var item = {
             word: word,
             service: {
-                google: child.querySelector('[name=not-item-service-google]').checked
+                google: child.querySelector('[name=not-item-service-google]').checked,
+                bing: child.querySelector('[name=not-item-service-bing]').checked
             }
         };
         result.push(item);
@@ -104,7 +105,8 @@ function addNotItemFromInput(e) {
     var item = {
         word: document.querySelector('#input-not-word').value,
         service: {
-            google: document.querySelector('#input-is-enabled-google').checked
+            google: document.querySelector('#input-is-enabled-google').checked,
+            bing: document.querySelector('#input-is-enabled-bing').checked
         }
     };
 
@@ -113,6 +115,7 @@ function addNotItemFromInput(e) {
 
     document.querySelector('#input-not-word').value = '';
     document.querySelector('#input-is-enabled-google').checked = true;
+    document.querySelector('#input-is-enabled-bing').checked = true;
 }
 
 function getNotItemParentElement() {
@@ -149,6 +152,7 @@ function addNotItemCore(parent, item) {
     }
     var serviceGroupElement = document.createElement('ul');
     serviceGroupElement.appendChild(serviceElementCreator('google', 'not-item-service-google', item.service.google));
+    serviceGroupElement.appendChild(serviceElementCreator('bing', 'not-item-service-bing', item.service.bing));
 
     var serviceElement = document.createElement('td');
     serviceElement.appendChild(serviceGroupElement);

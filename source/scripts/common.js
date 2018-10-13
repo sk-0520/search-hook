@@ -1,5 +1,8 @@
 'use strict'
 
+const ServiceKind_Google = 'google';
+const ServiceKind_Bing = 'bing';
+
 function createLogger(name) {
     return {
         log: function(msg) {
@@ -14,8 +17,8 @@ function createLogger(name) {
     }
 };
 
-function splitQuery(s) {
-    if(!s) {
+function splitQuery(service, query) {
+    if(!query) {
         return [];
     }
 
@@ -24,8 +27,8 @@ function splitQuery(s) {
     var buffer = '';
     var result = [];
 
-    for(var i = 0; i < s.length; i++) {
-        var c = s.charAt(i);
+    for(var i = 0; i < query.length; i++) {
+        var c = query.charAt(i);
         if(nowDq) {
             if(c == '"') {
                 if(buffer.length) {
@@ -53,4 +56,59 @@ function splitQuery(s) {
     }
 
     return result;
+}
+
+function makeCustomQuery(service, queryItems, notItems) {
+    // 既に存在する否定ワードはそのまま、設定されていなければ追加していく
+
+    var addNotItems = notItems.concat();
+    var customQuery = [];
+    for(var i = 0; i < queryItems.length; i++) {
+        var query = queryItems[i];
+
+        if(!query.length) {
+            continue;
+        }
+
+        if(query.charAt('-')) {
+            var notWord = query.substr(1);
+            var index = addNotItems.indexOf(notWord);
+            customQuery.push(query);
+            if(index !== -1) {
+                addNotItems.splice(index, 1);
+            }
+        } else {
+            customQuery.push(query);
+        }
+    }
+
+    outputGoogle.debug('notItems: ' + notItems);
+    outputGoogle.debug('addNotItems: ' + addNotItems);
+
+    for(var i = 0; i < addNotItems.length; i++) {
+        var word = addNotItems[i];
+        customQuery.push('-' + word);
+    }
+
+    outputGoogle.debug('customQuery: ' + customQuery);
+
+    return customQuery;
+}
+
+function toQueryString(service, queryItems) {
+    var items = queryItems.filter(function(s) {
+        return s && s.length;
+    }).map(function(s) {
+        if(s.indexOf(' ') !== -1) {
+            if(s.charAt(0) === '-') {
+                return '-"' + s.substr(1) + '"';
+            }
+
+            return '"' + s + '"';
+        } else {
+            return s;
+        }
+    });
+
+    return items.join(' ');
 }

@@ -1,11 +1,11 @@
 'use strict'
 
-const outputGoogle = createLogger('Google');
+const outputBing = createLogger('Bing');
 
-function resistGoogle(setting, deliveryItems) {
+function resistBing(setting, deliveryItems) {
 
     var notItems = setting.notItems.filter(function(i) {
-        return i.service.google;
+        return i.service.bing;
     }).concat(deliveryItems).filter(function(i) {
         return i.word.length;
     }).map(function(i) {
@@ -14,36 +14,36 @@ function resistGoogle(setting, deliveryItems) {
 
     var requestSet = new Set();
 
-    // Google 登録
+    // Bing 登録
     browser.webRequest.onBeforeRequest.addListener(
         function(requestDetails) {
-            return requestGoogle(setting.service.google, notItems, requestSet, requestDetails);
+            return requestBing(setting.service.bing, notItems, requestSet, requestDetails);
         },
         {
             urls: [
-                "*://*.google.com/search?*"
+                "*://*.bing.com/search?*"
             ]
         },
         ["blocking"]
     );
 }
 
-function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
+function requestBing(bingSetting, notItems, requestSet, requestDetails) {
 
-    const serviceKind = ServiceKind_Google;
+    const serviceKind = ServiceKind_Bing;
 
-    outputGoogle.log('Loading: ' + requestDetails.url);
-    outputGoogle.debug(JSON.stringify(requestDetails));
+    outputBing.log('Loading: ' + requestDetails.url);
+    outputBing.debug(JSON.stringify(requestDetails));
 
-    if(!googleSetting.enabled) {
-        outputGoogle.debug('disabled google');
+    if(!bingSetting.enabled) {
+        outputBing.debug('disabled bing');
         return;
     }
 
-    outputGoogle.debug('enabled google');
+    outputBing.debug('enabled bing');
 
     if(requestSet.has(requestDetails.requestId)) {
-        outputGoogle.debug('setted request: ' + requestDetails.requestId);
+        outputBing.debug('setted request: ' + requestDetails.requestId);
         requestSet.delete(requestDetails.requestId);
         return;
     }
@@ -51,10 +51,10 @@ function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
 
     var url = new URL(requestDetails.url);
 
-    // 検索数の指定が無ければ設定値に書き換え
-    if(!url.searchParams.has('num')) {
-        url.searchParams.append('num', googleSetting.searchCount)
-    }
+    // // 検索数の指定が無ければ設定値に書き換え
+    // if(!url.searchParams.has('num')) {
+    //     url.searchParams.append('num', bingSetting.searchCount)
+    // }
 
     // まだ検索してないっぽければ無視
     if(!url.searchParams.has('q')) {
@@ -62,24 +62,24 @@ function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
     }
 
     // 既に検索済みのページとして何もしない
-    if(url.searchParams.has('start')) {
-        outputGoogle.debug('ignore request');
+    if(url.searchParams.has('first')) {
+        outputBing.debug('ignore request');
         return;
     }
 
     var rawQuery = url.searchParams.get('q');
-    outputGoogle.debug('raw: ' + rawQuery);
+    outputBing.debug('raw: ' + rawQuery);
     var queryItems = splitQuery(serviceKind, rawQuery)
-    outputGoogle.debug('items: ' + queryItems);
+    outputBing.debug('items: ' + queryItems);
 
     var customQuery = makeCustomQuery(serviceKind, queryItems, notItems);
-    outputGoogle.debug('customQuery: ' + customQuery);
+    outputBing.debug('customQuery: ' + customQuery);
 
     var queryString = toQueryString(serviceKind, customQuery);
-    outputGoogle.debug('queryString: ' + queryString);
+    outputBing.debug('queryString: ' + queryString);
 
     url.searchParams.set('q', queryString);
-    outputGoogle.debug(url);
+    outputBing.debug(url);
 
     return {
         redirectUrl: url.toString()

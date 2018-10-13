@@ -17,6 +17,7 @@ browser.storage.local.get('setting').then(
         outputBackground.debug(JSON.stringify(setting));
 
         resistGoogle(setting, []);
+        resistBing(setting, []);
     },
     function(error) {
         outputBackground.error(error);
