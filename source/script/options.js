@@ -149,6 +149,7 @@ function addNotItemCore(parent, item) {
         return li;
     }
     var serviceGroupElement = document.createElement('ul');
+    serviceGroupElement.className = 'horizontal';
     serviceGroupElement.appendChild(serviceElementCreator('google', 'engine-not-item-service-google', item.service.google));
     serviceGroupElement.appendChild(serviceElementCreator('bing', 'engine-not-item-service-bing', item.service.bing));
 

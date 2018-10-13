@@ -14,10 +14,10 @@
 
   "background": {
     "scripts": [
-        "scripts/common.js",
-        "scripts/redirect-google.js",
-        "scripts/redirect-bing.js",
-        "scripts/redirect-background.js"
+        "script/common.js",
+        "script/redirect-google.js",
+        "script/redirect-bing.js",
+        "script/redirect-background.js"
     ]
   },
 

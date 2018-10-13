@@ -1,0 +1,9 @@
+
+
+ul.horizontal > li, ol.horizontal > li {
+    display: inline-block;
+}
+
+
+
+
