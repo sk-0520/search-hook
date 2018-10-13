@@ -13,7 +13,7 @@
   ],
 
   "background": {
-    "scripts": ["scripts/background.js"]
+    "scripts": ["scripts/logging.js", "scripts/background.js"]
   },
 
   "options_ui": {

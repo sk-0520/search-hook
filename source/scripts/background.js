@@ -1,15 +1,4 @@
-const output = {
-    log: function(msg) {
-        console.log(`<OP-S> [Background] ${msg}`);
-    },
-    debug: function(msg) {
-        console.debug(`<OP-S> [Background] ${msg}`);
-    },
-    error: function(msg) {
-        console.error(`<OP-S> [Background] ${msg}`);
-    }
-};
-
+const output = createLogger('Background');
 output.log("START");
 
 browser.storage.local.get('setting').then(

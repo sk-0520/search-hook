@@ -1,14 +1,4 @@
-const output = {
-    log: function(msg) {
-        console.log(`<OP-S> [Options] ${msg}`);
-    },
-    debug: function(msg) {
-        console.debug(`<OP-S> [Options] ${msg}`);
-    },
-    error: function(msg) {
-        console.error(`<OP-S> [Options] ${msg}`);
-    }
-};
+const output = createLogger('Options');
 
 function restoreOptions() {
     var getting = browser.storage.local.get('setting');
