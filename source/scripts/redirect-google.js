@@ -10,24 +10,27 @@ function resistGoogle(setting) {
         return i.word.length;
     }).map(function(i) {
         return i.word;
-    })
+    });
+
+    var requestSet = new Set();
 
     // Google 登録
     browser.webRequest.onBeforeRequest.addListener(
         function(requestDetails) {
-            return requestGoogle(setting.service.google, notItems, requestDetails);
+            return requestGoogle(setting.service.google, notItems, requestSet, requestDetails);
         },
         {
             urls: [
                 "*://*.google.com/search?*"
             ]
-        }
+        },
+        ["blocking"]
     );
 }
 
-function requestGoogle(googleSetting, notItems, requestDetails) {
+function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
 
-    outputGoogle.log("Loading: " + requestDetails.url);
+    outputGoogle.log('Loading: ' + requestDetails.url);
     outputGoogle.debug(JSON.stringify(requestDetails));
 
     if(!googleSetting.enabled) {
@@ -37,37 +40,48 @@ function requestGoogle(googleSetting, notItems, requestDetails) {
 
     outputGoogle.debug('enabled google');
 
-    var url = new URL(requestDetails.url);
-    var params = url.searchParams;
+    if(requestSet.has(requestDetails.requestId)) {
+        outputGoogle.debug('setted request: ' + requestDetails.requestId);
+        requestSet.delete(requestDetails.requestId);
+        return;
+    }
+    requestSet.add(requestDetails.requestId);
 
+    var url = new URL(requestDetails.url);
 
     // 検索数の指定が無ければ設定値に書き換え
-    if(!params.has('num')) {
-        params.append('num', googleSetting.searchCount)
+    if(!url.searchParams.has('num')) {
+        url.searchParams.append('num', googleSetting.searchCount)
     }
 
     // まだ検索してないっぽければ無視
-    if(!params.has('q')) {
+    if(!url.searchParams.has('q')) {
         return;
     }
 
     // 既に検索済みのページとして何もしない
-    if(params.has('start')) {
+    if(url.searchParams.has('start')) {
         outputGoogle.debug('ignore request');
         return;
     }
 
-    var rawQuery = params.get('q');
-    outputGoogle.debug("raw: " + rawQuery);
+    var rawQuery = url.searchParams.get('q');
+    outputGoogle.debug('raw: ' + rawQuery);
     var queryItems = splitQuery(rawQuery)
-    outputGoogle.debug("items: " + queryItems);
+    outputGoogle.debug('items: ' + queryItems);
 
     var customQuery = makeCustomQuery(queryItems, notItems);
-    outputGoogle.debug("customQuery: " + customQuery);
+    outputGoogle.debug('customQuery: ' + customQuery);
 
     var queryString = toQueryString(customQuery);
-    outputGoogle.debug("queryString: " + queryString);
+    outputGoogle.debug('queryString: ' + queryString);
 
+    url.searchParams.set('q', queryString);
+    outputGoogle.debug(url);
+
+    return {
+        redirectUrl: url.toString()
+    };
 }
 
 function makeCustomQuery(queryItems, notItems) {
