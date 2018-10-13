@@ -19,12 +19,10 @@ function restoreOptionsCore(result) {
         setting = {
             global: {
                 enabled: {
-                    google: false
+                    google: true
                 }
             },
-            notItems: [
-                { }
-            ]
+            notItems: [ ]
         };
     }
     setGlobal(setting.global);
@@ -44,11 +42,42 @@ function getGlobal() {
 }
 
 function setNotItems(setting) {
-
+    const parentElement = getNotItemParentElement();
+    for(var i = 0; i < setting.length; i++) {
+        var item = setting[i];
+        addNotItemCore(parentElement, item);
+    }
 }
 
 function getNotItems() {
-    return [];
+    const parentElement = getNotItemParentElement();
+
+    const children = parentElement.querySelectorAll('tr');
+    output.debug(`child: ${children.length}`);
+
+    var result = [];
+
+    for(var i = 0; i < children.length; i++) {
+        const child = children[i];
+
+        var word = child.querySelector('[name=not-item-word]').value;
+        if(!word || !word.length || !word.trim().length) {
+            output.debug('ignore: empty word');
+            continue;
+        }
+
+        var item = {
+            word: word,
+            service: {
+                google: child.querySelector('[name=not-item-service-google]').checked
+            }
+        };
+        result.push(item);
+    }
+
+
+    return result;
+
 }
 
 function addNotItemFromInput(e) {
@@ -81,17 +110,19 @@ function addNotItemCore(parent, item) {
 
     var wordInputElement = document.createElement('input');
     wordInputElement.value = item.word;
+    wordInputElement.setAttribute('name', 'not-item-word');
     var wordElement = document.createElement('td');
     wordElement.appendChild(wordInputElement);
 
-    var serviceElementCreator = function(serviceName, isChecked) {
+    var serviceElementCreator = function(displayValue, elementName, isChecked) {
         var check = document.createElement('input');
         check.setAttribute('type', 'checkbox');
+        check.setAttribute('name', elementName);
         check.checked = isChecked;
 
         var label = document.createElement('label');
         label.appendChild(check);
-        label.appendChild(document.createTextNode(serviceName));
+        label.appendChild(document.createTextNode(displayValue));
 
         var li = document.createElement('li');
         li.appendChild(label);
@@ -99,7 +130,7 @@ function addNotItemCore(parent, item) {
         return li;
     }
     var serviceGroupElement = document.createElement('ul');
-    serviceGroupElement.appendChild(serviceElementCreator('google', item.service.google));
+    serviceGroupElement.appendChild(serviceElementCreator('google', 'not-item-service-google', item.service.google));
 
     var serviceElement = document.createElement('td');
     serviceElement.appendChild(serviceGroupElement);
@@ -125,7 +156,8 @@ function saveOptions(e) {
     e.preventDefault();
 
     const setting = {
-        global: getGlobal()
+        global: getGlobal(),
+        notItems: getNotItems()
     };
 
     browser.storage.local.set({
