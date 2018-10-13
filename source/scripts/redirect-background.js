@@ -16,7 +16,7 @@ browser.storage.local.get('setting').then(
         outputBackground.log('setting loaded');
         outputBackground.debug(JSON.stringify(setting));
 
-        resistGoogle(setting);
+        resistGoogle(setting, []);
     },
     function(error) {
         outputBackground.error(error);

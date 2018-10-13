@@ -2,11 +2,11 @@
 
 const outputGoogle = createLogger('Google');
 
-function resistGoogle(setting) {
+function resistGoogle(setting, deliveryItems) {
 
     var notItems = setting.notItems.filter(function(i) {
         return i.service.google;
-    }).filter(function(i) {
+    }).concat(deliveryItems).filter(function(i) {
         return i.word.length;
     }).map(function(i) {
         return i.word;
