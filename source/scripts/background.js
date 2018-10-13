@@ -37,8 +37,7 @@ function loadSetting(result) {
         requestGoogle,
         {
             urls: [
-                "*://www.google.com/search?*",
-                "*://google.com/search?*",
+                "*://*.google.com/search?*"
             ]
         }
     );
@@ -48,10 +47,13 @@ function requestGoogle(requestDetails) {
     output.log("Loading: " + requestDetails.url);
     output.debug(JSON.stringify(requestDetails));
 
-    if(!setting.global.isEnableGoogle) {
-        output.debug('disable google');
+    if(!setting.global.enabled.google) {
+        output.debug('disabled google');
         return;
     }
+
+    output.debug('enabled google');
+
 }
 
 
