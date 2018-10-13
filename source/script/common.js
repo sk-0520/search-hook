@@ -54,7 +54,8 @@ function createBaseSetting() {
                 //searchCount: 10
             }
         },
-        notItems: []
+        notItems: [],
+        hideItems: []
     };
 
     return baseSetting;

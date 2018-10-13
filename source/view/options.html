@@ -27,18 +27,18 @@
                     </table>
                 </li>
                 <li>
-                        <label><input id="service-is-enabled-bing" type="checkbox" />bing</label>
-                        <!--
+                    <label><input id="service-is-enabled-bing" type="checkbox" />bing</label>
+                    <!--
                         <ul>
                             <li><label>count: <input id="service-bing-search-count" type="number" min="10" max="100" step="10" /></label></li>
                         </ul>
                         -->
-                    </li>
-                </ul>
+                </li>
+            </ul>
         </fieldset>
 
         <fieldset>
-            <legend>[not] engine word or host</legend>
+            <legend>[engine] not word or host</legend>
             <table>
                 <thead>
                     <tr>
@@ -60,6 +60,34 @@
                             </ul>
                         </th>
                         <th><button id="command-engine-add-not-item" type="button">add</button></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>[view] hide host</legend>
+            <table>
+                <thead>
+                    <tr>
+                        <th>host</th>
+                        <th>enabled</th>
+                        <th>remove</th>
+                    </tr>
+                </thead>
+                <tbody id="view-hide-host-list">
+                    <!-- script -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th><input id="view-input-hide-host" /></th>
+                        <th>
+                            <ul class="horizontal">
+                                <li><label><input id="view-input-is-enabled-google" type="checkbox" checked />google</label></li>
+                                <li><label><input id="view-input-is-enabled-bing" type="checkbox" checked />bing</label></li>
+                            </ul>
+                        </th>
+                        <th><button id="command-view-add-hide-item" type="button">add</button></th>
                     </tr>
                 </tfoot>
             </table>
