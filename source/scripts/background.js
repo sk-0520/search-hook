@@ -8,7 +8,7 @@ const output = {
     error: function(msg) {
         console.error(`<OP-S> [Background] ${msg}`);
     }
-}
+};
 
 output.log("START");
 
@@ -48,7 +48,7 @@ function requestGoogle(requestDetails) {
     output.log("Loading: " + requestDetails.url);
     output.debug(JSON.stringify(requestDetails));
 
-    if(!setting.google.isEnable) {
+    if(!setting.global.isEnableGoogle) {
         output.debug('disable google');
         return;
     }

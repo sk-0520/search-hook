@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "debug": "cd source && web-ext run"
+      "debug": "web-ext run --source-dir=source",
+      "debug-sk": "mkdir X:\\fx & web-ext run --source-dir=source --keep-profile-changes --firefox-profile=X:\\fx ",
+      "lint": "web-ext lint --source-dir=source"
   },
   "repository": {
     "type": "git",
