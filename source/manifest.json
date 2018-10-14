@@ -1,7 +1,7 @@
 {
   "description": "Demonstrating webRequests",
   "manifest_version": 2,
-  "name": "op-search",
+  "name": "hook-search",
   "version": "1.0",
   "permissions": [
     "webRequest",
