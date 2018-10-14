@@ -39,6 +39,9 @@
         "script/common.js",
         "script/content.js",
         "script/content-bing.js"
+      ],
+      "css": [
+        "style/content.css"
       ]
     }
   ],
