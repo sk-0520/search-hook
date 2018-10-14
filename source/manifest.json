@@ -1,39 +1,45 @@
 {
-
   "description": "Demonstrating webRequests",
   "manifest_version": 2,
   "name": "op-search",
   "version": "1.0",
-
   "permissions": [
     "webRequest",
     "webRequestBlocking",
     "storage",
     "<all_urls>"
   ],
-
   "background": {
     "scripts": [
-        "script/common.js",
-        "script/redirect-google.js",
-        "script/redirect-bing.js",
-        "script/redirect-background.js"
+      "script/common.js",
+      "script/redirect-google.js",
+      "script/redirect-bing.js",
+      "script/redirect-background.js"
     ]
   },
-
   "content_scripts": [
     {
-      "matches": ["*://*.google.com/search?*"],
-      "js": ["script/common.js", "script/content.js", "script/content-google.js"]
+      "matches": [
+        "*://*.google.com/search?*"
+      ],
+      "js": [
+        "script/common.js",
+        "script/content.js",
+        "script/content-google.js"
+      ]
     },
     {
-      "matches": ["*://*.bing.com/search?*"],
-      "js": ["script/common.js", "script/content.js", "script/content-bing.js"]
+      "matches": [
+        "*://*.bing.com/search?*"
+      ],
+      "js": [
+        "script/common.js",
+        "script/content.js",
+        "script/content-bing.js"
+      ]
     }
   ],
-
   "options_ui": {
     "page": "view/options.html"
   }
-
 }
