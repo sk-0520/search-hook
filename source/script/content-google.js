@@ -8,11 +8,21 @@ port.onMessage.addListener(function(message) {
     
     outputGoogle.debug("CLIENT RECV!");
     outputGoogle.debug(JSON.stringify(message));
-    hideGoogleItems(message.items);
+
+    var hideItems = message.items;
+
+    hideGoogleItems(hideItems);
 });
 port.postMessage({service: ServiceKind_Google});
 
 function hideGoogleItems(hideItems) {
+    if(!hideItems || !hideItems.length) {
+        outputGoogle.debug('empty hide items');
+        return;
+    }
+
+    var checkers = getCheckers(hideItems);
+
     var elements = document.querySelectorAll('.g');
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
@@ -22,7 +32,12 @@ function hideGoogleItems(hideItems) {
         var link = linkElement.getAttribute('href');
         outputGoogle.debug('linkUrl: ' + link);
 
-        
+        if(matchUrl(link, checkers)) {
+            outputGoogle.debug('hide');
+        } else {
+            outputGoogle.debug('view');
+        }
+    
     }
 }
 

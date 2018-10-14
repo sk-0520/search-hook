@@ -26,20 +26,35 @@ browser.storage.local.get('setting').then(
     }
 );
 
+
 function resistView(setting, deliveryItems) {
 
+    // 比較関数だけ作っておきたかったけど転送できない
     var enabledItems = setting.hideItems.filter(function(i) {
         return i.word && i.word.length
+    }).filter(function(i) {
+        if(i.match.kind === 'regex') {
+            try {
+                new RegExp(i.word)
+            } catch(ex) {
+                outputBackground.error(JSON.stringify(i));
+                outputBackground.error(ex);
+                return false;
+            }
+        }
+
+        return true;
     });
 
     var googleItems = enabledItems.filter(function(i) {
         return i.service.google;
-    }).map(function(i) {
     });
     var bingItems = enabledItems.filter(function(i) {
         return i.service.bing;
-    }).map(function(i) {
     });
+
+    outputBackground.debug('googleItems.length: ' + googleItems.length);
+    outputBackground.debug('bingItems.length: ' + bingItems.length);
 
     browser.runtime.onConnect.addListener(function(port) {
         outputBackground.debug('connected content!');
