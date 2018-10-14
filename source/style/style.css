@@ -20,3 +20,11 @@ form.setting input[type=text] {
     width: 90%;
 }
 
+form button[type=submit] {
+    width: 80%;
+    font-size: 120%;
+    font-weight: bold;
+    text-align: center;
+    margin: 1em auto;
+    display: block;
+}
