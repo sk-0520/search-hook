@@ -3,17 +3,21 @@
   "manifest_version": 2,
   "name": "hook-search",
   "version": "0.0.1",
+  "developer": {
+    "name": "sk",
+    "url": "https://bitbucket.org/sk_0520/hook-search/"
+  },
+  "icons": {
+    "48": "resources/icon.svg",
+    "96": "resources/icon.svg"
+  },
   "permissions": [
     "webRequest",
     "webRequestBlocking",
     "storage",
     "<all_urls>"
   ],
-  "icons": {
-    "48": "resources/icon.svg",
-    "96": "resources/icon.svg"
-  },
-    "background": {
+  "background": {
     "scripts": [
       "script/common.js",
       "script/redirect-google.js",
