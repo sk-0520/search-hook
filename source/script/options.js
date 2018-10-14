@@ -279,7 +279,7 @@ function addHideItemCore(parent, item) {
 
     var matchCaseCheckElement = document.createElement('input');
     matchCaseCheckElement.setAttribute('name', 'view-hide-item-match-case');
-    matchCaseCheckElement.setAttribute('type', 'text');
+    matchCaseCheckElement.setAttribute('type', 'checkbox');
     matchCaseCheckElement.checked = item.match.case;
 
     var matchCaseLabelElement = document.createElement('label');
