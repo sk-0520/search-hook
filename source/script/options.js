@@ -125,7 +125,10 @@ function getHideItems() {
 
         var item = {
             word: word,
-            case: child.querySelector('[name=view-hide-item-case]').checked,
+            match: {
+                kind: child.querySelector('[name=view-hide-item-match-kind]').value,
+                case: child.querySelector('[name=view-hide-item-match-case]').checked,
+            },
             service: {
                 google: child.querySelector('[name=view-hide-item-service-google]').checked,
                 bing: child.querySelector('[name=view-hide-item-service-bing]').checked
@@ -272,6 +275,7 @@ function addHideItemCore(parent, item) {
     matchKindItemElement.appendChild(matchKindElement);
 
     var matchCaseCheckElement = document.createElement('input');
+    matchCaseCheckElement.setAttribute('name', 'view-hide-item-match-case');
     matchCaseCheckElement.setAttribute('type', 'checkbox');
     matchCaseCheckElement.checked = item.match.case;
 
