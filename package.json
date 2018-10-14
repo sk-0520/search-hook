@@ -6,14 +6,15 @@
   "scripts": {
       "debug": "web-ext run --source-dir=source  --start-url about:debugging about:addons",
       "debug-sk": "mkdir X:\\fx & web-ext run --source-dir=source --start-url about:debugging about:addons --keep-profile-changes --firefox-profile=X:\\fx ",
-      "lint": "web-ext lint --source-dir=source"
+      "lint": "web-ext lint --source-dir=source",
+      "build": "web-ext build --source-dir=source --artifacts-dir=artifacts"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/sk_0520/hook-search.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "sk",
+  "license": "GPLv3",
   "homepage": "https://bitbucket.org/sk_0520/hook-search#readme",
   "dependencies": {},
   "devDependencies": {
