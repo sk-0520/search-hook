@@ -1,9 +1,9 @@
 
 
-.hidden{
+.--hook-search-_-_-hidden {
     border: red 10px solid;
 }
 
-.hide-item {
+.--hook-search-_-_-hidden-item {
     background: lime;
 }

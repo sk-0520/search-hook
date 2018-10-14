@@ -33,8 +33,8 @@ function hideGoogleItems(hideItems) {
 
         if(matchUrl(link, checkers)) {
             outputGoogle.debug('hide:' + link);
-            element.classList.add('hidden');
-            element.classList.add('hide-item');
+            element.classList.add('--hook-search-_-_-hidden');
+            element.classList.add('--hook-search-_-_-hidden-item');
         } else {
             outputGoogle.debug('view');
         }
