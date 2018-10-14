@@ -1,5 +1,5 @@
 {
-  "description": "Demonstrating webRequests",
+  "description": "customize: search engine query, result items.",
   "manifest_version": 2,
   "name": "search-hook",
   "version": "0.1.0",
