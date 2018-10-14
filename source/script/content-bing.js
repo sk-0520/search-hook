@@ -38,8 +38,8 @@ function hideGoogleItems(hideItems) {
 
         if(matchUrl(link, checkers)) {
             outputBing.debug('hide:' + link);
-            element.classList.add('WE___hook-search-_-_-hidden');
-            element.classList.add('WE___hook-search-_-_-hidden-item');
+            element.classList.add('WE___search-hook-_-_-hidden');
+            element.classList.add('WE___search-hook-_-_-hidden-item');
         } else {
             outputBing.debug('view');
         }

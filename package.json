@@ -10,11 +10,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/sk_0520/hook-search.git"
+    "url": "git+ssh://git@bitbucket.org/sk_0520/search-hook.git"
   },
   "author": "sk",
   "license": "GPLv3",
-  "homepage": "https://bitbucket.org/sk_0520/hook-search#readme",
+  "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
   "dependencies": {},
   "devDependencies": {
     "web-ext": "^2.9.1"

@@ -110,7 +110,7 @@ function createSwitchElement() {
     switchElement.setAttribute('type', 'checkbox');
     switchElement.checked = true;
     switchElement.addEventListener('change', function() {
-        var items = document.querySelectorAll('.WE___hook-search-_-_-hidden');
+        var items = document.querySelectorAll('.WE___search-hook-_-_-hidden');
         if(!items.length) {
             return;
         }
@@ -118,9 +118,9 @@ function createSwitchElement() {
         for(var i = 0; i < items.length; i++) {
             var item = items[i];
             if(this.checked) {
-                item.classList.add('WE___hook-search-_-_-hidden-item');
+                item.classList.add('WE___search-hook-_-_-hidden-item');
             } else {
-                item.classList.remove('WE___hook-search-_-_-hidden-item');
+                item.classList.remove('WE___search-hook-_-_-hidden-item');
             }
         }
     });
@@ -128,7 +128,7 @@ function createSwitchElement() {
     var switchGroupElement = document.createElement('label');
     switchGroupElement.appendChild(switchElement);
     switchGroupElement.appendChild(document.createTextNode('hide'));
-    switchGroupElement.classList.add('WE___hook-search-_-_-switch');
+    switchGroupElement.classList.add('WE___search-hook-_-_-switch');
 
     return switchGroupElement;
 }

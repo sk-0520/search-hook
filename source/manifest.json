@@ -1,11 +1,11 @@
 {
   "description": "Demonstrating webRequests",
   "manifest_version": 2,
-  "name": "hook-search",
-  "version": "0.0.1",
+  "name": "search-hook",
+  "version": "0.1.0",
   "developer": {
     "name": "sk",
-    "url": "https://bitbucket.org/sk_0520/hook-search/"
+    "url": "https://bitbucket.org/sk_0520/search-hook/"
   },
   "icons": {
     "48": "resources/icon.svg",
