@@ -1,9 +1,16 @@
 
-
 .WE___hook-search-_-_-hidden {
-    border: red 10px solid  !important;
+    background: rgba(0.8, 0.8, 0.8, 0.5) !important
 }
 
 .WE___hook-search-_-_-hidden-item {
-    background: lime !important;
+    display: none !important;
 }
+
+.WE___hook-search-_-_-switch {
+    margin: 1em auto;
+    display: block;
+    clear: both;
+    text-align: right;
+}
+

@@ -38,7 +38,8 @@ function hideGoogleItems(hideItems) {
         } else {
             outputGoogle.debug('view');
         }
-    
     }
+
+    injectHideSwitch(ServiceKind_Google);
 }
 
