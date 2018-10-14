@@ -2,16 +2,17 @@
 
 const outputGoogle = createLogger('Google Content');
 
-//const googlePort = browser.runtime.connect({ name:"view-google-content" });
-var myPort = browser.runtime.connect({name:"port-from-cs"});
-myPort.postMessage({greeting: "hello from content script"});
+const port = browser.runtime.connect();
+port.onMessage.addListener(function(message) {
+    port.disconnect();
+    
+    outputGoogle.debug("CLIENT RECV!");
+    outputGoogle.debug(JSON.stringify(message));
+    hideGoogleItems(message.items);
+});
+port.postMessage({service: ServiceKind_Google});
 
-myPort.onMessage.addListener(function(m) {
-    console.log("Z");
-    console.log(m.greeting);
-  });
-
-function hideGoogleItems() {
+function hideGoogleItems(hideItems) {
     var elements = document.querySelectorAll('.g');
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
@@ -19,11 +20,9 @@ function hideGoogleItems() {
 
         // めっちゃ嘘くさい。。。
         var link = linkElement.getAttribute('href');
-        var linkUrl = new URL(link);
-        outputGoogle.debug('linkUrl: ' + linkUrl);
-    }
+        outputGoogle.debug('linkUrl: ' + link);
 
-    myPort.postMessage({greeting: "A"});
+        
+    }
 }
 
-hideGoogleItems();

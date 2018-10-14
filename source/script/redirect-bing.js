@@ -2,7 +2,7 @@
 
 const outputBing = createLogger('Bing');
 
-function resistBing(setting, deliveryItems) {
+function resistRedirectBing(setting, deliveryItems) {
 
     var notItems = setting.notItems.filter(function(i) {
         return i.service.bing;

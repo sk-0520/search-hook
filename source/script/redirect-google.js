@@ -1,8 +1,8 @@
 'use strict'
 
-const outputGoogle = createLogger('Google');
+const outputGoogle = createLogger('Google Engine');
 
-function resistGoogle(setting, deliveryItems) {
+function resistRedirectGoogle(setting, deliveryItems) {
 
     var notItems = setting.notItems.filter(function(i) {
         return i.service.google;
@@ -26,20 +26,6 @@ function resistGoogle(setting, deliveryItems) {
         },
         ["blocking"]
     );
-
-
-    var portFromCS;
-
-    function connected(p) {
-      portFromCS = p;
-      portFromCS.postMessage({greeting: "B"});
-      portFromCS.onMessage.addListener(function(m) {
-        console.log("C")
-        portFromCS.postMessage({greeting: "D"});
-    });
-    }
-
-    browser.runtime.onConnect.addListener(connected);
 }
 
 function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {

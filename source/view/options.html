@@ -71,6 +71,7 @@
                 <thead>
                     <tr>
                         <th>host</th>
+                        <th>match</th>
                         <th>enabled</th>
                         <th>remove</th>
                     </tr>
@@ -81,6 +82,18 @@
                 <tfoot>
                     <tr>
                         <th><input id="view-input-hide-host" /></th>
+                        <th>
+                            <ul class="horizontal">
+                                <li>
+                                    <select id="view-input-hide-match-kind">
+                                        <option id="view-input-hide-match-kind-partial" value="partial" checked >partial</option>
+                                        <option id="view-input-hide-match-kind-perfect" value="perfect">perfect</option>
+                                        <option id="view-input-hide-match-kind-regex"   value="regex">regex</option>
+                                    </select>
+                                </li>
+                                <li><label><input id="view-input-hide-match-case" type="checkbox" checked />case</label></li>
+                            </ul>
+                        </th>
                         <th>
                             <ul class="horizontal">
                                 <li><label><input id="view-input-is-enabled-google" type="checkbox" checked />google</label></li>

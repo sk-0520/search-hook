@@ -125,6 +125,7 @@ function getHideItems() {
 
         var item = {
             word: word,
+            case: child.querySelector('[name=view-hide-item-case]').checked,
             service: {
                 google: child.querySelector('[name=view-hide-item-service-google]').checked,
                 bing: child.querySelector('[name=view-hide-item-service-bing]').checked
@@ -218,6 +219,10 @@ function addHideItemFromInput(e) {
 
     var item = {
         word: document.querySelector('#view-input-hide-host').value,
+        match: {
+            kind: document.querySelector('#view-input-hide-match-kind').value,
+            case: document.querySelector('#view-input-hide-match-case').checked,
+        },
         service: {
             google: document.querySelector('#view-input-is-enabled-google').checked,
             bing: document.querySelector('#view-input-is-enabled-bing').checked
@@ -249,6 +254,42 @@ function addHideItemCore(parent, item) {
     var wordElement = document.createElement('td');
     wordElement.appendChild(wordInputElement);
 
+    var matchKindElement = document.createElement('select');
+    matchKindElement.setAttribute('name', 'view-hide-item-match-kind');
+    var matchElementCreator = function(displayValue, elementValue) {
+        var option = document.createElement('option');
+        option.setAttribute('value', elementValue);
+        option.appendChild(document.createTextNode(displayValue))
+
+        return option;
+    }
+    matchKindElement.appendChild(matchElementCreator('partial', 'partial'));
+    matchKindElement.appendChild(matchElementCreator('perfect', 'perfect'));
+    matchKindElement.appendChild(matchElementCreator('regex', 'regex'));
+    matchKindElement.value = item.match.kind;
+
+    var matchKindItemElement = document.createElement('li');
+    matchKindItemElement.appendChild(matchKindElement);
+
+    var matchCaseCheckElement = document.createElement('input');
+    matchCaseCheckElement.setAttribute('type', 'checkbox');
+    matchCaseCheckElement.checked = item.match.case;
+
+    var matchCaseLabelElement = document.createElement('label');
+    matchCaseLabelElement.appendChild(matchCaseCheckElement);
+    matchCaseLabelElement.appendChild(document.createTextNode('case'));
+
+    var matchCaseItemElement = document.createElement('li');
+    matchCaseItemElement.appendChild(matchCaseLabelElement);
+
+    var matchGroupElement = document.createElement('ul')
+    matchGroupElement.className = 'horizontal';
+    matchGroupElement.appendChild(matchKindItemElement);
+    matchGroupElement.appendChild(matchCaseItemElement);
+
+    var matchElement = document.createElement('td');
+    matchElement.appendChild(matchGroupElement);
+
     var serviceElementCreator = function(displayValue, elementName, isChecked) {
         var check = document.createElement('input');
         check.setAttribute('type', 'checkbox');
@@ -269,8 +310,11 @@ function addHideItemCore(parent, item) {
     serviceGroupElement.appendChild(serviceElementCreator('google', 'view-hide-item-service-google', item.service.google));
     serviceGroupElement.appendChild(serviceElementCreator('bing', 'view-hide-item-service-bing', item.service.bing));
 
+    var serviceGroupWrapperElement = document.createElement('form');
+    serviceGroupWrapperElement.appendChild(serviceGroupElement);
+
     var serviceElement = document.createElement('td');
-    serviceElement.appendChild(serviceGroupElement);
+    serviceElement.appendChild(serviceGroupWrapperElement);
 
     var removeCommandElement = document.createElement('button');
     removeCommandElement.appendChild(document.createTextNode('remove'));
@@ -283,6 +327,7 @@ function addHideItemCore(parent, item) {
     removeElement.appendChild(removeCommandElement);
 
     groupElement.appendChild(wordElement);
+    groupElement.appendChild(matchElement);
     groupElement.appendChild(serviceElement);
     groupElement.appendChild(removeElement);
 
