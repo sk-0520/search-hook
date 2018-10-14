@@ -9,7 +9,7 @@
 
 <body>
 
-    <form>
+    <form class="setting">
         <fieldset>
             <legend>service</legend>
             <ul>
@@ -50,9 +50,9 @@
                 <tbody id="engine-not-word-list">
                     <!-- script -->
                 </tbody>
-                <tfoot>
+                <tfoot class="input">
                     <tr>
-                        <th><input id="engine-input-not-word" /></th>
+                        <th><input id="engine-input-not-word" type="text" /></th>
                         <th>
                             <ul class="horizontal">
                                 <li><label><input id="engine-input-is-enabled-google" type="checkbox" checked />google</label></li>
@@ -67,6 +67,11 @@
 
         <fieldset>
             <legend>[view] hide host</legend>
+            <p>
+                use: HOST, PATH, QUERY
+                <br />
+                ignore: PROTOCOL, USER, PASSWORD, PORT
+            </p>
             <table>
                 <thead>
                     <tr>
@@ -79,9 +84,9 @@
                 <tbody id="view-hide-host-list">
                     <!-- script -->
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <th><input id="view-input-hide-host" /></th>
+                <tfoot class="input">
+                        <tr>
+                        <th><input id="view-input-hide-host" type="text" /></th>
                         <th>
                             <ul class="horizontal">
                                 <li>
@@ -105,6 +110,13 @@
                     </tr>
                 </tfoot>
             </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>[view] import</legend>
+            <p>
+                <strong>TODO</strong>, reserve permissions: &lt;all_urls&gt;
+            </p>
         </fieldset>
 
         <button type="submit">save</button>

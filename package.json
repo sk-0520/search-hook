@@ -2,7 +2,6 @@
   "name": "hook-search",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
       "debug": "web-ext run --source-dir=source  --start-url about:debugging about:addons",
       "debug-sk": "mkdir X:\\fx & web-ext run --source-dir=source --start-url about:debugging about:addons --keep-profile-changes --firefox-profile=X:\\fx ",

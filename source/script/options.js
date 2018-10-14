@@ -172,8 +172,9 @@ function addNotItemCore(parent, item) {
     var groupElement = document.createElement('tr');
 
     var wordInputElement = document.createElement('input');
-    wordInputElement.value = item.word;
+    wordInputElement.setAttribute('type', 'text');
     wordInputElement.setAttribute('name', 'engine-not-item-word');
+    wordInputElement.value = item.word;
     var wordElement = document.createElement('td');
     wordElement.appendChild(wordInputElement);
 
@@ -252,8 +253,9 @@ function addHideItemCore(parent, item) {
     var groupElement = document.createElement('tr');
 
     var wordInputElement = document.createElement('input');
-    wordInputElement.value = item.word;
+    wordInputElement.setAttribute('type', 'text');
     wordInputElement.setAttribute('name', 'view-hide-item-host');
+    wordInputElement.value = item.word;
     var wordElement = document.createElement('td');
     wordElement.appendChild(wordInputElement);
 
@@ -277,7 +279,7 @@ function addHideItemCore(parent, item) {
 
     var matchCaseCheckElement = document.createElement('input');
     matchCaseCheckElement.setAttribute('name', 'view-hide-item-match-case');
-    matchCaseCheckElement.setAttribute('type', 'checkbox');
+    matchCaseCheckElement.setAttribute('type', 'text');
     matchCaseCheckElement.checked = item.match.case;
 
     var matchCaseLabelElement = document.createElement('label');
