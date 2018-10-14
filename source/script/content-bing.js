@@ -9,6 +9,11 @@ port.onMessage.addListener(function(message) {
     outputBing.debug("CLIENT RECV!");
     outputBing.debug(JSON.stringify(message));
 
+    if(!message.enabled) {
+        outputBing.debug("ignore bing content");
+        return;
+    }
+
     var hideItems = message.items;
 
     hideGoogleItems(hideItems);

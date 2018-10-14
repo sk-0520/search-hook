@@ -66,11 +66,17 @@ function resistView(setting, deliveryItems) {
 
             switch(message.service) {
                 case ServiceKind_Google:
-                    port.postMessage({items: googleItems});
+                    port.postMessage({
+                        items: googleItems,
+                        enabled: setting.service.google.enabled
+                    });
                     break;
 
                 case ServiceKind_Bing:
-                    port.postMessage({items: bingItems});
+                    port.postMessage({
+                        items: bingItems,
+                        enabled: setting.service.bing.enabled
+                    });
                     break;
 
                 default:

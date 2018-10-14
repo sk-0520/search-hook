@@ -9,6 +9,11 @@ port.onMessage.addListener(function(message) {
     outputGoogle.debug("CLIENT RECV!");
     outputGoogle.debug(JSON.stringify(message));
 
+    if(!message.enabled) {
+        outputGoogle.debug("ignore google content");
+        return;
+    }
+
     var hideItems = message.items;
 
     hideGoogleItems(hideItems);
