@@ -30,10 +30,11 @@ function hideGoogleItems(hideItems) {
 
         // めっちゃ嘘くさい。。。
         var link = linkElement.getAttribute('href');
-        outputGoogle.debug('linkUrl: ' + link);
 
         if(matchUrl(link, checkers)) {
-            outputGoogle.debug('hide');
+            outputGoogle.debug('hide:' + link);
+            element.classList.add('hidden');
+            element.classList.add('hide-item');
         } else {
             outputGoogle.debug('view');
         }

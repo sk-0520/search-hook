@@ -26,6 +26,9 @@
         "script/common.js",
         "script/content.js",
         "script/content-google.js"
+      ],
+      "css": [
+        "style/content.css"
       ]
     },
     {
