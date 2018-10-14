@@ -23,6 +23,19 @@ function getCheckers(hideItems) {
                 }
                 break;
 
+            case 'forward':
+                if (i.match.case) {
+                    const word = i.word.toUpperCase();
+                    obj.match = function (s) {
+                        return s.toUpperCase().indexOf(word) === 0;
+                    }
+                } else {
+                    obj.match = function (s) {
+                        return s.indexOf(i.word) === 0;
+                    }
+                }
+                break;
+
             case 'perfect':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();

@@ -267,6 +267,7 @@ function addHideItemCore(parent, item) {
         return option;
     }
     matchKindElement.appendChild(matchElementCreator('partial', 'partial'));
+    matchKindElement.appendChild(matchElementCreator('forward', 'forward'));
     matchKindElement.appendChild(matchElementCreator('perfect', 'perfect'));
     matchKindElement.appendChild(matchElementCreator('regex', 'regex'));
     matchKindElement.value = item.match.kind;
