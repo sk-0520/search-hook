@@ -93,6 +93,31 @@ function matchUrl(linkValue, checkers) {
     });
 }
 
+function matchSimleUrl(linkValue, checkers) {
+    return matchUrl(linkValue, checkers);
+}
+
+function matchQueryUrl(linkValue, checkers) {
+    try {
+        var index = linkValue.indexOf('?');
+        if(index !== -1) {
+            var params = new URLSearchParams(linkValue.substr(index + 1));
+            outputContent.debug('params: ' + params);
+
+            if(params.has('q')) {
+                var query = params.get('q');
+                outputContent.debug('q: ' + query);
+
+                return matchUrl(query, checkers);
+            }
+        }
+    } catch(ex) {
+        outputContent.error(ex);
+    }
+
+    return false;
+}
+
 function hideElement(element) {
     element.classList.add('WE___search-hook-_-_-hidden');
     element.classList.add('WE___search-hook-_-_-hidden-item');

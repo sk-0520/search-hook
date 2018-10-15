@@ -35,43 +35,51 @@ function hideGoogleItems(hideItems) {
 
     var checkers = getCheckers(hideItems);
 
-    var elements = document.querySelectorAll('.g');
+    var elementSelector = {
+        element: '',
+        link: ''
+    };
+
+    if(document.getElementById('navd')) {
+        outputGoogle.debug('touch');
+
+        elementSelector.element = '.srg > div';
+        elementSelector.link = 'a[ping]';
+    } else {
+        outputGoogle.debug('plain');
+
+        elementSelector.element = '.g';
+        elementSelector.link = 'a';
+    }
+
+    var elements = document.querySelectorAll(elementSelector.element);
+    outputGoogle.debug('elements: ' + elements.length);
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
-        var linkElement = element.querySelector('a');
+        var linkElement = element.querySelector(elementSelector.link);
         if(!linkElement) {
             continue;
         }
 
-        // めっちゃ嘘くさい。。。
         var link = linkElement.getAttribute('href');
+        outputGoogle.debug('link: ' + link);
 
-        // PC で普通にみるパターン
-        if(matchUrl(link, checkers)) {
-            outputGoogle.debug('hide: ' + link);
+        // 普通パターン
+        if(matchSimleUrl(link, checkers)) {
             hideElement(element);
             continue;
-        } 
-        
-        try {
-            var baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            outputGoogle.debug('baseUrl: ' + baseUrl);
-            var url = new URL(link.charAt(0) === '/' ? link.substr(1): link, baseUrl);
-            outputGoogle.debug('url: ' + url);
+        }
 
-            if(url.searchParams.has('q')) {
-                var query = url.searchParams.get('q');
-                if(matchUrl(query, checkers)) {
-                    outputGoogle.debug('hide: ' + link);
-                    hideElement(element);
-                    continue;
-                }
-            }
-        } catch(ex) {
-            outputGoogle.debug(ex);
+        // /path?q=XXX 形式
+        if(matchQueryUrl(link, checkers)) {
+            hideElement(element);
+            continue;
         }
 
         outputGoogle.debug('show: ' + link);
     }
+    outputGoogle.debug('aaaaa');
+ 
+
 }
 
