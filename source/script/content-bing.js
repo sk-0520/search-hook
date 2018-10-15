@@ -34,21 +34,32 @@ function hideBingItems(hideItems) {
 
     var checkers = getCheckers(hideItems);
 
-    var elements = document.querySelectorAll('.b_algo');
+    var elementSelector = {
+        element: '.b_algo',
+        link: 'a'
+    };
+
+    var elements = document.querySelectorAll(elementSelector.element);
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
-        var linkElement = element.querySelector('a');
+        var linkElement = element.querySelector(elementSelector.link);
 
-        // めっちゃ嘘くさい。。。
         var link = linkElement.getAttribute('href');
+        outputBing.debug('link: ' + link);
 
-        if(matchUrl(link, checkers)) {
-            outputBing.debug('hide:' + link);
-            element.classList.add('WE___search-hook-_-_-hidden');
-            element.classList.add('WE___search-hook-_-_-hidden-item');
-        } else {
-            outputBing.debug('view');
+        // 普通パターン
+        if(matchSimleUrl(link, checkers)) {
+            hideElement(element);
+            continue;
         }
+
+        // /path?q=XXX 形式
+        if(matchQueryUrl(link, checkers)) {
+            hideElement(element);
+            continue;
+        }
+
+        outputBing.debug('show: ' + link);
     }
 }
 
