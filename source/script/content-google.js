@@ -4,19 +4,26 @@ const outputGoogle = createLogger('Google Content');
 
 const port = browser.runtime.connect();
 port.onMessage.addListener(function(message) {
-    port.disconnect();
-    
     outputGoogle.debug("CLIENT RECV!");
     outputGoogle.debug(JSON.stringify(message));
 
-    if(!message.enabled) {
-        outputGoogle.debug("ignore google content");
-        return;
+    switch(message.kind) {
+        case 'items':
+            if(!message.data.enabled) {
+                outputGoogle.debug("ignore google content");
+                return;
+            }
+        
+            var hideItems = message.data.items;
+            hideGoogleItems(hideItems);
+            break;
+
+        case 'switch':
+            outputGoogle.debug("switch");
+            switchHideItems();
+            break;
     }
 
-    var hideItems = message.items;
-
-    hideGoogleItems(hideItems);
 });
 port.postMessage({service: ServiceKind_Google});
 
@@ -44,7 +51,5 @@ function hideGoogleItems(hideItems) {
             outputGoogle.debug('view');
         }
     }
-
-    injectHideSwitch(ServiceKind_Google);
 }
 
