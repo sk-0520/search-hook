@@ -39,17 +39,39 @@ function hideGoogleItems(hideItems) {
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
         var linkElement = element.querySelector('a');
+        if(!linkElement) {
+            continue;
+        }
 
         // めっちゃ嘘くさい。。。
         var link = linkElement.getAttribute('href');
 
+        // PC で普通にみるパターン
         if(matchUrl(link, checkers)) {
-            outputGoogle.debug('hide:' + link);
-            element.classList.add('WE___search-hook-_-_-hidden');
-            element.classList.add('WE___search-hook-_-_-hidden-item');
-        } else {
-            outputGoogle.debug('view');
+            outputGoogle.debug('hide: ' + link);
+            hideElement(element);
+            continue;
+        } 
+        
+        try {
+            var baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            outputGoogle.debug('baseUrl: ' + baseUrl);
+            var url = new URL(link.charAt(0) === '/' ? link.substr(1): link, baseUrl);
+            outputGoogle.debug('url: ' + url);
+
+            if(url.searchParams.has('q')) {
+                var query = url.searchParams.get('q');
+                if(matchUrl(query, checkers)) {
+                    outputGoogle.debug('hide: ' + link);
+                    hideElement(element);
+                    continue;
+                }
+            }
+        } catch(ex) {
+            outputGoogle.debug(ex);
         }
+
+        outputGoogle.debug('show: ' + link);
     }
 }
 

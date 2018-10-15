@@ -93,6 +93,11 @@ function matchUrl(linkValue, checkers) {
     });
 }
 
+function hideElement(element) {
+    element.classList.add('WE___search-hook-_-_-hidden');
+    element.classList.add('WE___search-hook-_-_-hidden-item');
+}
+
 function switchHideItems() {
     var items = document.querySelectorAll('.WE___search-hook-_-_-hidden');
     if(!items.length) {
