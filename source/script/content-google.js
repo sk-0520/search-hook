@@ -78,8 +78,6 @@ function hideGoogleItems(hideItems) {
 
         outputGoogle.debug('show: ' + link);
     }
-    outputGoogle.debug('aaaaa');
- 
 
 }
 
