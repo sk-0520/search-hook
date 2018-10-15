@@ -46,8 +46,7 @@ function createBaseSetting() {
             google: {
                 enabled: false,
                 searchCount: 10,
-                searchSafe: true,
-                searchFilter: true
+                searchSafe: false
             },
             bing: {
                 enabled: false
