@@ -4,8 +4,6 @@ const outputBing = createLogger('Bing Content');
 
 const port = browser.runtime.connect();
 port.onMessage.addListener(function(message) {
-    port.disconnect();
-    
     outputBing.debug("CLIENT RECV!");
     outputBing.debug(JSON.stringify(message));
 
