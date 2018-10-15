@@ -35,21 +35,49 @@ function hideGoogleItems(hideItems) {
 
     var checkers = getCheckers(hideItems);
 
-    var elements = document.querySelectorAll('.g');
+    var elementSelector = {
+        element: '',
+        link: ''
+    };
+
+    if(document.getElementById('navd')) {
+        outputGoogle.debug('touch');
+
+        elementSelector.element = '.srg > div';
+        elementSelector.link = 'a[ping]';
+    } else {
+        outputGoogle.debug('plain');
+
+        elementSelector.element = '.g';
+        elementSelector.link = 'a';
+    }
+
+    var elements = document.querySelectorAll(elementSelector.element);
+    outputGoogle.debug('elements: ' + elements.length);
     for(var i = 0; i < elements.length; i++) {
         var element = elements[i];
-        var linkElement = element.querySelector('a');
-
-        // めっちゃ嘘くさい。。。
-        var link = linkElement.getAttribute('href');
-
-        if(matchUrl(link, checkers)) {
-            outputGoogle.debug('hide:' + link);
-            element.classList.add('WE___search-hook-_-_-hidden');
-            element.classList.add('WE___search-hook-_-_-hidden-item');
-        } else {
-            outputGoogle.debug('view');
+        var linkElement = element.querySelector(elementSelector.link);
+        if(!linkElement) {
+            continue;
         }
+
+        var link = linkElement.getAttribute('href');
+        outputGoogle.debug('link: ' + link);
+
+        // 普通パターン
+        if(matchSimleUrl(link, checkers)) {
+            hideElement(element);
+            continue;
+        }
+
+        // /path?q=XXX 形式
+        if(matchQueryUrl(link, checkers)) {
+            hideElement(element);
+            continue;
+        }
+
+        outputGoogle.debug('show: ' + link);
     }
+
 }
 

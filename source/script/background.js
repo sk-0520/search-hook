@@ -90,12 +90,15 @@ function resistView(setting, deliveryItems) {
         });
 
         browser.pageAction.onClicked.addListener(function(tab) {
-            outputBackground.log('!!!!!!!!');
-            outputBackground.log(JSON.stringify(tab));
-            port.postMessage({
-                kind: 'switch',
-                data: {}
-            });
+            outputBackground.log('tab: ' + JSON.stringify(tab));
+            if(tab.id === port.sender.tab.id) {
+                port.postMessage({
+                    kind: 'switch',
+                    data: {
+                        tab: tab
+                    }
+                });
+            }
         });
     });    
 }
