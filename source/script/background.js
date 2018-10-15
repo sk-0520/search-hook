@@ -26,7 +26,6 @@ browser.storage.local.get('setting').then(
     }
 );
 
-
 function resistView(setting, deliveryItems) {
 
     // 比較関数だけ作っておきたかったけど転送できない
@@ -67,15 +66,21 @@ function resistView(setting, deliveryItems) {
             switch(message.service) {
                 case ServiceKind_Google:
                     port.postMessage({
-                        items: googleItems,
-                        enabled: setting.service.google.enabled
+                        kind: 'items',
+                        data: {
+                            items: googleItems,
+                            enabled: setting.service.google.enabled
+                        }
                     });
                     break;
 
                 case ServiceKind_Bing:
                     port.postMessage({
-                        items: bingItems,
-                        enabled: setting.service.bing.enabled
+                        kind: 'items',
+                        data: {
+                            items: bingItems,
+                            enabled: setting.service.bing.enabled
+                        }
                     });
                     break;
 
@@ -83,7 +88,16 @@ function resistView(setting, deliveryItems) {
                     outputBackground.log('unknown service');
             }
         });
-    });
+
+        browser.pageAction.onClicked.addListener(function(tab) {
+            outputBackground.log('!!!!!!!!');
+            outputBackground.log(JSON.stringify(tab));
+            port.postMessage({
+                kind: 'switch',
+                data: {}
+            });
+        });
+    });    
 }
 
 

@@ -4,23 +4,29 @@ const outputBing = createLogger('Bing Content');
 
 const port = browser.runtime.connect();
 port.onMessage.addListener(function(message) {
-    port.disconnect();
-    
     outputBing.debug("CLIENT RECV!");
     outputBing.debug(JSON.stringify(message));
 
-    if(!message.enabled) {
-        outputBing.debug("ignore bing content");
-        return;
+    switch(message.kind) {
+        case 'items':
+            if(!message.data.enabled) {
+                outputBing.debug("ignore bing content");
+                return;
+            }
+        
+            var hideItems = message.data.items;
+            hideBingItems(hideItems);
+            break;
+
+        case 'switch':
+            outputBing.debug("switch");
+            switchHideItems();
+            break;
     }
-
-    var hideItems = message.items;
-
-    hideGoogleItems(hideItems);
 });
 port.postMessage({service: ServiceKind_Bing});
 
-function hideGoogleItems(hideItems) {
+function hideBingItems(hideItems) {
     if(!hideItems || !hideItems.length) {
         outputBing.debug('empty hide items');
         return;
@@ -44,7 +50,5 @@ function hideGoogleItems(hideItems) {
             outputBing.debug('view');
         }
     }
-
-    injectHideSwitch(ServiceKind_Bing);
 }
 
