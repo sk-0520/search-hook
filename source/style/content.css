@@ -12,9 +12,14 @@
 }
 
 .WE___search-hook-_-_-switch {
-    margin: 1em auto;
-    display: block;
-    clear: both;
-    text-align: right;
+    position: fixed;
+    right: 2%;
+    bottom: 2%;
+    background: #cccccc;
+    color: #111111;
+    font-weight: bold;
+    padding: 0.5ex 1ex;
+    border: 1px solid #888888;
 }
+
 

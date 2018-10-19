@@ -149,7 +149,7 @@ function appendHiddenSwitch() {
 
     var parent = document.createElement('div');
     parent.appendChild(groupElement);
-    parent.classList.add('WE___search-hook-_-_-page-parent');
+    parent.classList.add('WE___search-hook-_-_-switch');
 
     document.getElementsByTagName('body')[0].appendChild(parent);
 }
