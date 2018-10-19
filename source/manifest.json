@@ -55,17 +55,6 @@
       ]
     }
   ],
-  "page_action": {
-    "show_matches": [
-      "*://*.google.com/search?*",
-      "*://*.bing.com/search?*"
-    ],
-    "browser_style": true,
-    "default_icon": {
-      "19": "resources/icon.svg",
-      "38": "resources/icon.svg"
-    }
-  },
   "options_ui": {
     "page": "view/options.html"
   }
