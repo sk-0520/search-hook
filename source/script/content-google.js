@@ -99,5 +99,5 @@ function eraseGoogleQuery(items) {
     var userInputQuery = getUserInputQuery(ServiceKind_Google, currentQuery, items);
     outputGoogle.debug('u: ' + userInputQuery);
 
-    queryElement.value = userInputQuery + ' ';
+    queryElement.value = userInputQuery.join(' ') + ' ';
 }

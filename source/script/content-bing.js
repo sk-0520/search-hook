@@ -85,5 +85,5 @@ function eraseBingQuery(items) {
     var userInputQuery = getUserInputQuery(ServiceKind_Bing, currentQuery, items);
     outputBing.debug('u: ' + userInputQuery);
 
-    queryElement.value = userInputQuery + ' ';
+    queryElement.value = userInputQuery.join(' ') + ' ';
 }
