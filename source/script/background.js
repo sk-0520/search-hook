@@ -16,8 +16,8 @@ browser.storage.local.get('setting').then(
         outputBackground.log('setting loaded');
         outputBackground.debug(JSON.stringify(setting));
 
-        resistRedirectGoogle(setting, []);
-        resistRedirectBing(setting, []);
+        resistRedirectGoogle(setting, filterNotItems(ServiceKind_Google, setting));
+        resistRedirectBing(setting, filterNotItems(ServiceKind_Bing, setting));
 
         resistView(setting, {});
     },
@@ -26,7 +26,30 @@ browser.storage.local.get('setting').then(
     }
 );
 
-function resistView(setting, deliveryItems) {
+function filterNotItems(service, setting) {
+    outputBackground.log(service);
+
+    var notItems = setting.notItems.filter(function(i) {
+        switch(service) {
+            case ServiceKind_Google:
+                return i.service.google;
+
+            case ServiceKind_Bing:
+                return i.service.bing;
+
+            default:
+                throw { error: i };
+        }
+    }).filter(function(i) {
+        return i.word.length;
+    }).map(function(i) {
+        return i.word;
+    });
+
+    return notItems;
+}
+
+function resistView(setting) {
 
     // 比較関数だけ作っておきたかったけど転送できない
     var enabledItems = setting.hideItems.filter(function(i) {
@@ -45,15 +68,15 @@ function resistView(setting, deliveryItems) {
         return true;
     });
 
-    var googleItems = enabledItems.filter(function(i) {
+    var googleHideItems = enabledItems.filter(function(i) {
         return i.service.google;
     });
-    var bingItems = enabledItems.filter(function(i) {
+    var bingHideItems = enabledItems.filter(function(i) {
         return i.service.bing;
     });
 
-    outputBackground.debug('googleItems.length: ' + googleItems.length);
-    outputBackground.debug('bingItems.length: ' + bingItems.length);
+    outputBackground.debug('googleHideItems.length: ' + googleHideItems.length);
+    outputBackground.debug('bingHideItems.length: ' + bingHideItems.length);
 
     browser.runtime.onConnect.addListener(function(port) {
         outputBackground.debug('connected content!');
@@ -68,17 +91,31 @@ function resistView(setting, deliveryItems) {
                     port.postMessage({
                         kind: 'items',
                         data: {
-                            items: googleItems,
+                            items: googleHideItems,
                             enabled: setting.service.google.enabled
                         }
                     });
+                    port.postMessage({
+                        kind: 'erase',
+                        data: {
+                            items: filterNotItems(ServiceKind_Google, setting),
+                            enabled: setting.service.google.enabled
+                        }
+                    })
                     break;
 
                 case ServiceKind_Bing:
                     port.postMessage({
                         kind: 'items',
                         data: {
-                            items: bingItems,
+                            items: bingHideItems,
+                            enabled: setting.service.bing.enabled
+                        }
+                    });
+                    port.postMessage({
+                        kind: 'erase',
+                        data: {
+                            items: filterNotItems(ServiceKind_Bing, setting),
                             enabled: setting.service.bing.enabled
                         }
                     });

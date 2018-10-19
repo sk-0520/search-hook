@@ -18,6 +18,16 @@ port.onMessage.addListener(function(message) {
             hideGoogleItems(hideItems);
             break;
 
+        case 'erase': 
+            if(!message.data.enabled) {
+                outputGoogle.debug("ignore google content");
+                return;
+            }
+
+            var items = message.data.items;
+            eraseGoogleQuery(items);
+            break;
+
         default:
             throw { error: message};
     }
@@ -80,3 +90,14 @@ function hideGoogleItems(hideItems) {
     appendHiddenSwitch();
 }
 
+function eraseGoogleQuery(items) {
+    var queryElement = document.querySelector('input[name="q"]');
+    var queryValue = queryElement.value;
+    outputGoogle.debug('q: ' + queryValue);
+
+    var currentQuery = splitQuery(ServiceKind_Google, queryValue);
+    var userInputQuery = getUserInputQuery(ServiceKind_Google, currentQuery, items);
+    outputGoogle.debug('u: ' + userInputQuery);
+
+    queryElement.value = userInputQuery + ' ';
+}

@@ -2,15 +2,7 @@
 
 const outputGoogle = createLogger('Google Engine');
 
-function resistRedirectGoogle(setting, deliveryItems) {
-
-    var notItems = setting.notItems.filter(function(i) {
-        return i.service.google;
-    }).concat(deliveryItems).filter(function(i) {
-        return i.word.length;
-    }).map(function(i) {
-        return i.word;
-    });
+function resistRedirectGoogle(setting, notItems, deliveryItems) {
 
     var requestSet = new Set();
 
@@ -80,9 +72,9 @@ function requestGoogle(googleSetting, notItems, requestSet, requestDetails) {
     outputGoogle.debug('items: ' + queryItems);
 
     var customQuery = makeCustomQuery(serviceKind, queryItems, notItems);
-    outputGoogle.debug('customQuery: ' + customQuery);
+    outputGoogle.debug('customQuery: ' + JSON.stringify(customQuery));
 
-    var queryString = toQueryString(serviceKind, customQuery);
+    var queryString = toQueryString(serviceKind, customQuery.users.concat(customQuery.applications));
     outputGoogle.debug('queryString: ' + queryString);
 
     url.searchParams.set('q', queryString);
