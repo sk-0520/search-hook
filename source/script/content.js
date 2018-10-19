@@ -134,3 +134,22 @@ function switchHideItems() {
         item.classList.toggle('WE___search-hook-_-_-hidden-item');
     }
 }
+
+function appendHiddenSwitch() {
+    var switchElement = document.createElement('input');
+    switchElement.setAttribute('type', 'checkbox');
+    switchElement.checked = true;
+    switchElement.addEventListener('change', function(e) {
+        switchHideItems();
+    });
+
+    var groupElement = document.createElement('label');
+    groupElement.appendChild(switchElement);
+    groupElement.appendChild(document.createTextNode('hide items'));
+
+    var parent = document.createElement('div');
+    parent.appendChild(groupElement);
+    parent.classList.add('WE___search-hook-_-_-page-parent');
+
+    document.getElementsByTagName('body')[0].appendChild(parent);
+}

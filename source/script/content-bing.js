@@ -17,11 +17,10 @@ port.onMessage.addListener(function(message) {
             var hideItems = message.data.items;
             hideBingItems(hideItems);
             break;
+            
+        default:
+            throw { error: message};
 
-        case 'switch':
-            outputBing.debug("switch");
-            switchHideItems();
-            break;
     }
 });
 port.postMessage({service: ServiceKind_Bing});
@@ -61,5 +60,7 @@ function hideBingItems(hideItems) {
 
         outputBing.debug('show: ' + link);
     }
+
+    appendHiddenSwitch();
 }
 

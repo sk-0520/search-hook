@@ -18,10 +18,8 @@ port.onMessage.addListener(function(message) {
             hideGoogleItems(hideItems);
             break;
 
-        case 'switch':
-            outputGoogle.debug("switch");
-            switchHideItems();
-            break;
+        default:
+            throw { error: message};
     }
 
 });
@@ -79,5 +77,6 @@ function hideGoogleItems(hideItems) {
         outputGoogle.debug('show: ' + link);
     }
 
+    appendHiddenSwitch();
 }
 
