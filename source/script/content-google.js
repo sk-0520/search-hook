@@ -18,6 +18,9 @@ port.onMessage.addListener(function(message) {
             hideGoogleItems(hideItems);
             break;
 
+        case 'erase': 
+            break;
+
         default:
             throw { error: message};
     }
@@ -80,3 +83,6 @@ function hideGoogleItems(hideItems) {
     appendHiddenSwitch();
 }
 
+function eraseGoogleQuery() {
+    
+}

@@ -72,6 +72,12 @@ function resistView(setting, deliveryItems) {
                             enabled: setting.service.google.enabled
                         }
                     });
+                    port.postMessage({
+                        kind: 'erase',
+                        data: {
+                            
+                        }
+                    })
                     break;
 
                 case ServiceKind_Bing:

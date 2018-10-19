@@ -130,12 +130,13 @@ function makeCustomQuery(service, queryItems, notItems) {
 
     for(var i = 0; i < addNotItems.length; i++) {
         var word = addNotItems[i];
-        customQuery.push('-' + word);
+        addNotItems[i] = '-' + word;
     }
 
-    outputGoogle.debug('customQuery: ' + customQuery);
-
-    return customQuery;
+    return {
+        users: customQuery,
+        applications: addNotItems
+    };
 }
 
 function toQueryString(service, queryItems) {
