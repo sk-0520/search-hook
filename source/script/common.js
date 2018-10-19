@@ -139,6 +139,33 @@ function makeCustomQuery(service, queryItems, notItems) {
     };
 }
 
+function getUserInputQuery(service, queryItems, notItems) {
+    // 否定ワードを除外
+    var addNotItems = notItems.concat();
+    var userQuerys = [];
+    for(var i = 0; i < queryItems.length; i++) {
+        var query = queryItems[i];
+
+        if(!query.length) {
+            continue;
+        }
+
+        if(query.charAt('-')) {
+            var notWord = query.substr(1);
+            var index = addNotItems.indexOf(notWord);
+            if(index !== -1) {
+                addNotItems.splice(index, 1);
+            } else {
+                userQuerys.push(query);
+            }
+        } else {
+            userQuerys.push(query);
+        }
+    }
+
+    return userQuerys;
+}
+
 function toQueryString(service, queryItems) {
     var items = queryItems.filter(function(s) {
         return s && s.length;

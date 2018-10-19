@@ -18,6 +18,16 @@ port.onMessage.addListener(function(message) {
             hideBingItems(hideItems);
             break;
             
+        case 'erase': 
+            if(!message.data.enabled) {
+                outputBing.debug("ignore bing content");
+                return;
+            }
+
+            var items = message.data.items;
+            eraseBingQuery(items);
+            break;
+
         default:
             throw { error: message};
 
@@ -64,3 +74,16 @@ function hideBingItems(hideItems) {
     appendHiddenSwitch();
 }
 
+function eraseBingQuery(items) {
+    outputBing.debug('aaaaaa');
+
+    var queryElement = document.querySelector('input[name="q"]');
+    var queryValue = queryElement.value;
+    outputBing.debug('q: ' + queryValue);
+
+    var currentQuery = splitQuery(ServiceKind_Bing, queryValue);
+    var userInputQuery = getUserInputQuery(ServiceKind_Bing, currentQuery, items);
+    outputBing.debug('u: ' + userInputQuery);
+
+    queryElement.value = userInputQuery + ' ';
+}

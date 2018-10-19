@@ -2,15 +2,7 @@
 
 const outputGoogle = createLogger('Google Engine');
 
-function resistRedirectGoogle(setting, deliveryItems) {
-
-    var notItems = setting.notItems.filter(function(i) {
-        return i.service.google;
-    }).concat(deliveryItems).filter(function(i) {
-        return i.word.length;
-    }).map(function(i) {
-        return i.word;
-    });
+function resistRedirectGoogle(setting, notItems, deliveryItems) {
 
     var requestSet = new Set();
 
