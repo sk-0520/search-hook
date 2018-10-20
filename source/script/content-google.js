@@ -48,17 +48,8 @@ function hideGoogleItems(hideItems) {
         link: ''
     };
 
-    if(document.getElementById('navd')) {
-        outputGoogle.debug('touch');
-
-        elementSelector.element = '.srg > div';
-        elementSelector.link = 'a[ping]';
-    } else {
-        outputGoogle.debug('plain');
-
-        elementSelector.element = '.g';
-        elementSelector.link = 'a';
-    }
+    elementSelector.element = '.srg > div';
+    elementSelector.link = 'a';
 
     var elements = document.querySelectorAll(elementSelector.element);
     outputGoogle.debug('elements: ' + elements.length);
