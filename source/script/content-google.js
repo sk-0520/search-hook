@@ -47,12 +47,12 @@ function hideGoogleItems(hideItems) {
         {
             target: 'smart',
             element: '#main > div',
-            link: 'a[href^="/url?q="]',
+            link: 'a[href^="/url?q="]'
         },
         { 
             target: 'touch',
             element: '.srg > div',
-            link: 'a[ping]',
+            link: 'a[ping]'
         },
         {
             target: 'universal',
@@ -62,8 +62,8 @@ function hideGoogleItems(hideItems) {
         { 
             target: 'default',
             element: '.g',
-            link: 'a',
-        },
+            link: 'a'
+        }
     ];
 
     var success = false;
