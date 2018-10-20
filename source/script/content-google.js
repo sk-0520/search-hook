@@ -91,4 +91,13 @@ function eraseGoogleQuery(items) {
     outputGoogle.debug('u: ' + userInputQuery);
 
     queryElement.value = userInputQuery.join(' ') + ' ';
+
+    // サジェストが鬱陶しい問題
+    var suggestElement = document.querySelector('.sbdd_a');
+    if(!suggestElement) {
+        if(suggestElement.style.display !== 'none') {
+            suggestElement.style.display = 'none';
+            alert()
+        }
+    }
 }
