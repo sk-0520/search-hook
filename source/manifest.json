@@ -2,7 +2,7 @@
   "description": "customize: search engine query, result items.",
   "manifest_version": 2,
   "name": "search-hook",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "developer": {
     "name": "sk",
     "url": "https://bitbucket.org/sk_0520/search-hook/"
