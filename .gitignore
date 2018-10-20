@@ -9,3 +9,5 @@ $*
 _*
 @*
 __auto__*
+/source/script/*.map
+/source/script/*.js
