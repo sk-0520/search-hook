@@ -43,16 +43,53 @@ function hideGoogleItems(hideItems) {
 
     var checkers = getCheckers(hideItems);
 
-    var elementSelector = {
-        element: '.srg > div',
-        link: 'a[ping]'
-    };
+    function hasElement(selector) {
+        var elm = document.querySelector(selector.element);
+        if(elm) {
+            return elm.querySelector(selector.link);
+        }
 
-    if(!document.querySelector(elementSelector.element)) {
-        outputGoogle.debug('plain');
-        elementSelector.element = '.g';
-        elementSelector.link = 'a';
+        return false;
     }
+
+    var selectors = [
+        {
+            target: 'smart',
+            element: '#main > div',
+            link: 'a[href^="/url?q="]',
+        },
+        { 
+            target: 'touch',
+            element: '.srg > div',
+            link: 'a[ping]',
+        },
+        {
+            target: 'universal',
+            element: '#universal > div',
+            link: 'a'
+        },
+        { 
+            target: 'default',
+            element: '.g',
+            link: 'a',
+        },
+    ];
+
+    var elementSelector = null;
+    for(var i = 0; i < selectors.length; i++) {
+        var selector = selectors[i];
+        if(hasElement(selector)) {
+            elementSelector = selector;
+            break;
+        }
+    }
+
+    if(!elementSelector) {
+        return;
+    }
+
+    
+    outputGoogle.debug('target: ' + elementSelector.target);
 
     var elements = document.querySelectorAll(elementSelector.element);
     outputGoogle.debug('elements: ' + elements.length);
