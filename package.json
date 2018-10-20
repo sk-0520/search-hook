@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-      "debug": "web-ext run --source-dir=source  --start-url about:debugging about:addons",
-      "debug-sk": "mkdir X:\\fx & web-ext run --source-dir=source --start-url about:debugging about:addons --keep-profile-changes --firefox-profile=X:\\fx ",
-      "lint": "web-ext lint --source-dir=source",
-      "build": "web-ext build --source-dir=source --artifacts-dir=artifacts --overwrite-dest"
+    "debug": "web-ext run --source-dir=source  --start-url about:debugging about:addons",
+    "debug-sk": "mkdirp X:\\fx & web-ext run --source-dir=source --start-url about:debugging about:addons --keep-profile-changes --firefox-profile=X:\\fx ",
+    "lint": "web-ext lint --source-dir=source",
+    "build": "web-ext build --source-dir=source --artifacts-dir=artifacts --overwrite-dest"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
   "dependencies": {},
   "devDependencies": {
+    "mkdirp": "^0.5.1",
     "web-ext": "^2.9.1"
   }
 }
