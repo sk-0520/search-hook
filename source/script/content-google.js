@@ -44,12 +44,15 @@ function hideGoogleItems(hideItems) {
     var checkers = getCheckers(hideItems);
 
     var elementSelector = {
-        element: '',
-        link: ''
+        element: '.srg > div',
+        link: 'a[ping]'
     };
 
-    elementSelector.element = '.srg > div';
-    elementSelector.link = 'a';
+    if(!document.querySelector(elementSelector.element)) {
+        outputGoogle.debug('plain');
+        elementSelector.element = '.g';
+        elementSelector.link = 'a';
+    }
 
     var elements = document.querySelectorAll(elementSelector.element);
     outputGoogle.debug('elements: ' + elements.length);
@@ -93,8 +96,9 @@ function eraseGoogleQuery(items) {
     queryElement.value = userInputQuery.join(' ') + ' ';
 
     // サジェストが鬱陶しい問題
-    var suggestElement = document.querySelector('.sbdd_a');
+    var suggestElement = document.querySelector('.sbdd_a, .gssb_c');
     if(suggestElement) {
+        outputGoogle.debug('has suggest');
         var observer = new MutationObserver(function(mutations) {
             if(!queryElement.activeElement) {
                 if(suggestElement.style.display !== 'none') {
