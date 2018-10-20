@@ -15,8 +15,6 @@
     "webRequest",
     "webRequestBlocking",
     "storage",
-    "activeTab",
-    "tabs",
     "<all_urls>"
   ],
   "background": {
