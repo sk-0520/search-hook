@@ -43,16 +43,7 @@ function hideGoogleItems(hideItems) {
 
     var checkers = getCheckers(hideItems);
 
-    function hasElement(selector) {
-        var elm = document.querySelector(selector.element);
-        if(elm) {
-            return elm.querySelector(selector.link);
-        }
-
-        return false;
-    }
-
-    var selectors = [
+    var elementSelectors = [
         {
             target: 'smart',
             element: '#main > div',
@@ -75,50 +66,52 @@ function hideGoogleItems(hideItems) {
         },
     ];
 
-    var elementSelector = null;
-    for(var i = 0; i < selectors.length; i++) {
-        var selector = selectors[i];
-        if(hasElement(selector)) {
-            elementSelector = selector;
+    var success = false;
+    for(var i = 0; i < elementSelectors.length; i++) {
+        var elementSelector = elementSelectors[i];
+        
+        outputGoogle.debug('target: ' + elementSelector.target);
+
+        var elements = document.querySelectorAll(elementSelector.element);
+        outputGoogle.debug('elements: ' + elements.length);
+
+
+        for(var j = 0; j < elements.length; j++) {
+            var element = elements[j];
+
+            var linkElement = element.querySelector(elementSelector.link);
+            if(!linkElement) {
+                continue;
+            }
+    
+            var link = linkElement.getAttribute('href');
+            outputGoogle.debug('link: ' + link);
+    
+            // 普通パターン
+            if(matchSimleUrl(link, checkers)) {
+                hideElement(element);
+                success = true;
+                continue;
+            }
+    
+            // /path?q=XXX 形式
+            if(matchQueryUrl(link, checkers)) {
+                hideElement(element);
+                success = true;
+                continue;
+            }
+    
+            outputGoogle.debug('show: ' + link);
+        }
+
+        if(success) {
             break;
         }
     }
 
-    if(!elementSelector) {
-        return;
+    if(success) {
+        appendHiddenSwitch();
     }
-
-    
-    outputGoogle.debug('target: ' + elementSelector.target);
-
-    var elements = document.querySelectorAll(elementSelector.element);
-    outputGoogle.debug('elements: ' + elements.length);
-    for(var i = 0; i < elements.length; i++) {
-        var element = elements[i];
-        var linkElement = element.querySelector(elementSelector.link);
-        if(!linkElement) {
-            continue;
-        }
-
-        var link = linkElement.getAttribute('href');
-        outputGoogle.debug('link: ' + link);
-
-        // 普通パターン
-        if(matchSimleUrl(link, checkers)) {
-            hideElement(element);
-            continue;
-        }
-
-        // /path?q=XXX 形式
-        if(matchQueryUrl(link, checkers)) {
-            hideElement(element);
-            continue;
-        }
-
-        outputGoogle.debug('show: ' + link);
-    }
-
-    appendHiddenSwitch();
 }
 
 function eraseGoogleQuery(items) {
