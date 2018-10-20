@@ -94,10 +94,23 @@ function eraseGoogleQuery(items) {
 
     // サジェストが鬱陶しい問題
     var suggestElement = document.querySelector('.sbdd_a');
-    if(!suggestElement) {
-        if(suggestElement.style.display !== 'none') {
-            suggestElement.style.display = 'none';
-            alert()
-        }
+    if(suggestElement) {
+        var observer = new MutationObserver(function(mutations) {
+            if(!queryElement.activeElement) {
+                if(suggestElement.style.display !== 'none') {
+                    outputGoogle.debug('suggest disable');
+                    suggestElement.style.display = 'none';
+                }
+            } else {
+                outputGoogle.debug('suggest enable');
+            }
+            observer.disconnect();
+        });
+        var config = {
+            attributes: true,
+            childList: false,
+            characterData: false
+        };
+        observer.observe(suggestElement, config);
     }
 }
