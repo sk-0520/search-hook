@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "config": {
+    "OUTPUT_DIR_NAME": "./output",
+    "OUTPUT_FIREFOX_NAME": "firefox",
+    "OUTPUT_BUILD_DIR_NAME": "build",
+    "OUTPUT_ARTIFACTS_DIR_NAME": "artifacts",
     "SCRIPT_FILES": "./source/script/common.ts"
   },
   "scripts": {
@@ -11,7 +15,8 @@
     "lint": "web-ext lint --source-dir=source",
     "build": "web-ext build --source-dir=source --artifacts-dir=artifacts --overwrite-dest",
     
-    "compile:script": "cross-var parcel build $npm_package_config_SCRIPT_FILES"
+    "compile:script:core": "cross-var parcel build $npm_package_config_SCRIPT_FILES",
+    "compile:script:firefox": "npm run compile:script:core -- --out-dir $npm_package_config_OUTPUT_DIR_NAME/$npm_package_config_OUTPUT_FIREFOX_NAME/$npm_package_config_OUTPUT_BUILD_DIR_NAME"
   },
   "repository": {
     "type": "git",
