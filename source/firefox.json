@@ -54,6 +54,6 @@
     }
   ],
   "options_ui": {
-    "page": "view/options.html"
+    "page": "options.html"
   }
 }

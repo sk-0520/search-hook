@@ -10,7 +10,7 @@
     "OUTPUT_ARTIFACTS_DIR_NAME": "artifacts"
   },
   "scripts": {
-    "manifest:firefox": "cross-var cp-cli $npm_package_config_PLATFORM_DIR_NAME/$npm_package_config_PLATFORM_FIREFOX.json $npm_package_config_OUTPUT_DIR_NAME/$npm_package_config_PLATFORM_FIREFOX/$npm_package_config_OUTPUT_BUILD_DIR_NAME/manifest.json",
+    "manifest:firefox": "cross-var cp-cli ./source/$npm_package_config_PLATFORM_FIREFOX.json $npm_package_config_OUTPUT_DIR_NAME/$npm_package_config_PLATFORM_FIREFOX/$npm_package_config_OUTPUT_BUILD_DIR_NAME/manifest.json",
     "debug": "web-ext run --source-dir=source  --start-url about:debugging about:addons",
     "debug-sk": "mkdirp X:\\fx & web-ext run --source-dir=source --start-url about:debugging about:addons --keep-profile-changes --firefox-profile=X:\\fx ",
     "lint": "web-ext lint --source-dir=source",
