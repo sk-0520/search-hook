@@ -25,10 +25,8 @@
   "author": "sk",
   "license": "GPLv3",
   "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
-  "dependencies": {
-    "cp-cli": "^1.1.2"
-  },
   "devDependencies": {
+    "cp-cli": "^1.1.2",
     "cross-var": "^1.1.0",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.1.3",

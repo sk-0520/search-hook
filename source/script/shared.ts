@@ -50,3 +50,14 @@ export function merge<T>(source:T, overwrite: T):T {
 
     return source;
 }
+
+export abstract class ActionBase {
+
+    protected constructor(name: string) {
+        this.logger = new Logger(name);
+    }
+
+    protected readonly logger:Logger;
+
+    public abstract initialize(): void;
+}
