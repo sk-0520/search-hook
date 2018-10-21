@@ -1,5 +1,5 @@
 import * as shared from './shared';
-import * as setting from './setting';
+import * as conf from './conf';
 
 export class Options extends shared.ActionBase {
     constructor() {
@@ -19,12 +19,12 @@ export class Options extends shared.ActionBase {
         var getting = browser.storage.local.get('setting');
         getting.then(
             result => {
-                var baseSetting = new setting.MainSetting();
-                if(!result.setting) {
-                } else {
-                    var resultSetting = <setting.MainSetting>(result['setting']);
+                var baseSetting = new conf.MainSetting();
+                if(result.setting) {
+                    var resultSetting = <conf.IMainSetting>(result['setting'] as any);
                     baseSetting = shared.merge(baseSetting, resultSetting);
                 }
+                alert(JSON.stringify(baseSetting));
                 // if(!setting) {
                 //     // init
                 //     setting = baseSetting;

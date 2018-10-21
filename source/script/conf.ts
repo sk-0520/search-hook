@@ -1,6 +1,12 @@
 
+export interface IMainSetting{
+    service : ServiceSetting;
 
-export class MainSetting {
+    notItems :Array<NotItemSetting>;
+    hideItems : Array<HiddenItemSetting>;
+}
+
+export class MainSetting implements IMainSetting {
     public service = new ServiceSetting();
 
     public notItems = Array<NotItemSetting>();
