@@ -151,8 +151,10 @@ export class Options extends shared.ActionBase {
         setting.notItems =  this.getNotItems();
         setting.hideItems =  this.getHideItems();
 
+        alert('aaaaaaaaaaaa' + JSON.stringify(setting));
+
         browser.storage.local.set({
-            'setting': JSON.stringify(setting)
+            'setting': setting as any
         }).then(
             result => {
                 browser.runtime.reload();
