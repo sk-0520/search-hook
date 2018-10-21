@@ -3,19 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "config": {
+    "PLATFORM_DIR_NAME": "./platform",
+    "PLATFORM_FIREFOX": "firefox",
     "OUTPUT_DIR_NAME": "./output",
-    "OUTPUT_FIREFOX_NAME": "firefox",
     "OUTPUT_BUILD_DIR_NAME": "build",
     "OUTPUT_ARTIFACTS_DIR_NAME": "artifacts",
     "SCRIPT_FILES": "./source/script/common.ts"
   },
   "scripts": {
+    "manifest:firefox": "cross-var cp-cli $npm_package_config_PLATFORM_DIR_NAME/$npm_package_config_PLATFORM_FIREFOX.json $npm_package_config_OUTPUT_DIR_NAME/$npm_package_config_PLATFORM_FIREFOX/manifest.json",
     "debug": "web-ext run --source-dir=source  --start-url about:debugging about:addons",
     "debug-sk": "mkdirp X:\\fx & web-ext run --source-dir=source --start-url about:debugging about:addons --keep-profile-changes --firefox-profile=X:\\fx ",
     "lint": "web-ext lint --source-dir=source",
     "build": "web-ext build --source-dir=source --artifacts-dir=artifacts --overwrite-dest",
     "compile:script:core": "cross-var parcel build $npm_package_config_SCRIPT_FILES",
-    "compile:script:firefox": "npm run compile:script:core -- --out-dir $npm_package_config_OUTPUT_DIR_NAME/$npm_package_config_OUTPUT_FIREFOX_NAME/$npm_package_config_OUTPUT_BUILD_DIR_NAME"
+    "compile:script:firefox": "npm run compile:script:core -- --out-dir $npm_package_config_OUTPUT_DIR_NAME/$npm_package_config_PLATFORM_FIREFOX/$npm_package_config_OUTPUT_BUILD_DIR_NAME"
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,9 @@
   "author": "sk",
   "license": "GPLv3",
   "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
-  "dependencies": {},
+  "dependencies": {
+    "cp-cli": "^1.1.2"
+  },
   "devDependencies": {
     "cross-var": "^1.1.0",
     "mkdirp": "^0.5.1",
