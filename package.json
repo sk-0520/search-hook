@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "manifest:firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
+    "clean": "rimraf ./dist",
+    "manifest:firefox": "cp-cli ./source/firefox.json ./dist/manifest.json & cp-cli ./source/resources/icon.svg ./dist/icon.svg",
     "browser:firefox": "web-ext run --source-dir=./dist --start-url about:debugging about:addons",
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
     "browser:firefox-sk": "npm run browser:firefox -- --keep-profile-changes --firefox-profile=X:\\fx ",
@@ -19,7 +20,6 @@
     "watch:core:content-style": "   parcel watch --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
     "compile:firefox": "npm-run-all --parallel compile:core:*",
     "watch:firefox": "npm-run-all --parallel watch:core:*",
-    "clean:firefox": "rimraf ./dist",
     "debug:firefox": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox",
     "debug:firefox-sk": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk"
   },
