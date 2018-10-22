@@ -37,12 +37,10 @@
         "*://*.bing.com/search?*"
       ],
       "js": [
-        "script/common.js",
-        "script/content.js",
-        "script/content-bing.js"
+        "content-bing-action.js"
       ],
       "css": [
-        "style/content.css"
+        "content-bing.css"
       ]
     }
   ],
