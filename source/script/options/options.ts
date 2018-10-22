@@ -1,7 +1,7 @@
-import * as shared from './shared';
-import * as conf from './conf';
+import * as shared from '../shared';
+import * as conf from '../conf';
 
-export class Options extends shared.ActionBase {
+export default class Options extends shared.ActionBase {
     constructor() {
         super('Options');
     }
@@ -205,8 +205,6 @@ export class Options extends shared.ActionBase {
         setting.service =  this.getService();
         setting.notItems =  this.getNotItems();
         setting.hideItems =  this.getHideItems();
-
-        alert('aaaaaaaaaaaa' + JSON.stringify(setting));
 
         browser.storage.local.set({
             'setting': setting as any
