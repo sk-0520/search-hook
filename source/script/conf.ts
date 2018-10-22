@@ -51,7 +51,6 @@ export function convertMatchKind(key:string): MatchKind {
 
         default:
             throw { "error": key };
-        }
     }
 }
 

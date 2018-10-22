@@ -53,7 +53,7 @@ export function merge<T>(source:T, overwrite: T):T {
 
 export abstract class ActionBase {
 
-    protected constructor(name: string) {
+    constructor(name: string) {
         this.logger = new Logger(name);
     }
 
