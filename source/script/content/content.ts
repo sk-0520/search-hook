@@ -1,13 +1,17 @@
-'use strict'
+import * as shared from "../shared";
+import * as conf from "../conf";
 
-const outputContent = createLogger('Content');
+const outputContent = new shared.Logger('Content');
 
-function getCheckers(hideItems) {
+export class HiddenCheker {
+    item?: conf.HiddenItemSetting;
+    match?: (s: string) => boolean;
+}
+
+export function getCheckers(hideItems: Array<conf.HiddenItemSetting>) {
     return hideItems.map(function (i) {
-        const obj = {
-            item: i,
-            match: null
-        };
+        const obj = new HiddenCheker();
+        obj.item =  i;
         
         switch (i.match.kind) {
             case 'partial':
@@ -57,14 +61,14 @@ function getCheckers(hideItems) {
                 break;
 
             default:
-                outputBackground.error(`kind: ${JSON.stringify(i)}`)
+                outputContent.error(`kind: ${JSON.stringify(i)}`)
         }
 
         return obj;
     })
 }
 
-function matchUrl(linkValue, checkers) {
+export function matchUrl(linkValue:string, checkers: Array<HiddenCheker>) {
 
     var url = function() {
         try {
@@ -89,15 +93,15 @@ function matchUrl(linkValue, checkers) {
     }
 
     return checkers.some(function(i) {
-        return i.match(urlValue);
+        return i.match!(urlValue);
     });
 }
 
-function matchSimleUrl(linkValue, checkers) {
+export function matchSimleUrl(linkValue:string, checkers: Array<HiddenCheker>) {
     return matchUrl(linkValue, checkers);
 }
 
-function matchQueryUrl(linkValue, checkers) {
+export function matchQueryUrl(linkValue:string, checkers: Array<HiddenCheker>) {
     try {
         var index = linkValue.indexOf('?');
         if(index !== -1) {
@@ -105,7 +109,7 @@ function matchQueryUrl(linkValue, checkers) {
             outputContent.debug('params: ' + params);
 
             if(params.has('q')) {
-                var query = params.get('q');
+                var query = params.get('q')!;
                 outputContent.debug('q: ' + query);
 
                 return matchUrl(query, checkers);
@@ -118,12 +122,12 @@ function matchQueryUrl(linkValue, checkers) {
     return false;
 }
 
-function hideElement(element) {
+export function hideElement(element: Element) {
     element.classList.add('WE___search-hook-_-_-hidden');
     element.classList.add('WE___search-hook-_-_-hidden-item');
 }
 
-function switchHideItems() {
+export function switchHideItems() {
     var items = document.querySelectorAll('.WE___search-hook-_-_-hidden');
     if(!items.length) {
         return;
@@ -135,7 +139,7 @@ function switchHideItems() {
     }
 }
 
-function appendHiddenSwitch() {
+export function appendHiddenSwitch() {
     var switchElement = document.createElement('input');
     switchElement.setAttribute('type', 'checkbox');
     switchElement.checked = true;

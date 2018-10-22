@@ -1,0 +1,110 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="stylesheet" href="../style/options.scss")
+  body
+    form.setting
+      fieldset
+        legend service
+        ul
+          li
+            label
+              input#service-is-enabled-google(type="checkbox")
+              | google
+            table
+              tr
+                td
+                  label(for="service-google-search-count") count
+                td
+                  input#service-google-search-count(type="number" min="10" max="100" step="10")
+              tr
+                td safe
+                td
+                  label
+                    input#service-google-search-safe(type="checkbox")
+                    | enabled
+          li
+            label
+              input#service-is-enabled-bing(type="checkbox")
+              | bing
+            //
+              <ul>
+              <li><label>count: <input id="service-bing-search-count" type="number" min="10" max="100" step="10" /></label></li>
+              </ul>
+      fieldset
+        legend [engine] not word or host
+        table
+          thead
+            tr
+              th word
+              th enabled
+              th remove
+          tbody#engine-not-word-list
+            // script
+          tfoot.input
+            tr
+              th
+                input#engine-input-not-word(type="text")
+              th
+                ul.horizontal
+                  li
+                    label
+                      input#engine-input-is-enabled-google(type="checkbox" checked="")
+                      | google
+                  li
+                    label
+                      input#engine-input-is-enabled-bing(type="checkbox" checked="")
+                      | bing
+              th
+                button#command-engine-add-not-item(type="button") add
+      fieldset
+        legend [view] hide host
+        p
+          | use: HOST, PATH, QUERY
+          br
+          |                 ignore: PROTOCOL, USER, PASSWORD, PORT
+        table
+          thead
+            tr
+              th host
+              th match
+              th enabled
+              th remove
+          tbody#view-hide-host-list
+            // script
+          tfoot.input
+            tr
+              th
+                input#view-input-hide-host(type="text")
+              th
+                ul.horizontal
+                  li
+                    select#view-input-hide-match-kind
+                      option#view-input-hide-match-kind-partial(value="partial" checked="") partial
+                      option#view-input-hide-match-kind-forward(value="forward" checked="") forward
+                      option#view-input-hide-match-kind-perfect(value="perfect") perfect
+                      option#view-input-hide-match-kind-regex(value="regex") regex
+                  li
+                    label
+                      input#view-input-hide-match-case(type="checkbox" checked="")
+                      | case
+              th
+                ul.horizontal
+                  li
+                    label
+                      input#view-input-is-enabled-google(type="checkbox" checked="")
+                      | google
+                  li
+                    label
+                      input#view-input-is-enabled-bing(type="checkbox" checked="")
+                      | bing
+              th
+                button#command-view-add-hide-item(type="button") add
+      fieldset
+        legend [view] import
+        p
+          strong TODO
+          | , reserve permissions: <all_urls>
+      button(type="submit") save
+    script(src="../script/options/options-action.ts")
