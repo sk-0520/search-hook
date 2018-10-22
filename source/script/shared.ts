@@ -1,3 +1,5 @@
+import * as conf from "./conf";
+
 // contents script, background script 共有
 
 export enum ServiceKind {
@@ -202,4 +204,57 @@ export function toQueryString(service: ServiceKind, queryItems: Array<string>) {
     });
 
     return items.join(' ');
+}
+
+export enum BridgeMeesageKind {
+    service,
+    items,
+    erase,
+}
+
+export abstract class BridgeMeesageBase {
+    constructor(kind: BridgeMeesageKind) {
+        this.kind = kind;
+    }
+
+    public readonly kind: BridgeMeesageKind;
+}
+
+export class BridgeMeesage<T extends BridgeDataBase> extends BridgeMeesageBase {
+    constructor(kind:BridgeMeesageKind, data: T) {
+        super(kind);
+        this.data = data;
+    }
+
+    public readonly data: T;
+}
+
+export abstract class BridgeDataBase { }
+
+export class ServiceBridgeData {
+    constructor(service: ServiceKind) {
+        this.service = service;
+    }
+
+    public readonly service: ServiceKind;
+}
+
+export class ItemsBridgeData {
+    constructor(enabled:boolean, items:Array<conf.HiddenItemSetting>) {
+        this.enabled = enabled;
+        this.items = items;
+    }
+    
+    public readonly enabled: boolean;
+    public readonly items: Array<conf.HiddenItemSetting>;
+}
+
+export class EraseBridgeData {
+    constructor(enabled:boolean, items:Array<string>) {
+        this.enabled = enabled;
+        this.items = items;
+    }
+    
+    public readonly enabled: boolean;
+    public readonly items: Array<string>;
 }

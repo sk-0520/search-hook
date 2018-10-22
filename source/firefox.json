@@ -26,9 +26,7 @@
         "*://*.google.com/search?*"
       ],
       "js": [
-        "script/common.js",
-        "script/content.js",
-        "script/content-google.js"
+        "script/content-google-action.js"
       ],
       "css": [
         "style/content.css"
