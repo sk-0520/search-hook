@@ -26,10 +26,10 @@
         "*://*.google.com/search?*"
       ],
       "js": [
-        "script/content-google-action.js"
+        "content-google-action.js"
       ],
       "css": [
-        "style/content.css"
+        "content-google.css"
       ]
     },
     {
