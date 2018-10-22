@@ -1,6 +1,7 @@
 import * as shared from '../shared';
 import * as conf from '../conf';
 import BackgroundGoogle from './background-google';
+import BackgroundBingService from './background-bing';
 
 export default class Background extends shared.ActionBase {
     constructor() {
@@ -31,6 +32,7 @@ export default class Background extends shared.ActionBase {
         this.logger.debug(JSON.stringify(setting));
 
         new BackgroundGoogle().resistRedirectGoogle(setting, this.filterNotItems(shared.ServiceKind.google, setting));
+        new BackgroundBingService().resistRedirectBing(setting, this.filterNotItems(shared.ServiceKind.bing, setting));
 
         //resistRedirectGoogle(setting, filterNotItems(ServiceKind_Google, setting));
         //resistRedirectBing(setting, filterNotItems(ServiceKind_Bing, setting));
