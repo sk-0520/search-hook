@@ -14,7 +14,7 @@
     "compile:core:options": "       parcel build --public-url . ./source/view/options.pug",
     "compile:core:background": "    parcel build --public-url . ./source/view/background.pug",
     "compile:core:content-script": "parcel build --public-url . ./source/script/content/content-google-action.ts ./source/script/content/content-bing-action.ts ",
-    "compile:core:content-style": "  parcel build --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
+    "compile:core:content-style": " parcel build --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
     "watch:core:options": "         parcel watch --public-url . ./source/view/options.pug",
     "watch:core:background": "      parcel watch --public-url . ./source/view/background.pug",
     "watch:core:content-script": "  parcel watch --public-url . ./source/script/content/content-google-action.ts ./source/script/content/content-bing-action.ts",
@@ -22,7 +22,8 @@
     "compile:firefox": "npm-run-all --parallel compile:core:*",
     "watch:firefox": "npm-run-all --parallel watch:core:*",
     "debug:firefox": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox",
-    "debug:firefox-sk": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk"
+    "debug:firefox-sk": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk",
+    "release:firefox": "npm-run-all clean manifest:firefox compile:firefox build:firefox"
   },
   "repository": {
     "type": "git",

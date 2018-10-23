@@ -4,10 +4,7 @@
 
 ```
 
-npm clean
-npm run manifest:firefox
-npm run compile:firefox
-npm run build:firefox
+release:firefo
 cd artifacts/firefox/
 
 ```
