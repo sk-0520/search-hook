@@ -27,8 +27,10 @@ export class Logger {
 
 /**
  * ソースに対して上書きを行う。
- * @param source 
- * @param overwrite 
+ * @param source 基にするデータ。
+ * @param overwrite 上書きするデータ。
+ * 
+ * @returns source
  */
 export function merge<T>(source:T, overwrite: T):T {
     if(!source) {
