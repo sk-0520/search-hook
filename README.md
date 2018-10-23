@@ -4,7 +4,7 @@
 
 ```
 
-release:firefo
+npm run release:firefox
 cd artifacts/firefox/
 
 ```
