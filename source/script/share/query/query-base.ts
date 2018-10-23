@@ -1,7 +1,9 @@
-import { ServiceKind, LoggingBase } from "../common";
-
+import { LoggingBase } from "../common";
+import { ServiceKind } from "../service-kind";
 
 export default abstract class QueryBase extends LoggingBase {
+
+    public readonly service: ServiceKind;
 
     constructor(service: ServiceKind, name: string) {
         super(name);
@@ -9,22 +11,20 @@ export default abstract class QueryBase extends LoggingBase {
         this.service = service;
     }
 
-    public readonly service: ServiceKind;
-
     public splitQuery(query: string) {
         if (!query) {
             return [];
         }
 
-        var nowDq = false;
+        let nowDq = false;
 
-        var buffer = '';
-        var result = [];
+        let buffer = '';
+        const result = [];
 
-        for (var i = 0; i < query.length; i++) {
-            var c = query.charAt(i);
+        for (let i = 0; i < query.length; i++) {
+            const c = query.charAt(i);
             if (nowDq) {
-                if (c == '"') {
+                if (c === '"') {
                     if (buffer.length) {
                         result.push(buffer);
                         buffer = '';
@@ -33,12 +33,12 @@ export default abstract class QueryBase extends LoggingBase {
                 } else {
                     buffer += c;
                 }
-            } else if (c == ' ') {
+            } else if (c === ' ') {
                 if (buffer.length) {
                     result.push(buffer);
                     buffer = '';
                 }
-            } else if (c == '"') {
+            } else if (c === '"') {
                 nowDq = true;
             } else {
                 buffer += c;
@@ -55,19 +55,18 @@ export default abstract class QueryBase extends LoggingBase {
     public makeCustomQuery(queryItems: Array<string>, notItems: Array<string>) {
         // 既に存在する否定ワードはそのまま、設定されていなければ追加していく
 
-        var addNotItems = notItems.concat();
-        var customQuery = [];
-        for (var i = 0; i < queryItems.length; i++) {
-            var query = queryItems[i];
+        const addNotItems = notItems.concat();
+        const customQuery = [];
+        for (const query of queryItems) {
 
             if (!query.length) {
                 continue;
             }
 
             //<JS>if(query.charAt('-')) {
-            if (query.charAt(0) == '-') {
-                var notWord = query.substr(1);
-                var index = addNotItems.indexOf(notWord);
+            if (query.charAt(0) === '-') {
+                const notWord = query.substr(1);
+                const index = addNotItems.indexOf(notWord);
                 customQuery.push(query);
                 if (index !== -1) {
                     addNotItems.splice(index, 1);
@@ -80,9 +79,9 @@ export default abstract class QueryBase extends LoggingBase {
         this.logger.debug('notItems: ' + notItems);
         this.logger.debug('addNotItems: ' + addNotItems);
 
-        for (var i = 0; i < addNotItems.length; i++) {
-            var word = addNotItems[i];
-            addNotItems[i] = '-' + word;
+        for (let j = 0; j < addNotItems.length; j++) {
+            const word = addNotItems[j];
+            addNotItems[j] = '-' + word;
         }
 
         return {
@@ -93,19 +92,18 @@ export default abstract class QueryBase extends LoggingBase {
 
     public getUserInputQuery(queryItems: Array<string>, notItems: Array<string>) {
         // 否定ワードを除外
-        var addNotItems = notItems.concat();
-        var userQuerys = [];
-        for (var i = 0; i < queryItems.length; i++) {
-            var query = queryItems[i];
+        const addNotItems = notItems.concat();
+        const userQuerys = [];
+        for (const query of queryItems) {
 
             if (!query.length) {
                 continue;
             }
 
             //<JS>if(query.charAt('-')) {
-            if (query.charAt(0) == '-') {
-                var notWord = query.substr(1);
-                var index = addNotItems.indexOf(notWord);
+            if (query.charAt(0) === '-') {
+                const notWord = query.substr(1);
+                const index = addNotItems.indexOf(notWord);
                 if (index !== -1) {
                     addNotItems.splice(index, 1);
                 } else {
@@ -120,9 +118,9 @@ export default abstract class QueryBase extends LoggingBase {
     }
 
     public toQueryString(queryItems: Array<string>) {
-        var items = queryItems.filter(function (s) {
+        const items = queryItems.filter(s => {
             return s && s.length;
-        }).map(function (s) {
+        }).map(s => {
             if (s.indexOf(' ') !== -1) {
                 if (s.charAt(0) === '-') {
                     return '-"' + s.substr(1) + '"';
@@ -136,6 +134,4 @@ export default abstract class QueryBase extends LoggingBase {
 
         return items.join(' ');
     }
-
-
 }

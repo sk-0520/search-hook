@@ -1,9 +1,9 @@
 
-export interface IMainSetting{
-    service : ServiceSetting;
+export interface IMainSetting {
+    service: ServiceSetting;
 
-    notItems :Array<NotItemSetting>;
-    hideItems : Array<HiddenItemSetting>;
+    notItems: Array<NotItemSetting>;
+    hideItems: Array<HiddenItemSetting>;
 }
 
 export class MainSetting implements IMainSetting {
@@ -39,19 +39,19 @@ export enum MatchKind {
     regex = 'regex',
 }
 
-export function convertMatchKind(key:string): MatchKind {
-    switch(key.toLowerCase()) {
-        case  MatchKind.partial:
+export function convertMatchKind(key: string): MatchKind {
+    switch (key.toLowerCase()) {
+        case MatchKind.partial:
             return MatchKind.partial;
 
-        case  MatchKind.perfect:
+        case MatchKind.perfect:
             return MatchKind.perfect;
 
-        case  MatchKind.regex:
+        case MatchKind.regex:
             return MatchKind.regex;
 
         default:
-            throw { "error": key };
+            throw { error: key };
     }
 }
 
@@ -65,7 +65,7 @@ export class MatchSetting {
 
 export class NotItemSetting {
     public word = '';
-    public service= new EnabledService();
+    public service = new EnabledService();
 }
 
 export class HiddenItemSetting {

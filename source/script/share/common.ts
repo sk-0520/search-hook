@@ -3,27 +3,26 @@ import { ServiceKind } from "./service-kind";
 
 // contents script, background script 共有
 
-
 export class Logger {
+    public readonly name: string;
+
     constructor(name: string) {
         this.name = name;
     }
 
-    public readonly name: string;
-
-    public trace(value:string): void {
+    public trace(value: string): void {
         console.trace(`<SH> ${this.name} ${value}`);
     }
-    public debug(value:string): void {
+    public debug(value: string): void {
         console.debug(`<SH> ${this.name} ${value}`);
     }
-    public log(value:string): void {
+    public log(value: string): void {
         console.log(`<SH> ${this.name} ${value}`);
     }
-    public warn(value:string): void {
+    public warn(value: string): void {
         console.warn(`<SH> ${this.name} ${value}`);
     }
-    public error(value:string): void {
+    public error(value: string): void {
         console.error(`<SH> ${this.name} ${value}`);
     }
 
@@ -31,19 +30,19 @@ export class Logger {
         console.table(value);
     }
 
-    public traceJson(value:any): void {
+    public traceJson(value: any): void {
         this.trace(JSON.stringify(value));
     }
-    public debugJson(value:any): void {
+    public debugJson(value: any): void {
         this.debug(JSON.stringify(value));
     }
-    public logJson(value:any): void {
+    public logJson(value: any): void {
         this.log(JSON.stringify(value));
     }
-    public warnJson(value:any): void {
+    public warnJson(value: any): void {
         this.warn(JSON.stringify(value));
     }
-    public errorJson(value:any): void {
+    public errorJson(value: any): void {
         this.error(JSON.stringify(value));
     }
 }
@@ -55,23 +54,25 @@ export class Logger {
  * 
  * @returns source
  */
-export function merge<T>(source:T, overwrite: T):T {
-    if(!source) {
+export function merge<T>(source: T, overwrite: T): T {
+    if (!source) {
         return source;
     }
-    if(!overwrite) {
+    if (!overwrite) {
         return source;
     }
 
-    for (var key in overwrite) {
-        try {
-            if(overwrite[key].constructor == Object ) {
-                source[key] = merge(source[key], overwrite[key]);
-            } else {
+    for (const key in overwrite) {
+        if(overwrite[key]) {
+            try {
+                if (overwrite[key].constructor === Object) {
+                    source[key] = merge(source[key], overwrite[key]);
+                } else {
+                    source[key] = overwrite[key];
+                }
+            } catch (e) {
                 source[key] = overwrite[key];
             }
-        } catch(e) {
-            source[key] = overwrite[key];
         }
     }
 
@@ -80,11 +81,11 @@ export function merge<T>(source:T, overwrite: T):T {
 
 export abstract class LoggingBase {
 
+    protected readonly logger: Logger;
+
     protected constructor(name: string) {
         this.logger = new Logger(name);
     }
-
-    protected readonly logger:Logger;
 
 }
 
@@ -93,15 +94,8 @@ export abstract class ActionBase extends LoggingBase {
         super(name);
     }
 
-
     public abstract initialize(): void;
 }
-
-
-
-
-
-
 
 export enum BridgeMeesageKind {
     service,
@@ -110,48 +104,48 @@ export enum BridgeMeesageKind {
 }
 
 export abstract class BridgeMeesageBase {
+    public readonly kind: BridgeMeesageKind;
+
     constructor(kind: BridgeMeesageKind) {
         this.kind = kind;
     }
-
-    public readonly kind: BridgeMeesageKind;
 }
 
 export class BridgeMeesage<T extends BridgeDataBase> extends BridgeMeesageBase {
-    constructor(kind:BridgeMeesageKind, data: T) {
+    public readonly data: T;
+
+    constructor(kind: BridgeMeesageKind, data: T) {
         super(kind);
         this.data = data;
     }
-
-    public readonly data: T;
 }
 
 export abstract class BridgeDataBase { }
 
 export class ServiceBridgeData {
+    public readonly service: ServiceKind;
+
     constructor(service: ServiceKind) {
         this.service = service;
     }
-
-    public readonly service: ServiceKind;
 }
 
 export class ItemsBridgeData {
-    constructor(enabled:boolean, items:Array<conf.HiddenItemSetting>) {
+    public readonly enabled: boolean;
+    public readonly items: Array<conf.HiddenItemSetting>;
+
+    constructor(enabled: boolean, items: Array<conf.HiddenItemSetting>) {
         this.enabled = enabled;
         this.items = items;
     }
-    
-    public readonly enabled: boolean;
-    public readonly items: Array<conf.HiddenItemSetting>;
 }
 
 export class EraseBridgeData {
-    constructor(enabled:boolean, items:Array<string>) {
+    public readonly enabled: boolean;
+    public readonly items: Array<string>;
+
+    constructor(enabled: boolean, items: Array<string>) {
         this.enabled = enabled;
         this.items = items;
     }
-    
-    public readonly enabled: boolean;
-    public readonly items: Array<string>;
 }

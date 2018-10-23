@@ -1,90 +1,88 @@
-import * as shared from "../share/common";
 import * as conf from "../conf";
+import * as shared from "../share/common";
 
 const outputContent = new shared.Logger('Content');
 
 export class HiddenCheker {
-    item?: conf.HiddenItemSetting;
-    match?: (s: string) => boolean;
+    public item?: conf.HiddenItemSetting;
+    public match?: (s: string) => boolean;
 }
 
 export function getCheckers(hideItems: Array<conf.HiddenItemSetting>) {
-    return hideItems.map(function (i) {
+    return hideItems.map(i => {
         const obj = new HiddenCheker();
-        obj.item =  i;
-        
+        obj.item = i;
+
         switch (i.match.kind) {
             case 'partial':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();
-                    obj.match = function (s) {
+                    obj.match = s => {
                         return s.toUpperCase().indexOf(word) !== -1;
-                    }
+                    };
                 } else {
-                    obj.match = function (s) {
+                    obj.match = s => {
                         return s.indexOf(i.word) !== -1;
-                    }
+                    };
                 }
                 break;
 
             case 'forward':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();
-                    obj.match = function (s) {
+                    obj.match = s => {
                         return s.toUpperCase().indexOf(word) === 0;
-                    }
+                    };
                 } else {
-                    obj.match = function (s) {
+                    obj.match = s => {
                         return s.indexOf(i.word) === 0;
-                    }
+                    };
                 }
                 break;
 
             case 'perfect':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();
-                    obj.match = function (s) {
+                    obj.match = s => {
                         return s.toUpperCase() === word;
-                    }
+                    };
                 } else {
-                    obj.match = function (s) {
-                        return s === i.word
-                    }
+                    obj.match = s => {
+                        return s === i.word;
+                    };
                 }
                 break;
 
             case 'regex':
                 const reg = i.match.case ? new RegExp(i.word) : new RegExp(i.word, 'i');
-                obj.match = function (s) {
+                obj.match = s => {
                     return reg.test(s);
-                }
+                };
                 break;
 
             default:
-                outputContent.error(`kind: ${JSON.stringify(i)}`)
+                outputContent.error(`kind: ${JSON.stringify(i)}`);
         }
 
         return obj;
-    })
+    });
 }
 
-export function matchUrl(linkValue:string, checkers: Array<HiddenCheker>) {
+export function matchUrl(linkValue: string, checkers: Array<HiddenCheker>) {
 
-    var url = function() {
-        try {
-            return new URL(linkValue);
-        } catch(ex) {
-            outputContent.error(ex);
-            return false;
-        }
-    }();
+    let url = null;
+    try {
+        url = new URL(linkValue);
+    } catch (ex) {
+        outputContent.error(ex);
+    }
 
-    if(!url) {
+    if (!url) {
         return false;
     }
 
     // プロトコル、ポート、パスワード云々は無視
-    var urlValue = url.hostname;
+    let urlValue = url.hostname;
     if (url.pathname && url.pathname.length) {
         urlValue += url.pathname;
     }
@@ -92,30 +90,30 @@ export function matchUrl(linkValue:string, checkers: Array<HiddenCheker>) {
         urlValue += url.search;
     }
 
-    return checkers.some(function(i) {
+    return checkers.some(i => {
         return i.match!(urlValue);
     });
 }
 
-export function matchSimleUrl(linkValue:string, checkers: Array<HiddenCheker>) {
+export function matchSimleUrl(linkValue: string, checkers: Array<HiddenCheker>) {
     return matchUrl(linkValue, checkers);
 }
 
-export function matchQueryUrl(linkValue:string, checkers: Array<HiddenCheker>) {
+export function matchQueryUrl(linkValue: string, checkers: Array<HiddenCheker>) {
     try {
-        var index = linkValue.indexOf('?');
-        if(index !== -1) {
-            var params = new URLSearchParams(linkValue.substr(index + 1));
+        const index = linkValue.indexOf('?');
+        if (index !== -1) {
+            const params = new URLSearchParams(linkValue.substr(index + 1));
             outputContent.debug('params: ' + params);
 
-            if(params.has('q')) {
-                var query = params.get('q')!;
+            if (params.has('q')) {
+                const query = params.get('q')!;
                 outputContent.debug('q: ' + query);
 
                 return matchUrl(query, checkers);
             }
         }
-    } catch(ex) {
+    } catch (ex) {
         outputContent.error(ex);
     }
 
@@ -128,30 +126,29 @@ export function hideElement(element: Element) {
 }
 
 export function switchHideItems() {
-    var items = document.querySelectorAll('.WE___search-hook-_-_-hidden');
-    if(!items.length) {
+    const items = document.querySelectorAll('.WE___search-hook-_-_-hidden');
+    if (!items.length) {
         return;
     }
-    
-    for(var i = 0; i < items.length; i++) {
-        var item = items[i];
+
+    for (const item of items) {
         item.classList.toggle('WE___search-hook-_-_-hidden-item');
     }
 }
 
 export function appendHiddenSwitch() {
-    var switchElement = document.createElement('input');
+    const switchElement = document.createElement('input');
     switchElement.setAttribute('type', 'checkbox');
     switchElement.checked = true;
-    switchElement.addEventListener('change', function(e) {
+    switchElement.addEventListener('change', e => {
         switchHideItems();
     });
 
-    var groupElement = document.createElement('label');
+    const groupElement = document.createElement('label');
     groupElement.appendChild(switchElement);
     groupElement.appendChild(document.createTextNode('hide items'));
 
-    var parent = document.createElement('div');
+    const parent = document.createElement('div');
     parent.appendChild(groupElement);
     parent.classList.add('WE___search-hook-_-_-switch');
 

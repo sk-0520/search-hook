@@ -1,4 +1,4 @@
 import ContentBingService from "./content-bing";
 
-var contentBing = new ContentBingService();
+const contentBing = new ContentBingService();
 contentBing.initialize();

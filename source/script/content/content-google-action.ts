@@ -1,4 +1,4 @@
 import ContentGoogleService from "./content-google";
 
-var contentGoogle = new ContentGoogleService();
+const contentGoogle = new ContentGoogleService();
 contentGoogle.initialize();

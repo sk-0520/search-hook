@@ -1,7 +1,8 @@
-import * as shared from '../share/common';
 import * as conf from '../conf';
-import BackgroundGoogle from './background-google';
+import * as shared from '../share/common';
+import { ServiceKind } from '../share/service-kind';
 import BackgroundBingService from './background-bing';
+import BackgroundGoogle from './background-google';
 
 export default class Background extends shared.ActionBase {
     constructor() {
@@ -12,7 +13,7 @@ export default class Background extends shared.ActionBase {
         this.loadSetting();
     }
 
-    private loadSetting(){
+    private loadSetting() {
         browser.storage.local.get('setting').then(
             result => this.loadSettingCore(result),
             error => this.logger.error(error)
@@ -21,7 +22,7 @@ export default class Background extends shared.ActionBase {
 
     private loadSettingCore(result: browser.storage.StorageObject) {
         this.logger.log("setting loading");
-        const setting = <conf.IMainSetting>(result.setting as any);
+        const setting = (result.setting as any) as conf.IMainSetting;
 
         if(!setting) {
             this.logger.log('setting empty');
@@ -31,8 +32,8 @@ export default class Background extends shared.ActionBase {
         this.logger.log('setting loaded');
         this.logger.debug(JSON.stringify(setting));
 
-        new BackgroundGoogle().resistRedirectGoogle(setting, this.filterNotItems(shared.ServiceKind.google, setting));
-        new BackgroundBingService().resistRedirectBing(setting, this.filterNotItems(shared.ServiceKind.bing, setting));
+        new BackgroundGoogle().resistRedirectGoogle(setting, this.filterNotItems(ServiceKind.google, setting));
+        new BackgroundBingService().resistRedirectBing(setting, this.filterNotItems(ServiceKind.bing, setting));
 
         //resistRedirectGoogle(setting, filterNotItems(ServiceKind_Google, setting));
         //resistRedirectBing(setting, filterNotItems(ServiceKind_Bing, setting));
@@ -40,23 +41,23 @@ export default class Background extends shared.ActionBase {
         this.resistView(setting);
     }
 
-    private filterNotItems(service:shared.ServiceKind, setting:conf.IMainSetting): Array<string> {
+    private filterNotItems(service: ServiceKind, setting: conf.IMainSetting): Array<string> {
         this.logger.log(service);
     
-        var notItems = setting.notItems.filter(function(i) {
+        const notItems = setting.notItems.filter(i => {
             switch(service) {
-                case shared.ServiceKind.google:
+                case ServiceKind.google:
                     return i.service.google;
     
-                case shared.ServiceKind.bing:
+                case ServiceKind.bing:
                     return i.service.bing;
     
                 default:
                     throw { error: i };
             }
-        }).filter(function(i) {
+        }).filter(i => {
             return i.word.length;
-        }).map(function(i) {
+        }).map(i => {
             return i.word;
         });
     
@@ -66,12 +67,12 @@ export default class Background extends shared.ActionBase {
     private resistView(setting: conf.IMainSetting) {
 
         // 比較関数だけ作っておきたかったけど転送できない
-        var enabledItems = setting.hideItems.filter(i => {
-            return i.word && i.word.length
+        const enabledItems = setting.hideItems.filter(i => {
+            return i.word && i.word.length;
         }).filter(i => {
             if(i.match.kind === 'regex') {
                 try {
-                    new RegExp(i.word)
+                    new RegExp(i.word);
                 } catch(ex) {
                     this.logger.error(JSON.stringify(i));
                     this.logger.error(ex);
@@ -82,10 +83,10 @@ export default class Background extends shared.ActionBase {
             return true;
         });
     
-        var googleHideItems = enabledItems.filter(i => {
+        const googleHideItems = enabledItems.filter(i => {
             return i.service.google;
         });
-        var bingHideItems = enabledItems.filter(i => {
+        const bingHideItems = enabledItems.filter(i => {
             return i.service.bing;
         });
     
@@ -100,10 +101,10 @@ export default class Background extends shared.ActionBase {
                 this.logger.debug('send!');
                 this.logger.debug(JSON.stringify(rawMessage));
     
-                var message = <shared.BridgeMeesage<shared.ServiceBridgeData>>rawMessage;
+                const message = rawMessage as shared.BridgeMeesage<shared.ServiceBridgeData>;
 
                 switch(message.data.service) {
-                    case shared.ServiceKind.google:
+                    case ServiceKind.google:
                         port.postMessage(
                             new shared.BridgeMeesage(
                                 shared.BridgeMeesageKind.items, 
@@ -118,13 +119,13 @@ export default class Background extends shared.ActionBase {
                                 shared.BridgeMeesageKind.erase, 
                                 new shared.EraseBridgeData(
                                     setting.service.google.enabled,
-                                    this.filterNotItems(shared.ServiceKind.google, setting)
+                                    this.filterNotItems(ServiceKind.google, setting)
                                 )
                             )
-                        )
+                        );
                         break;
     
-                    case shared.ServiceKind.bing:
+                    case ServiceKind.bing:
                         port.postMessage(
                             new shared.BridgeMeesage(
                                 shared.BridgeMeesageKind.items, 
@@ -139,12 +140,10 @@ export default class Background extends shared.ActionBase {
                                 shared.BridgeMeesageKind.erase, 
                                 new shared.EraseBridgeData(
                                     setting.service.bing.enabled,
-                                    this.filterNotItems(shared.ServiceKind.bing, setting)
+                                    this.filterNotItems(ServiceKind.bing, setting)
                                 )
                             )
-                        )
-
-
+                        );
                         break;
     
                     default:
@@ -155,5 +154,3 @@ export default class Background extends shared.ActionBase {
     }
     
 }
-
-

@@ -1,6 +1,6 @@
-import * as conf from '../conf'
-import BackgroundServiceBase from './background-service'
+import * as conf from '../conf';
 import BingQuery from '../share/query/bing-query';
+import BackgroundServiceBase from './background-service';
 
 export default class BackgroundBingService extends BackgroundServiceBase {
     constructor() {
@@ -9,8 +9,8 @@ export default class BackgroundBingService extends BackgroundServiceBase {
 
     public resistRedirectBing(setting: conf.IMainSetting, notItems: Array<string>) {
 
-        var requestSet = new Set();
-        var bingSetting = setting.service.bing;
+        const requestSet = new Set();
+        const bingSetting = setting.service.bing;
     
         // Google 登録
         browser.webRequest.onBeforeRequest.addListener(
@@ -32,7 +32,7 @@ export default class BackgroundBingService extends BackgroundServiceBase {
                 }
                 requestSet.add(requestDetails.requestId);
             
-                var url = new URL(requestDetails.url);
+                const url = new URL(requestDetails.url);
             
                 // まだ検索してないっぽければ無視
                 if(!url.searchParams.has('q')) {
@@ -50,32 +50,32 @@ export default class BackgroundBingService extends BackgroundServiceBase {
                 //     url.searchParams.append('num', bingSetting.searchCount)
                 // }
 
-                var query = new BingQuery();
+                const query = new BingQuery();
             
-                var rawQuery = url.searchParams.get('q')!;
+                const rawQuery = url.searchParams.get('q')!;
                 this.logger.debug('raw: ' + rawQuery);
-                var queryItems = query.splitQuery(rawQuery)
+                const queryItems = query.splitQuery(rawQuery);
                 this.logger.debug('items: ' + queryItems);
             
-                var customQuery = query.makeCustomQuery(queryItems, notItems);
+                const customQuery = query.makeCustomQuery(queryItems, notItems);
                 this.logger.debug('customQuery: ' + JSON.stringify(customQuery));
             
-                var queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
+                const queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
                 this.logger.debug('queryString: ' + queryString);
             
                 url.searchParams.set('q', queryString);
                 this.logger.debug(JSON.stringify(url));
             
                 return {
-                    redirectUrl: url.toString()
+                    redirectUrl: url.toString(),
                 };
             },
             {
                 urls: [
-                    "*://*.bing.com/search?*"
-                ]
+                    "*://*.bing.com/search?*",
+                ],
             },
-            ["blocking"]
+            ["blocking"],
         );
     }
     

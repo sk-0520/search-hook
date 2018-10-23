@@ -1,10 +1,11 @@
-import * as shared from "../share/common";
 import * as conf from "../conf";
-import ContentServiceBase from "./content-service";
-import * as content from "./content";
+import * as shared from "../share/common";
 import BingQuery from "../share/query/bing-query";
+import { ServiceKind } from "../share/service-kind";
+import * as content from "./content";
+import ContentServiceBase from "./content-service";
 
-export default class ContentBingService extends ContentServiceBase{
+export default class ContentBingService extends ContentServiceBase {
     constructor() {
         super('Content Bing');
     }
@@ -12,117 +13,117 @@ export default class ContentBingService extends ContentServiceBase{
     public initialize() {
         const port = browser.runtime.connect();
         port.onMessage.addListener(rawMessage => {
-            var message = <shared.BridgeMeesageBase>rawMessage;
+            const message = rawMessage as shared.BridgeMeesageBase;
             this.logger.debug("CLIENT RECV!");
             this.logger.debug(JSON.stringify(message));
 
-            switch(message.kind) {
+            switch (message.kind) {
                 case shared.BridgeMeesageKind.items:
-                    var itemsMessage = <shared.BridgeMeesage<shared.ItemsBridgeData>>message;
-                    if(!itemsMessage.data.enabled) {
+                    const itemsMessage = message as shared.BridgeMeesage<shared.ItemsBridgeData>;
+                    if (!itemsMessage.data.enabled) {
                         this.logger.debug("ignore bing content");
                         return;
                     }
-                
-                    var hideItems = itemsMessage.data.items;
+
+                    const hideItems = itemsMessage.data.items;
                     this.hideGoogleItems(hideItems);
                     break;
 
-                case shared.BridgeMeesageKind.erase: 
-                    var eraseMessage = <shared.BridgeMeesage<shared.EraseBridgeData>>message;
-                    if(!eraseMessage.data.enabled) {
+                case shared.BridgeMeesageKind.erase:
+                    const eraseMessage = message as shared.BridgeMeesage<shared.EraseBridgeData>;
+                    if (!eraseMessage.data.enabled) {
                         this.logger.debug("ignore google content");
                         return;
                     }
 
-                    var items = eraseMessage.data.items;
+                    const items = eraseMessage.data.items;
                     this.eraseBingQuery(items);
                     break;
 
                 default:
-                    throw { error: message};
+                    throw { error: message };
             }
 
         });
-        port.postMessage(new shared.BridgeMeesage(shared.BridgeMeesageKind.service, new shared.ServiceBridgeData(shared.ServiceKind.google)));
+        port.postMessage(
+            new shared.BridgeMeesage(
+                shared.BridgeMeesageKind.service,
+                new shared.ServiceBridgeData(ServiceKind.google)
+            )
+        );
     }
 
     private hideGoogleItems(hideItems: Array<conf.HiddenItemSetting>) {
-        if(!hideItems || !hideItems.length) {
+        if (!hideItems || !hideItems.length) {
             this.logger.debug('empty hide items');
             return;
         }
-    
-        var checkers = content.getCheckers(hideItems);
-    
-        var elementSelectors = [
+
+        const checkers = content.getCheckers(hideItems);
+
+        const elementSelectors = [
             {
                 target: 'default',
                 element: '.b_algo',
                 link: 'a'
             },
         ];
-    
-        var success = false;
-        for(var i = 0; i < elementSelectors.length; i++) {
-            var elementSelector = elementSelectors[i];
-            
+
+        let success = false;
+        for (const elementSelector of elementSelectors) {
             this.logger.debug('target: ' + elementSelector.target);
-    
-            var elements = document.querySelectorAll(elementSelector.element);
+
+            const elements = document.querySelectorAll(elementSelector.element);
             this.logger.debug('elements: ' + elements.length);
-    
-    
-            for(var j = 0; j < elements.length; j++) {
-                var element = elements[j];
-    
-                var linkElement = element.querySelector(elementSelector.link);
-                if(!linkElement) {
+
+            for (const element of elements) {
+
+                const linkElement = element.querySelector(elementSelector.link);
+                if (!linkElement) {
                     continue;
                 }
-        
-                var link = linkElement.getAttribute('href')! || '';
+
+                const link = linkElement.getAttribute('href')! || '';
                 this.logger.debug('link: ' + link);
-        
+
                 // 普通パターン
-                if(content.matchSimleUrl(link, checkers)) {
+                if (content.matchSimleUrl(link, checkers)) {
                     content.hideElement(element);
                     success = true;
                     continue;
                 }
-        
+
                 // /path?q=XXX 形式
-                if(content.matchQueryUrl(link, checkers)) {
+                if (content.matchQueryUrl(link, checkers)) {
                     content.hideElement(element);
                     success = true;
                     continue;
                 }
-        
+
                 this.logger.debug('show: ' + link);
             }
-    
-            if(success) {
+
+            if (success) {
                 break;
             }
         }
-    
-        if(success) {
+
+        if (success) {
             content.appendHiddenSwitch();
         }
     }
-    
-    private eraseBingQuery(items:Array<string>) {
-        var queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
-        var queryValue = queryElement.value;
+
+    private eraseBingQuery(items: Array<string>) {
+        const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
+        const queryValue = queryElement.value;
         this.logger.debug('q: ' + queryValue);
 
-        var query = new BingQuery();
-    
-        var currentQuery = query.splitQuery(queryValue);
-        var userInputQuery = query.getUserInputQuery(currentQuery, items);
+        const query = new BingQuery();
+
+        const currentQuery = query.splitQuery(queryValue);
+        const userInputQuery = query.getUserInputQuery(currentQuery, items);
         this.logger.debug('u: ' + userInputQuery);
-    
+
         queryElement.value = userInputQuery.join(' ') + ' ';
     }
-    
 }
