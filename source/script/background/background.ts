@@ -1,4 +1,4 @@
-import * as shared from '../shared';
+import * as shared from '../share/common';
 import * as conf from '../conf';
 import BackgroundGoogle from './background-google';
 import BackgroundBingService from './background-bing';

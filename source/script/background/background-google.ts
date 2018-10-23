@@ -1,6 +1,6 @@
-import * as shared from '../shared'
 import * as conf from '../conf'
 import BackgroundServiceBase from './background-service'
+import GoogleQuery from '../share/query/google-query';
 
 export default class BackgroundGoogle extends BackgroundServiceBase {
     constructor() {
@@ -15,8 +15,6 @@ export default class BackgroundGoogle extends BackgroundServiceBase {
         // Google 登録
         browser.webRequest.onBeforeRequest.addListener(
             requestDetails => {
-                const serviceKind = shared.ServiceKind.google;
-
                 this.logger.log('Loading: ' + requestDetails.url);
                 this.logger.debug(JSON.stringify(requestDetails));
             
@@ -59,15 +57,17 @@ export default class BackgroundGoogle extends BackgroundServiceBase {
                     }
                 }
             
+                var query = new GoogleQuery();
+
                 var rawQuery = url.searchParams.get('q')!;
                 this.logger.debug('raw: ' + rawQuery);
-                var queryItems = shared.splitQuery(serviceKind, rawQuery)
+                var queryItems = query.splitQuery(rawQuery)
                 this.logger.debug('items: ' + queryItems);
             
-                var customQuery = shared.makeCustomQuery(serviceKind, queryItems, notItems);
+                var customQuery = query.makeCustomQuery(queryItems, notItems);
                 this.logger.debug('customQuery: ' + JSON.stringify(customQuery));
             
-                var queryString = shared.toQueryString(serviceKind, customQuery.users.concat(customQuery.applications));
+                var queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
                 this.logger.debug('queryString: ' + queryString);
             
                 url.searchParams.set('q', queryString);

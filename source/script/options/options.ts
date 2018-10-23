@@ -1,4 +1,4 @@
-import * as shared from '../shared';
+import * as shared from '../share/common';
 import * as conf from '../conf';
 
 export default class Options extends shared.ActionBase {

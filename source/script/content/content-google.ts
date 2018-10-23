@@ -1,7 +1,8 @@
-import * as shared from "../shared";
+import * as shared from "../share/common";
 import * as conf from "../conf";
 import ContentServiceBase from "./content-service";
 import * as content from "./content";
+import GoogleQuery from "../share/query/google-query";
 
 export default class ContentGoogleService extends ContentServiceBase{
     constructor() {
@@ -129,9 +130,11 @@ export default class ContentGoogleService extends ContentServiceBase{
         var queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
         var queryValue = queryElement.value;
         this.logger.debug('q: ' + queryValue);
+
+        var query = new GoogleQuery();
     
-        var currentQuery = shared.splitQuery(shared.ServiceKind.google, queryValue);
-        var userInputQuery = shared.getUserInputQuery(shared.ServiceKind.google, currentQuery, items);
+        var currentQuery = query.splitQuery(queryValue);
+        var userInputQuery = query.getUserInputQuery(currentQuery, items);
         this.logger.debug('u: ' + userInputQuery);
     
         queryElement.value = userInputQuery.join(' ') + ' ';
