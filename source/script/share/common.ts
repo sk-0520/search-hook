@@ -1,11 +1,8 @@
 import * as conf from "../conf";
+import { ServiceKind } from "./service-kind";
 
 // contents script, background script 共有
 
-export enum ServiceKind {
-    google = 'google',
-    bing = 'bing',
-}
 
 export class Logger {
     constructor(name: string) {
