@@ -1,6 +1,6 @@
 import * as conf from '../conf';
 import BingQuery from '../share/query/bing-query';
-import BackgroundServiceBase from './background-service';
+import BackgroundServiceBase from './background-service-base';
 
 export default class BackgroundBingService extends BackgroundServiceBase {
     constructor() {

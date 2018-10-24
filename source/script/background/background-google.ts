@@ -1,6 +1,6 @@
 import * as conf from '../conf';
 import GoogleQuery from '../share/query/google-query';
-import BackgroundServiceBase from './background-service';
+import BackgroundServiceBase from './background-service-base';
 
 export default class BackgroundGoogle extends BackgroundServiceBase {
     constructor() {

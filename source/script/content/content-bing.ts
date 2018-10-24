@@ -3,7 +3,7 @@ import * as shared from "../share/common";
 import BingQuery from "../share/query/bing-query";
 import { ServiceKind } from "../share/service-kind";
 import * as content from "./content";
-import ContentServiceBase from "./content-service";
+import ContentServiceBase from "./content-service-base";
 
 export default class ContentBingService extends ContentServiceBase {
     constructor() {
