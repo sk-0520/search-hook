@@ -26,7 +26,7 @@
         "*://*.google.com/search?*"
       ],
       "js": [
-        "content-google-action.js"
+        "content-google.loader.js"
       ],
       "css": [
         "content-google.css"
@@ -37,7 +37,7 @@
         "*://*.bing.com/search?*"
       ],
       "js": [
-        "content-bing-action.js"
+        "content-bing.loader.js"
       ],
       "css": [
         "content-bing.css"
