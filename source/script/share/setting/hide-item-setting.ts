@@ -1,4 +1,4 @@
-import { IReadOnlyMatchSetting, IMatchSetting, MatchSetting } from "./match-setting";
+import { IMatchSetting, IReadOnlyMatchSetting, MatchSetting } from "./match-setting";
 import { IReadOnlyServiceEnabledSetting, IServiceEnabledSetting, ServiceEnabledSetting } from "./service-enabled-setting";
 
 export interface IReadOnlyHideItemSetting {

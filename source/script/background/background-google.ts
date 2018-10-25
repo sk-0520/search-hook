@@ -1,6 +1,6 @@
 import GoogleQuery from '../share/query/google-query';
-import BackgroundServiceBase from './background-service-base';
 import { IMainSetting } from '../share/setting/main-setting';
+import BackgroundServiceBase from './background-service-base';
 
 export default class BackgroundGoogle extends BackgroundServiceBase {
     constructor() {

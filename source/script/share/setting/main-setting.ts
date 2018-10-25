@@ -1,6 +1,6 @@
+import { HideItemSetting, IHideItemSetting, IReadOnlyHideItemSetting } from "./hide-item-setting";
+import { INotItemSetting, IReadOnlyNotItemSetting, NotItemSetting } from "./not-item-setting";
 import { IReadOnlyServiceManagerSetting, IServiceManagerSetting, ServiceManagerSetting } from "./service-manager-setting";
-import { IReadOnlyNotItemSetting, INotItemSetting, NotItemSetting } from "./not-item-setting";
-import { IReadOnlyHideItemSetting, IHideItemSetting, HideItemSetting } from "./hide-item-setting";
 
 
 export interface IReadOnlyMainSetting {
@@ -23,4 +23,3 @@ export class MainSetting implements IMainSetting {
     public notItems = Array<NotItemSetting>();
     public hideItems = Array<HideItemSetting>();
 }
-

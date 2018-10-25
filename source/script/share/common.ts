@@ -94,6 +94,3 @@ export abstract class ActionBase extends LoggingBase {
     public abstract initialize(): void;
 }
 
-
-
-

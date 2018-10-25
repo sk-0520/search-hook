@@ -21,4 +21,3 @@ export function convertMatchKind(key: string): MatchKind {
             throw { error: key };
     }
 }
-

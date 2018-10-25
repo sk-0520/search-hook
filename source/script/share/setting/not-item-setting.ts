@@ -1,4 +1,4 @@
-import { ServiceEnabledSetting, IReadOnlyServiceEnabledSetting, IServiceEnabledSetting } from "./service-enabled-setting";
+import { IReadOnlyServiceEnabledSetting, IServiceEnabledSetting, ServiceEnabledSetting } from "./service-enabled-setting";
 
 export interface IReadOnlyNotItemSetting {
     readonly word: string;

@@ -1,11 +1,11 @@
 import * as shared from '../share/common';
 import { convertMatchKind } from '../share/define/match-kind';
-import { MainSetting, IMainSetting } from '../share/setting/main-setting';
-import { ServiceManagerSetting } from '../share/setting/service-manager-setting';
-import { GoogleServiceSetting } from '../share/setting/service-setting-google';
-import { BingServiceSetting } from '../share/setting/service-setting-bing';
-import { NotItemSetting } from '../share/setting/not-item-setting';
 import { HideItemSetting } from '../share/setting/hide-item-setting';
+import { IMainSetting, MainSetting } from '../share/setting/main-setting';
+import { NotItemSetting } from '../share/setting/not-item-setting';
+import { ServiceManagerSetting } from '../share/setting/service-manager-setting';
+import { BingServiceSetting } from '../share/setting/service-setting-bing';
+import { GoogleServiceSetting } from '../share/setting/service-setting-google';
 
 export default class Options extends shared.ActionBase {
     constructor() {

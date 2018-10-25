@@ -9,7 +9,6 @@ export abstract class BridgeMeesageBase {
     }
 }
 
-
 export class BridgeMeesage<TData extends IBridgeData> extends BridgeMeesageBase {
     public readonly data: TData;
 

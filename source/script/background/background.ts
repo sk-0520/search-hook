@@ -1,11 +1,11 @@
+import { EraseBridgeData, IServiceBridgeData, ItemsBridgeData } from '../share/bridge/bridge-data';
+import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import * as shared from '../share/common';
+import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
+import { IMainSetting } from '../share/setting/main-setting';
 import BackgroundBingService from './background-bing';
 import BackgroundGoogle from './background-google';
-import { IMainSetting } from '../share/setting/main-setting';
-import { IServiceBridgeData, ItemsBridgeData, EraseBridgeData } from '../share/bridge/bridge-data';
-import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 
 export default class Background extends shared.ActionBase {
     constructor() {

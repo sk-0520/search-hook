@@ -1,5 +1,5 @@
-import { GoogleServiceSetting, IGoogleServiceSetting, IReadOnlyGoogleServiceSetting } from "./service-setting-google";
 import { BingServiceSetting, IBingServiceSetting, IReadOnlyBingServiceSetting } from "./service-setting-bing";
+import { GoogleServiceSetting, IGoogleServiceSetting, IReadOnlyGoogleServiceSetting } from "./service-setting-google";
 
 export interface IReadOnlyServiceManagerSetting {
     readonly google: IReadOnlyGoogleServiceSetting;

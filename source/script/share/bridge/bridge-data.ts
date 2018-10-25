@@ -49,4 +49,3 @@ export class EraseBridgeData extends BridgeData implements IEraseBridgeData {
         this.items = items;
     }
 }
-
