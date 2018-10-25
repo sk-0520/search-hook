@@ -1,6 +1,3 @@
-import * as conf from "../conf";
-import { ServiceKind } from "./service-kind";
-
 // contents script, background script 共有
 
 export class Logger {
@@ -30,19 +27,19 @@ export class Logger {
         console.table(value);
     }
 
-    public traceJson(value: any): void {
+    public traceDump(value: any): void {
         this.trace(JSON.stringify(value));
     }
-    public debugJson(value: any): void {
+    public debugDump(value: any): void {
         this.debug(JSON.stringify(value));
     }
-    public logJson(value: any): void {
+    public logDump(value: any): void {
         this.log(JSON.stringify(value));
     }
-    public warnJson(value: any): void {
+    public warnDump(value: any): void {
         this.warn(JSON.stringify(value));
     }
-    public errorJson(value: any): void {
+    public errorDump(value: any): void {
         this.error(JSON.stringify(value));
     }
 }
@@ -97,55 +94,6 @@ export abstract class ActionBase extends LoggingBase {
     public abstract initialize(): void;
 }
 
-export enum BridgeMeesageKind {
-    service,
-    items,
-    erase,
-}
 
-export abstract class BridgeMeesageBase {
-    public readonly kind: BridgeMeesageKind;
 
-    constructor(kind: BridgeMeesageKind) {
-        this.kind = kind;
-    }
-}
 
-export class BridgeMeesage<T extends BridgeDataBase> extends BridgeMeesageBase {
-    public readonly data: T;
-
-    constructor(kind: BridgeMeesageKind, data: T) {
-        super(kind);
-        this.data = data;
-    }
-}
-
-export abstract class BridgeDataBase { }
-
-export class ServiceBridgeData {
-    public readonly service: ServiceKind;
-
-    constructor(service: ServiceKind) {
-        this.service = service;
-    }
-}
-
-export class ItemsBridgeData {
-    public readonly enabled: boolean;
-    public readonly items: Array<conf.HiddenItemSetting>;
-
-    constructor(enabled: boolean, items: Array<conf.HiddenItemSetting>) {
-        this.enabled = enabled;
-        this.items = items;
-    }
-}
-
-export class EraseBridgeData {
-    public readonly enabled: boolean;
-    public readonly items: Array<string>;
-
-    constructor(enabled: boolean, items: Array<string>) {
-        this.enabled = enabled;
-        this.items = items;
-    }
-}

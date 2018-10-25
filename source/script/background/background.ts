@@ -1,8 +1,11 @@
-import * as conf from '../conf';
 import * as shared from '../share/common';
-import { ServiceKind } from '../share/service-kind';
+import { ServiceKind } from '../share/define/service-kind';
 import BackgroundBingService from './background-bing';
 import BackgroundGoogle from './background-google';
+import { IMainSetting } from '../share/setting/main-setting';
+import { IServiceBridgeData, ItemsBridgeData, EraseBridgeData } from '../share/bridge/bridge-data';
+import { BridgeMeesage } from '../share/bridge/bridge-meesage';
+import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 
 export default class Background extends shared.ActionBase {
     constructor() {
@@ -22,7 +25,7 @@ export default class Background extends shared.ActionBase {
 
     private loadSettingCore(result: browser.storage.StorageObject) {
         this.logger.log("setting loading");
-        const setting = (result.setting as any) as conf.IMainSetting;
+        const setting = (result.setting as any) as IMainSetting;
 
         if(!setting) {
             this.logger.log('setting empty');
@@ -41,7 +44,7 @@ export default class Background extends shared.ActionBase {
         this.resistView(setting);
     }
 
-    private filterNotItems(service: ServiceKind, setting: conf.IMainSetting): Array<string> {
+    private filterNotItems(service: ServiceKind, setting: IMainSetting): Array<string> {
         this.logger.log(service);
     
         const notItems = setting.notItems.filter(i => {
@@ -64,7 +67,7 @@ export default class Background extends shared.ActionBase {
         return notItems;
     }
 
-    private resistView(setting: conf.IMainSetting) {
+    private resistView(setting: IMainSetting) {
 
         // 比較関数だけ作っておきたかったけど転送できない
         const enabledItems = setting.hideItems.filter(i => {
@@ -101,23 +104,23 @@ export default class Background extends shared.ActionBase {
                 this.logger.debug('send!');
                 this.logger.debug(JSON.stringify(rawMessage));
     
-                const message = rawMessage as shared.BridgeMeesage<shared.ServiceBridgeData>;
+                const message = rawMessage as BridgeMeesage<IServiceBridgeData>;
 
                 switch(message.data.service) {
                     case ServiceKind.google:
                         port.postMessage(
-                            new shared.BridgeMeesage(
-                                shared.BridgeMeesageKind.items, 
-                                new shared.ItemsBridgeData(
+                            new BridgeMeesage(
+                                BridgeMeesageKind.items, 
+                                new ItemsBridgeData(
                                     setting.service.google.enabled,
                                     googleHideItems
                                 )
                             )
                         );
                         port.postMessage(
-                            new shared.BridgeMeesage(
-                                shared.BridgeMeesageKind.erase, 
-                                new shared.EraseBridgeData(
+                            new BridgeMeesage(
+                                BridgeMeesageKind.erase, 
+                                new EraseBridgeData(
                                     setting.service.google.enabled,
                                     this.filterNotItems(ServiceKind.google, setting)
                                 )
@@ -127,18 +130,18 @@ export default class Background extends shared.ActionBase {
     
                     case ServiceKind.bing:
                         port.postMessage(
-                            new shared.BridgeMeesage(
-                                shared.BridgeMeesageKind.items, 
-                                new shared.ItemsBridgeData(
+                            new BridgeMeesage(
+                                BridgeMeesageKind.items, 
+                                new ItemsBridgeData(
                                     setting.service.bing.enabled,
                                     bingHideItems
                                 )
                             )
                         );
                         port.postMessage(
-                            new shared.BridgeMeesage(
-                                shared.BridgeMeesageKind.erase, 
-                                new shared.EraseBridgeData(
+                            new BridgeMeesage(
+                                BridgeMeesageKind.erase, 
+                                new EraseBridgeData(
                                     setting.service.bing.enabled,
                                     this.filterNotItems(ServiceKind.bing, setting)
                                 )

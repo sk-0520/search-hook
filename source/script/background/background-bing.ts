@@ -1,13 +1,13 @@
-import * as conf from '../conf';
 import BingQuery from '../share/query/bing-query';
 import BackgroundServiceBase from './background-service-base';
+import { IMainSetting } from '../share/setting/main-setting';
 
 export default class BackgroundBingService extends BackgroundServiceBase {
     constructor() {
         super('Background Bing');
     }
 
-    public resistRedirectBing(setting: conf.IMainSetting, notItems: Array<string>) {
+    public resistRedirectBing(setting: IMainSetting, notItems: Array<string>) {
 
         const requestSet = new Set();
         const bingSetting = setting.service.bing;

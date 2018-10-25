@@ -1,13 +1,13 @@
-import * as conf from '../conf';
 import GoogleQuery from '../share/query/google-query';
 import BackgroundServiceBase from './background-service-base';
+import { IMainSetting } from '../share/setting/main-setting';
 
 export default class BackgroundGoogle extends BackgroundServiceBase {
     constructor() {
         super('Background Google');
     }
 
-    public resistRedirectGoogle(setting: conf.IMainSetting, notItems: Array<string>) {
+    public resistRedirectGoogle(setting: IMainSetting, notItems: Array<string>) {
 
         const requestSet = new Set();
         const googleSetting = setting.service.google;

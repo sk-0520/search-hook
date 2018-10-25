@@ -1,5 +1,5 @@
 import { LoggingBase } from "../common";
-import { ServiceKind } from "../service-kind";
+import { ServiceKind } from "../define/service-kind";
 
 export default abstract class QueryBase extends LoggingBase {
 

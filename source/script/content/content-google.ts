@@ -1,7 +1,9 @@
-import * as conf from "../conf";
-import * as shared from "../share/common";
+import { EraseBridgeData, ItemsBridgeData, ServiceBridgeData } from "../share/bridge/bridge-data";
+import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
+import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
+import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/google-query";
-import { ServiceKind } from "../share/service-kind";
+import { HideItemSetting } from "../share/setting/hide-item-setting";
 import * as content from "./content";
 import ContentServiceBase from "./content-service-base";
 
@@ -13,13 +15,13 @@ export default class ContentGoogleService extends ContentServiceBase {
     public initialize() {
         const port = browser.runtime.connect();
         port.onMessage.addListener(rawMessage => {
-            const message = rawMessage as shared.BridgeMeesageBase;
+            const message = rawMessage as BridgeMeesageBase;
             this.logger.debug("CLIENT RECV!");
             this.logger.debug(JSON.stringify(message));
 
             switch (message.kind) {
-                case shared.BridgeMeesageKind.items:
-                    const itemsMessage = message as shared.BridgeMeesage<shared.ItemsBridgeData>;
+                case BridgeMeesageKind.items:
+                    const itemsMessage = message as BridgeMeesage<ItemsBridgeData>;
                     if (!itemsMessage.data.enabled) {
                         this.logger.debug("ignore google content");
                         return;
@@ -29,8 +31,8 @@ export default class ContentGoogleService extends ContentServiceBase {
                     this.hideGoogleItems(hideItems);
                     break;
 
-                case shared.BridgeMeesageKind.erase:
-                    const eraseMessage = message as shared.BridgeMeesage<shared.EraseBridgeData>;
+                case BridgeMeesageKind.erase:
+                    const eraseMessage = message as BridgeMeesage<EraseBridgeData>;
                     if (!eraseMessage.data.enabled) {
                         this.logger.debug("ignore google content");
                         return;
@@ -46,14 +48,14 @@ export default class ContentGoogleService extends ContentServiceBase {
 
         });
         port.postMessage(
-            new shared.BridgeMeesage(
-                shared.BridgeMeesageKind.service, 
-                new shared.ServiceBridgeData(ServiceKind.google)
+            new BridgeMeesage(
+                BridgeMeesageKind.service, 
+                new ServiceBridgeData(ServiceKind.google)
             )
         );
     }
 
-    private hideGoogleItems(hideItems: Array<conf.HiddenItemSetting>) {
+    private hideGoogleItems(hideItems: Array<HideItemSetting>) {
         if (!hideItems || !hideItems.length) {
             this.logger.debug('empty hide items');
             return;

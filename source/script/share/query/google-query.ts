@@ -1,4 +1,4 @@
-import { ServiceKind } from "../service-kind";
+import { ServiceKind } from "../define/service-kind";
 import QueryBase from "./query-base";
 
 export default class GoogleQuery extends QueryBase {

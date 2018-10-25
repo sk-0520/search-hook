@@ -1,5 +1,11 @@
-import * as conf from '../conf';
 import * as shared from '../share/common';
+import { convertMatchKind } from '../share/define/match-kind';
+import { MainSetting, IMainSetting } from '../share/setting/main-setting';
+import { ServiceManagerSetting } from '../share/setting/service-manager-setting';
+import { GoogleServiceSetting } from '../share/setting/service-setting-google';
+import { BingServiceSetting } from '../share/setting/service-setting-bing';
+import { NotItemSetting } from '../share/setting/not-item-setting';
+import { HideItemSetting } from '../share/setting/hide-item-setting';
 
 export default class Options extends shared.ActionBase {
     constructor() {
@@ -33,9 +39,9 @@ export default class Options extends shared.ActionBase {
     }
 
     private restoreCore(result: browser.storage.StorageObject) {
-        let baseSetting = new conf.MainSetting();
+        let baseSetting = new MainSetting();
         if (result.setting) {
-            const resultSetting = (result.setting as any) as conf.IMainSetting;
+            const resultSetting = (result.setting as any) as IMainSetting;
             baseSetting = shared.merge(baseSetting, resultSetting);
         }
 
@@ -48,14 +54,14 @@ export default class Options extends shared.ActionBase {
 
     }
 
-    private setService(setting: conf.ServiceSetting) {
-        function setGoogle(googleSetting: conf.GoogleServiceSetting) {
+    private setService(setting: ServiceManagerSetting) {
+        function setGoogle(googleSetting: GoogleServiceSetting) {
             (document.querySelector('#service-is-enabled-google') as HTMLInputElement).checked = googleSetting.enabled;
             (document.querySelector('#service-google-search-count') as HTMLInputElement).value = String(googleSetting.searchCount);
             (document.querySelector('#service-google-search-safe') as HTMLInputElement).checked = googleSetting.searchSafe;
         }
 
-        function setBing(bingSetting: conf.BingServiceSetting) {
+        function setBing(bingSetting: BingServiceSetting) {
             (document.querySelector('#service-is-enabled-bing') as HTMLInputElement).checked = bingSetting.enabled;
             //document.querySelector('#service-bing-search-count').value = bingSetting.searchCount;
         }
@@ -64,14 +70,14 @@ export default class Options extends shared.ActionBase {
         setBing(setting.bing);
     }
 
-    private setNotItems(setting: Array<conf.NotItemSetting>) {
+    private setNotItems(setting: Array<NotItemSetting>) {
         const parentElement = this.getNotItemParentElement();
         for (const item of setting) {
             this.addNotItemCore(parentElement, item);
         }
     }
 
-    private addNotItemCore(parent: HTMLInputElement, item: conf.NotItemSetting) {
+    private addNotItemCore(parent: HTMLInputElement, item: NotItemSetting) {
         const groupElement = document.createElement('tr');
 
         const wordInputElement = document.createElement('input');
@@ -121,9 +127,9 @@ export default class Options extends shared.ActionBase {
         parent.appendChild(groupElement);
     }
 
-    private getService(): conf.ServiceSetting {
+    private getService(): ServiceManagerSetting {
 
-        const setting = new conf.ServiceSetting();
+        const setting = new ServiceManagerSetting();
         setting.google.enabled = (document.querySelector('#service-is-enabled-google') as HTMLInputElement).checked,
             setting.google.searchCount = Number((document.querySelector('#service-google-search-count') as HTMLInputElement).value);
         setting.google.searchSafe = (document.querySelector('#service-google-search-safe') as HTMLInputElement).checked;
@@ -137,13 +143,13 @@ export default class Options extends shared.ActionBase {
         return document.querySelector('#engine-not-word-list') as HTMLInputElement;
     }
 
-    private getNotItems(): Array<conf.NotItemSetting> {
+    private getNotItems(): Array<NotItemSetting> {
         const parentElement = this.getNotItemParentElement();
 
         const children = parentElement.querySelectorAll('tr');
         this.logger.debug(`child: ${children.length}`);
 
-        const result = new Array<conf.NotItemSetting>();
+        const result = new Array<NotItemSetting>();
 
         for (const child of children) {
 
@@ -153,7 +159,7 @@ export default class Options extends shared.ActionBase {
                 continue;
             }
 
-            const item = new conf.NotItemSetting();
+            const item = new NotItemSetting();
             item.word = word;
             item.service.google = (child.querySelector('[name=engine-not-item-service-google]') as HTMLInputElement).checked;
             item.service.bing = (child.querySelector('[name=engine-not-item-service-bing]') as HTMLInputElement).checked;
@@ -168,13 +174,13 @@ export default class Options extends shared.ActionBase {
         return document.querySelector('#view-hide-host-list') as HTMLInputElement;
     }
 
-    private getHideItems(): Array<conf.HiddenItemSetting> {
+    private getHideItems(): Array<HideItemSetting> {
         const parentElement = this.getHideItemParentElement();
 
         const children = parentElement.querySelectorAll('tr');
         this.logger.debug(`child: ${children.length}`);
 
-        const result = Array<conf.HiddenItemSetting>();
+        const result = Array<HideItemSetting>();
 
         for (const child of children) {
 
@@ -184,11 +190,11 @@ export default class Options extends shared.ActionBase {
                 continue;
             }
 
-            const item = new conf.HiddenItemSetting();
+            const item = new HideItemSetting();
             item.word = word;
             item.service.google = (child.querySelector('[name=view-hide-item-service-google]') as HTMLInputElement).checked;
             item.service.bing = (child.querySelector('[name=view-hide-item-service-bing]') as HTMLInputElement).checked;
-            item.match.kind = conf.convertMatchKind((child.querySelector('[name=view-hide-item-match-kind]') as HTMLInputElement).value);
+            item.match.kind = convertMatchKind((child.querySelector('[name=view-hide-item-match-kind]') as HTMLInputElement).value);
             item.match.case = (child.querySelector('[name=view-hide-item-match-case]') as HTMLInputElement).checked,
 
             result.push(item);
@@ -200,7 +206,7 @@ export default class Options extends shared.ActionBase {
     private save(e: Event): void {
         e.preventDefault();
 
-        const setting = new conf.MainSetting();
+        const setting = new MainSetting();
         setting.service = this.getService();
         setting.notItems = this.getNotItems();
         setting.hideItems = this.getHideItems();
@@ -220,7 +226,7 @@ export default class Options extends shared.ActionBase {
     private addNotItemFromInput(e: Event) {
         e.preventDefault();
 
-        const item = new conf.NotItemSetting();
+        const item = new NotItemSetting();
 
         item.word = (document.querySelector('#engine-input-not-word') as HTMLInputElement).value;
         item.service.google = (document.querySelector('#engine-input-is-enabled-google') as HTMLInputElement).checked;
@@ -237,9 +243,9 @@ export default class Options extends shared.ActionBase {
     private addHideItemFromInput(e: Event): void {
         e.preventDefault();
 
-        const item = new conf.HiddenItemSetting();
+        const item = new HideItemSetting();
         item.word = (document.querySelector('#view-input-hide-host') as HTMLInputElement).value;
-        item.match.kind = conf.convertMatchKind((document.querySelector('#view-input-hide-match-kind') as HTMLInputElement).value);
+        item.match.kind = convertMatchKind((document.querySelector('#view-input-hide-match-kind') as HTMLInputElement).value);
         item.match.case = (document.querySelector('#view-input-hide-match-case') as HTMLInputElement).checked;
         item.service.google = (document.querySelector('#view-input-is-enabled-google') as HTMLInputElement).checked;
         item.service.bing = (document.querySelector('#view-input-is-enabled-bing') as HTMLInputElement).checked;
@@ -252,22 +258,22 @@ export default class Options extends shared.ActionBase {
         (document.querySelector('#view-input-is-enabled-bing') as HTMLInputElement).checked = true;
     }
 
-    private addHideItem(item: conf.HiddenItemSetting) {
+    private addHideItem(item: HideItemSetting) {
         this.addHideItemCore(this.getHideItemParentElement(), item);
     }
 
-    private addNotItem(item: conf.NotItemSetting) {
+    private addNotItem(item: NotItemSetting) {
         this.addNotItemCore(this.getNotItemParentElement(), item);
     }
 
-    private setHideItems(setting: Array<conf.HiddenItemSetting>) {
+    private setHideItems(setting: Array<HideItemSetting>) {
         const parentElement = this.getHideItemParentElement();
         for (const item of setting) {
             this.addHideItemCore(parentElement, item);
         }
     }
 
-    private addHideItemCore(parent: HTMLElement, item: conf.HiddenItemSetting) {
+    private addHideItemCore(parent: HTMLElement, item: HideItemSetting) {
         const groupElement = document.createElement('tr');
 
         const wordInputElement = document.createElement('input');
