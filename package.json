@@ -5,7 +5,9 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "tslint": "tslint ./source/script/**/*.ts",
-    "manifest:firefox": "cp-cli ./source/firefox.json ./dist/manifest.json & cp-cli ./source/resources/icon.svg ./dist/icon.svg",
+    "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
+    "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
+    "resource:firefox":          "npm-run-all resource:image-firefox resource:manifest-firefox",
     "browser:firefox": "web-ext run --source-dir=./dist --start-url about:debugging about:addons",
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
     "browser:firefox-sk": "npm run browser:firefox -- --keep-profile-changes --firefox-profile=X:\\fx ",
@@ -21,9 +23,9 @@
     "watch:core:content-style": "   parcel watch --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
     "compile:firefox": "npm run tslint & npm-run-all --parallel compile:core:*",
     "watch:firefox": "npm run tslint & npm-run-all --parallel watch:core:*",
-    "debug:firefox": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox",
-    "debug:firefox-sk": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk",
-    "release:firefox": "npm-run-all clean manifest:firefox compile:firefox lint:firefox build:firefox"
+    "debug:firefox": "npm run resource:firefox & npm-run-all --parallel watch:firefox browser:firefox",
+    "debug:firefox-sk": "npm run resource:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk",
+    "release:firefox": "npm-run-all clean resource:firefox compile:firefox lint:firefox build:firefox"
   },
   "repository": {
     "type": "git",
