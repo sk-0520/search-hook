@@ -21,7 +21,7 @@
     "watch:core:background": "      parcel watch --public-url . ./source/view/background.pug",
     "watch:core:content-script": "  parcel watch --public-url . ./source/script/content/content-google.loader.ts ./source/script/content/content-bing.loader.ts",
     "watch:core:content-style": "   parcel watch --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
-    "compile:firefox": "npm run tslint & npm-run-all --parallel compile:core:*",
+    "compile:firefox": "npm run tslint & npm-run-all compile:core:*",
     "watch:firefox": "npm run tslint & npm-run-all --parallel watch:core:*",
     "debug:firefox": "npm run resource:firefox & npm-run-all --parallel watch:firefox browser:firefox",
     "debug:firefox-sk": "npm run resource:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk",
