@@ -47,7 +47,7 @@
         ],
         "max-line-length": [
             true,
-            150
+            200
         ],
         "prefer-for-of": false,
         "no-for-in-array": false,

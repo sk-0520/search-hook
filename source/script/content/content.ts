@@ -1,14 +1,14 @@
-import * as conf from "../conf";
 import * as shared from "../share/common";
+import { HideItemSetting } from "../share/setting/hide-item-setting";
 
 const outputContent = new shared.Logger('Content');
 
 export class HiddenCheker {
-    public item?: conf.HiddenItemSetting;
+    public item?: HideItemSetting;
     public match?: (s: string) => boolean;
 }
 
-export function getCheckers(hideItems: Array<conf.HiddenItemSetting>) {
+export function getCheckers(hideItems: Array<HideItemSetting>) {
     return hideItems.map(i => {
         const obj = new HiddenCheker();
         obj.item = i;
@@ -137,6 +137,7 @@ export function switchHideItems() {
 }
 
 export function appendHiddenSwitch() {
+
     const switchElement = document.createElement('input');
     switchElement.setAttribute('type', 'checkbox');
     switchElement.checked = true;
