@@ -3,7 +3,7 @@ import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/google-query";
-import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import * as content from "./content";
 import ContentServiceBase from "./content-service-base";
 
@@ -55,8 +55,8 @@ export default class ContentGoogleService extends ContentServiceBase {
         );
     }
 
-    private hideGoogleItems(hideItems: Array<HideItemSetting>) {
-        if (!hideItems || !hideItems.length) {
+    private hideGoogleItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
+        if (!hideItems.length) {
             this.logger.debug('empty hide items');
             return;
         }
@@ -104,7 +104,7 @@ export default class ContentGoogleService extends ContentServiceBase {
                 this.logger.debug('link: ' + link);
 
                 // 普通パターン
-                if (content.matchSimleUrl(link, checkers)) {
+                if (content.matchSimpleUrl(link, checkers)) {
                     content.hideElement(element);
                     success = true;
                     continue;
@@ -130,7 +130,7 @@ export default class ContentGoogleService extends ContentServiceBase {
         }
     }
 
-    private eraseGoogleQuery(items: Array<string>) {
+    private eraseGoogleQuery(items: ReadonlyArray<string>) {
         const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
         const queryValue = queryElement.value;
         this.logger.debug('q: ' + queryValue);

@@ -1,5 +1,5 @@
 export enum BridgeMeesageKind {
-    service,
-    items,
-    erase,
+    service = 'service',
+    items = 'items',
+    erase = 'erase',
 }

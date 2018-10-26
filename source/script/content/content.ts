@@ -1,28 +1,27 @@
 import * as shared from "../share/common";
-import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ElementClass } from "../share/define/element-names";
 
 const outputContent = new shared.Logger('Content');
 
-export class HiddenCheker {
-    public item?: HideItemSetting;
-    public match?: (s: string) => boolean;
+export interface IHideCheker {
+    item: HideItemSetting;
+    match: (s: string) => boolean;
 }
 
-export function getCheckers(hideItems: Array<HideItemSetting>) {
+export function getCheckers(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): Array<IHideCheker> {
     return hideItems.map(i => {
-        const obj = new HiddenCheker();
-        obj.item = i;
+        let func: (s: string) => boolean;
 
         switch (i.match.kind) {
             case 'partial':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();
-                    obj.match = s => {
+                    func = s => {
                         return s.toUpperCase().indexOf(word) !== -1;
                     };
                 } else {
-                    obj.match = s => {
+                    func = s => {
                         return s.indexOf(i.word) !== -1;
                     };
                 }
@@ -31,11 +30,11 @@ export function getCheckers(hideItems: Array<HideItemSetting>) {
             case 'forward':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();
-                    obj.match = s => {
+                    func = s => {
                         return s.toUpperCase().indexOf(word) === 0;
                     };
                 } else {
-                    obj.match = s => {
+                    func = s => {
                         return s.indexOf(i.word) === 0;
                     };
                 }
@@ -44,11 +43,11 @@ export function getCheckers(hideItems: Array<HideItemSetting>) {
             case 'perfect':
                 if (i.match.case) {
                     const word = i.word.toUpperCase();
-                    obj.match = s => {
+                    func = s => {
                         return s.toUpperCase() === word;
                     };
                 } else {
-                    obj.match = s => {
+                    func = s => {
                         return s === i.word;
                     };
                 }
@@ -56,29 +55,29 @@ export function getCheckers(hideItems: Array<HideItemSetting>) {
 
             case 'regex':
                 const reg = i.match.case ? new RegExp(i.word) : new RegExp(i.word, 'i');
-                obj.match = s => {
+                func = s => {
                     return reg.test(s);
                 };
                 break;
 
             default:
-                outputContent.error(`kind: ${JSON.stringify(i)}`);
+                throw { error: i };
         }
 
-        return obj;
+        return {
+            item: i,
+            match: func,
+        };
     });
 }
 
-export function matchUrl(linkValue: string, checkers: Array<HiddenCheker>) {
+function matchUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
 
-    let url = null;
+    let url: URL;
     try {
         url = new URL(linkValue);
     } catch (ex) {
         outputContent.error(ex);
-    }
-
-    if (!url) {
         return false;
     }
 
@@ -91,16 +90,14 @@ export function matchUrl(linkValue: string, checkers: Array<HiddenCheker>) {
         urlValue += url.search;
     }
 
-    return checkers.some(i => {
-        return i.match!(urlValue);
-    });
+    return checkers.some(i => i.match(urlValue));
 }
 
-export function matchSimleUrl(linkValue: string, checkers: Array<HiddenCheker>) {
+export function matchSimpleUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
     return matchUrl(linkValue, checkers);
 }
 
-export function matchQueryUrl(linkValue: string, checkers: Array<HiddenCheker>) {
+export function matchQueryUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
     try {
         const index = linkValue.indexOf('?');
         if (index !== -1) {
@@ -127,7 +124,7 @@ export function hideElement(element: Element) {
 }
 
 export function switchHideItems() {
-    const items = document.querySelectorAll(ElementClass.hidden);
+    const items = document.querySelectorAll('.' + ElementClass.hidden);
     if (!items.length) {
         return;
     }

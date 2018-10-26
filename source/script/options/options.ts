@@ -6,6 +6,7 @@ import { NotItemSetting } from '../share/setting/not-item-setting';
 import { ServiceManagerSetting } from '../share/setting/service-manager-setting';
 import { BingServiceSetting } from '../share/setting/service-setting-bing';
 import { GoogleServiceSetting } from '../share/setting/service-setting-google';
+import { Setting } from '../browser/outside/setting';
 
 export default class Options extends shared.ActionBase {
     constructor() {
@@ -28,30 +29,17 @@ export default class Options extends shared.ActionBase {
     }
 
     private restore(): void {
-        const getting = browser.storage.local.get('setting');
-        getting.then(
-            result => this.restoreCore(result),
-            error => {
-                alert("bbb");
-                this.logger.error(error);
-            }
+        const setting = new Setting();
+        setting.loadMainSettingAsync().then(
+            result => this.restoreCore(setting.tuneMainSetting(result)),
+            error => this.logger.dumpError(error)
         );
     }
 
-    private restoreCore(result: browser.storage.StorageObject) {
-        let baseSetting = new MainSetting();
-        if (result.setting) {
-            const resultSetting = (result.setting as any) as IMainSetting;
-            baseSetting = shared.merge(baseSetting, resultSetting);
-        }
-
-        this.logger.debug(JSON.stringify(baseSetting));
-
-        this.setService(baseSetting.service);
-        this.setNotItems(baseSetting.notItems);
-
-        this.setHideItems(baseSetting.hideItems);
-
+    private restoreCore(setting: IMainSetting) {
+        this.setService(setting.service);
+        this.setNotItems(setting.notItems);
+        this.setHideItems(setting.hideItems);
     }
 
     private setService(setting: ServiceManagerSetting) {

@@ -53,7 +53,8 @@
         "no-for-in-array": false,
         "no-empty-interface": false,
         "no-consecutive-blank-lines": false,
-        "ordered-imports": false
+        "ordered-imports": false,
+        "no-angle-bracket-type-assertion": false
     },
     "rulesDirectory": []
 }

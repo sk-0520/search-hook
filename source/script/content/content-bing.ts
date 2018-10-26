@@ -1,9 +1,9 @@
-import { EraseBridgeData, ItemsBridgeData, ServiceBridgeData } from "../share/bridge/bridge-data";
+import { EraseBridgeData, ServiceBridgeData, IHideItemsBridgeData } from "../share/bridge/bridge-data";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ServiceKind } from "../share/define/service-kind";
 import BingQuery from "../share/query/bing-query";
-import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import * as content from "./content";
 import ContentServiceBase from "./content-service-base";
 
@@ -21,7 +21,7 @@ export default class ContentBingService extends ContentServiceBase {
 
             switch (message.kind) {
                 case BridgeMeesageKind.items:
-                    const itemsMessage = message as BridgeMeesage<ItemsBridgeData>;
+                    const itemsMessage = message as BridgeMeesage<IHideItemsBridgeData>;
                     if (!itemsMessage.data.enabled) {
                         this.logger.debug("ignore bing content");
                         return;
@@ -55,8 +55,8 @@ export default class ContentBingService extends ContentServiceBase {
         );
     }
 
-    private hideGoogleItems(hideItems: Array<HideItemSetting>) {
-        if (!hideItems || !hideItems.length) {
+    private hideGoogleItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
+        if (!hideItems.length) {
             this.logger.debug('empty hide items');
             return;
         }
@@ -89,7 +89,7 @@ export default class ContentBingService extends ContentServiceBase {
                 this.logger.debug('link: ' + link);
 
                 // 普通パターン
-                if (content.matchSimleUrl(link, checkers)) {
+                if (content.matchSimpleUrl(link, checkers)) {
                     content.hideElement(element);
                     success = true;
                     continue;
@@ -115,7 +115,7 @@ export default class ContentBingService extends ContentServiceBase {
         }
     }
 
-    private eraseBingQuery(items: Array<string>) {
+    private eraseBingQuery(items: ReadonlyArray<string>) {
         const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
         const queryValue = queryElement.value;
         this.logger.debug('q: ' + queryValue);

@@ -6,6 +6,7 @@ import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
 import BackgroundBingService from './background-bing';
 import BackgroundGoogle from './background-google';
+import { Setting } from '../browser/outside/setting';
 
 export default class Background extends shared.ActionBase {
     constructor() {
@@ -16,22 +17,15 @@ export default class Background extends shared.ActionBase {
         this.loadSetting();
     }
 
-    private loadSetting() {
-        browser.storage.local.get('setting').then(
-            result => this.loadSettingCore(result),
-            error => this.logger.error(error)
+    private loadSetting(): Promise<void> {
+        const setting = new Setting();
+        return setting.loadMainSettingAsync().then(
+            result => this.loadSettingCore(setting.tuneMainSetting(result)),
+            error => this.logger.dumpError(error)
         );
     }
 
-    private loadSettingCore(result: browser.storage.StorageObject) {
-        this.logger.log("setting loading");
-        const setting = (result.setting as any) as IMainSetting;
-
-        if(!setting) {
-            this.logger.log('setting empty');
-            return;
-        }
-
+    private loadSettingCore(setting: IMainSetting) {
         this.logger.log('setting loaded');
         this.logger.debug(JSON.stringify(setting));
 
@@ -46,15 +40,15 @@ export default class Background extends shared.ActionBase {
 
     private filterNotItems(service: ServiceKind, setting: IMainSetting): Array<string> {
         this.logger.log(service);
-    
+
         const notItems = setting.notItems.filter(i => {
-            switch(service) {
+            switch (service) {
                 case ServiceKind.google:
                     return i.service.google;
-    
+
                 case ServiceKind.bing:
                     return i.service.bing;
-    
+
                 default:
                     throw { error: i };
             }
@@ -63,7 +57,7 @@ export default class Background extends shared.ActionBase {
         }).map(i => {
             return i.word;
         });
-    
+
         return notItems;
     }
 
@@ -73,44 +67,44 @@ export default class Background extends shared.ActionBase {
         const enabledItems = setting.hideItems.filter(i => {
             return i.word && i.word.length;
         }).filter(i => {
-            if(i.match.kind === 'regex') {
+            if (i.match.kind === 'regex') {
                 try {
                     new RegExp(i.word);
-                } catch(ex) {
+                } catch (ex) {
                     this.logger.error(JSON.stringify(i));
                     this.logger.error(ex);
                     return false;
                 }
             }
-    
+
             return true;
         });
-    
+
         const googleHideItems = enabledItems.filter(i => {
             return i.service.google;
         });
         const bingHideItems = enabledItems.filter(i => {
             return i.service.bing;
         });
-    
+
         this.logger.debug('googleHideItems.length: ' + googleHideItems.length);
         this.logger.debug('bingHideItems.length: ' + bingHideItems.length);
-    
+
         browser.runtime.onConnect.addListener(port => {
             this.logger.debug('connected content!');
             this.logger.debug(JSON.stringify(port));
-    
+
             port.onMessage.addListener(rawMessage => {
                 this.logger.debug('send!');
                 this.logger.debug(JSON.stringify(rawMessage));
-    
+
                 const message = rawMessage as BridgeMeesage<IServiceBridgeData>;
 
-                switch(message.data.service) {
+                switch (message.data.service) {
                     case ServiceKind.google:
                         port.postMessage(
                             new BridgeMeesage(
-                                BridgeMeesageKind.items, 
+                                BridgeMeesageKind.items,
                                 new ItemsBridgeData(
                                     setting.service.google.enabled,
                                     googleHideItems
@@ -119,7 +113,7 @@ export default class Background extends shared.ActionBase {
                         );
                         port.postMessage(
                             new BridgeMeesage(
-                                BridgeMeesageKind.erase, 
+                                BridgeMeesageKind.erase,
                                 new EraseBridgeData(
                                     setting.service.google.enabled,
                                     this.filterNotItems(ServiceKind.google, setting)
@@ -127,11 +121,11 @@ export default class Background extends shared.ActionBase {
                             )
                         );
                         break;
-    
+
                     case ServiceKind.bing:
                         port.postMessage(
                             new BridgeMeesage(
-                                BridgeMeesageKind.items, 
+                                BridgeMeesageKind.items,
                                 new ItemsBridgeData(
                                     setting.service.bing.enabled,
                                     bingHideItems
@@ -140,7 +134,7 @@ export default class Background extends shared.ActionBase {
                         );
                         port.postMessage(
                             new BridgeMeesage(
-                                BridgeMeesageKind.erase, 
+                                BridgeMeesageKind.erase,
                                 new EraseBridgeData(
                                     setting.service.bing.enabled,
                                     this.filterNotItems(ServiceKind.bing, setting)
@@ -148,12 +142,12 @@ export default class Background extends shared.ActionBase {
                             )
                         );
                         break;
-    
+
                     default:
                         this.logger.log('unknown service');
                 }
             });
         });
     }
-    
+
 }

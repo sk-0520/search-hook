@@ -52,7 +52,7 @@ export default abstract class QueryBase extends LoggingBase {
         return result;
     }
 
-    public makeCustomQuery(queryItems: Array<string>, notItems: Array<string>) {
+    public makeCustomQuery(queryItems: ReadonlyArray<string>, notItems: ReadonlyArray<string>) {
         // 既に存在する否定ワードはそのまま、設定されていなければ追加していく
 
         const addNotItems = notItems.concat();
@@ -90,7 +90,7 @@ export default abstract class QueryBase extends LoggingBase {
         };
     }
 
-    public getUserInputQuery(queryItems: Array<string>, notItems: Array<string>) {
+    public getUserInputQuery(queryItems: ReadonlyArray<string>, notItems: ReadonlyArray<string>) {
         // 否定ワードを除外
         const addNotItems = notItems.concat();
         const userQuerys = [];

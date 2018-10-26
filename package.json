@@ -7,7 +7,7 @@
     "tslint": "tslint ./source/script/**/*.ts",
     "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
     "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
-    "resource:firefox":          "npm-run-all resource:image-firefox resource:manifest-firefox",
+    "resource:firefox": "npm-run-all resource:image-firefox resource:manifest-firefox",
     "browser:firefox": "web-ext run --source-dir=./dist --start-url about:debugging about:addons",
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
     "browser:firefox-sk": "npm run browser:firefox -- --keep-profile-changes --firefox-profile=X:\\fx ",
@@ -35,6 +35,8 @@
   "license": "GPLv3",
   "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "cp-cli": "^1.1.2",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.1.3",

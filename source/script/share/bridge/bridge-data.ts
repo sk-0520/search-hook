@@ -1,5 +1,5 @@
 import { ServiceKind } from "../define/service-kind";
-import { HideItemSetting } from "../setting/hide-item-setting";
+import { IReadOnlyHideItemSetting } from "../setting/hide-item-setting";
 
 export interface IBridgeData { }
 
@@ -20,14 +20,14 @@ export class ServiceBridgeData extends BridgeData implements IServiceBridgeData 
 
 export interface IHideItemsBridgeData extends IBridgeData {
     readonly enabled: boolean;
-    readonly items: Array<HideItemSetting>;
+    readonly items: ReadonlyArray<IReadOnlyHideItemSetting>;
 }
 
 export class ItemsBridgeData extends BridgeData implements IHideItemsBridgeData {
     public readonly enabled: boolean;
-    public readonly items: Array<HideItemSetting>;
+    public readonly items: ReadonlyArray<IReadOnlyHideItemSetting>;
 
-    constructor(enabled: boolean, items: Array<HideItemSetting>) {
+    constructor(enabled: boolean, items: ReadonlyArray<IReadOnlyHideItemSetting>) {
         super();
         this.enabled = enabled;
         this.items = items;
@@ -36,14 +36,14 @@ export class ItemsBridgeData extends BridgeData implements IHideItemsBridgeData 
 
 export interface IEraseBridgeData extends IBridgeData {
     readonly enabled: boolean;
-    readonly items: Array<string>;
+    readonly items: ReadonlyArray<string>;
 }
 
 export class EraseBridgeData extends BridgeData implements IEraseBridgeData {
     public readonly enabled: boolean;
-    public readonly items: Array<string>;
+    public readonly items: ReadonlyArray<string>;
 
-    constructor(enabled: boolean, items: Array<string>) {
+    constructor(enabled: boolean, items: ReadonlyArray<string>) {
         super();
         this.enabled = enabled;
         this.items = items;

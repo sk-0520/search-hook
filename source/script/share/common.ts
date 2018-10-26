@@ -27,19 +27,19 @@ export class Logger {
         console.table(value);
     }
 
-    public traceDump(value: any): void {
+    public dumpTrace(value: any): void {
         this.trace(JSON.stringify(value));
     }
-    public debugDump(value: any): void {
+    public dumpDebug(value: any): void {
         this.debug(JSON.stringify(value));
     }
-    public logDump(value: any): void {
+    public dumpLog(value: any): void {
         this.log(JSON.stringify(value));
     }
-    public warnDump(value: any): void {
+    public dumpWarn(value: any): void {
         this.warn(JSON.stringify(value));
     }
-    public errorDump(value: any): void {
+    public dumpError(value: any): void {
         this.error(JSON.stringify(value));
     }
 }
