@@ -1,5 +1,6 @@
 import * as shared from "../share/common";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { ElementClass } from "../share/define/element-names";
 
 const outputContent = new shared.Logger('Content');
 
@@ -121,18 +122,18 @@ export function matchQueryUrl(linkValue: string, checkers: Array<HiddenCheker>) 
 }
 
 export function hideElement(element: Element) {
-    element.classList.add('WE___search-hook-_-_-hidden');
-    element.classList.add('WE___search-hook-_-_-hidden-item');
+    element.classList.add(ElementClass.hidden);
+    element.classList.add(ElementClass.hiddenItem);
 }
 
 export function switchHideItems() {
-    const items = document.querySelectorAll('.WE___search-hook-_-_-hidden');
+    const items = document.querySelectorAll(ElementClass.hidden);
     if (!items.length) {
         return;
     }
 
     for (const item of items) {
-        item.classList.toggle('WE___search-hook-_-_-hidden-item');
+        item.classList.toggle(ElementClass.hiddenItem);
     }
 }
 
@@ -151,7 +152,7 @@ export function appendHiddenSwitch() {
 
     const parent = document.createElement('div');
     parent.appendChild(groupElement);
-    parent.classList.add('WE___search-hook-_-_-switch');
+    parent.classList.add(ElementClass.switch);
 
     document.getElementsByTagName('body')[0].appendChild(parent);
 }
