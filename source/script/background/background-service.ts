@@ -5,6 +5,9 @@ import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import QueryBase from '../share/query/query';
 import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
+import { BridgeMeesage } from '../share/bridge/bridge-meesage';
+import { IServiceBridgeData, ItemsBridgeData, EraseBridgeData } from '../share/bridge/bridge-data';
+import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 
 /** Fxから持ってきた */
 export interface IRequestDetails {
@@ -70,7 +73,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     }
 
-    public getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
+    protected getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
         return hideItems.filter(i => {
             switch (this.service) {
                 case ServiceKind.google:
@@ -143,8 +146,26 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         return queryString;
     }
 
-    public receiveServiceMessage(port: browser.runtime.Port) {
+    public receiveServiceMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
+        port.postMessage(
+            new BridgeMeesage(
+                BridgeMeesageKind.items,
+                new ItemsBridgeData(
+                    this.setting.enabled,
+                    this.hideItems
+                )
+            )
+        );
 
+        port.postMessage(
+            new BridgeMeesage(
+                BridgeMeesageKind.erase,
+                new EraseBridgeData(
+                    this.setting.enabled,
+                    this.notItemWords
+                )
+            )
+        );
     }
 
 }

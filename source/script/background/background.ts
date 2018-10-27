@@ -1,17 +1,17 @@
 import { Setting } from '../browser/setting';
-import { EraseBridgeData, IServiceBridgeData, ItemsBridgeData } from '../share/bridge/bridge-data';
+import { IServiceBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { ActionBase } from '../share/common';
-import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
+import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
+import { BackgroundServiceBase, ISettingItems } from './background-service';
 import BackgroundServiceBing from './background-service-bing';
 import BackgroundServiceGoogle from './background-service-google';
-import { BackgroundServiceBase, ISettingItems } from './background-service';
-import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 
 export default class Background extends ActionBase {
 
+    protected port?: browser.runtime.Port;
     private backgroundServiceMap = new Map<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>();
 
     public constructor() {
@@ -49,120 +49,26 @@ export default class Background extends ActionBase {
             service.registerRedirect();
         }
 
-        this.resistView(setting);
+        this.accept();
     }
 
-    private filterNotItems(service: ServiceKind, setting: IMainSetting): Array<string> {
-        this.logger.log(service);
-
-        const notItems = setting.notItems.filter(i => {
-            switch (service) {
-                case ServiceKind.google:
-                    return i.service.google;
-
-                case ServiceKind.bing:
-                    return i.service.bing;
-
-                default:
-                    throw { error: i };
-            }
-        }).filter(i => {
-            return i.word.length;
-        }).map(i => {
-            return i.word;
-        });
-
-        return notItems;
-    }
-
-    private resistView(setting: IMainSetting) {
-
-        // 比較関数だけ作っておきたかったけど転送できない
-        const enabledItems = setting.hideItems.filter(i => {
-            return i.word && i.word.length;
-        }).filter(i => {
-            if (i.match.kind === 'regex') {
-                try {
-                    new RegExp(i.word);
-                } catch (ex) {
-                    this.logger.error(JSON.stringify(i));
-                    this.logger.error(ex);
-                    return false;
-                }
-            }
-
-            return true;
-        });
-
-        const googleHideItems = enabledItems.filter(i => {
-            return i.service.google;
-        });
-        const bingHideItems = enabledItems.filter(i => {
-            return i.service.bing;
-        });
-
-        this.logger.debug('googleHideItems.length: ' + googleHideItems.length);
-        this.logger.debug('bingHideItems.length: ' + bingHideItems.length);
-
+    private accept() {
         browser.runtime.onConnect.addListener(port => {
-            this.logger.debug('connected content!');
-            this.logger.debug(JSON.stringify(port));
+            this.logger.debug('connected client!');
+            this.logger.dumpDebug(port);
+            this.port = port;
 
             port.onMessage.addListener(rawMessage => {
                 this.logger.debug('send!');
                 this.logger.debug(JSON.stringify(rawMessage));
 
+                // 未調査: 自アドオンの接続だけ？
                 const message = rawMessage as BridgeMeesage<IServiceBridgeData>;
-
-                switch (message.data.service) {
-                    case ServiceKind.google:
-                        port.postMessage(
-                            new BridgeMeesage(
-                                BridgeMeesageKind.items,
-                                new ItemsBridgeData(
-                                    setting.service.google.enabled,
-                                    googleHideItems
-                                )
-                            )
-                        );
-                        port.postMessage(
-                            new BridgeMeesage(
-                                BridgeMeesageKind.erase,
-                                new EraseBridgeData(
-                                    setting.service.google.enabled,
-                                    this.filterNotItems(ServiceKind.google, setting)
-                                )
-                            )
-                        );
-                        break;
-
-                    case ServiceKind.bing:
-                        port.postMessage(
-                            new BridgeMeesage(
-                                BridgeMeesageKind.items,
-                                new ItemsBridgeData(
-                                    setting.service.bing.enabled,
-                                    bingHideItems
-                                )
-                            )
-                        );
-                        port.postMessage(
-                            new BridgeMeesage(
-                                BridgeMeesageKind.erase,
-                                new EraseBridgeData(
-                                    setting.service.bing.enabled,
-                                    this.filterNotItems(ServiceKind.bing, setting)
-                                )
-                            )
-                        );
-                        break;
-
-                    default:
-                        this.logger.log('unknown service');
-                }
+                const service = this.backgroundServiceMap.get(message.data.service)!;
+                
+                service.receiveServiceMessage(this.port!, message);
             });
         });
     }
-
 }
 
