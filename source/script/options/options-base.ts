@@ -28,5 +28,4 @@ export default abstract class OptionsBase<TSetting> extends ActionBase {
     protected getInputByName(parentElement: Element, name: ElementName): HTMLInputElement {
         return parentElement.querySelector(toNameSelector(name)) as HTMLInputElement;
     }
-
 }

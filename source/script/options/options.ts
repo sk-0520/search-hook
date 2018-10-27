@@ -1,7 +1,5 @@
 import { Setting } from '../browser/setting';
 import { ActionBase } from '../share/common';
-import { convertMatchKind } from '../share/define/match-kind';
-import { HideItemSetting } from '../share/setting/hide-item-setting';
 import { IMainSetting, MainSetting } from '../share/setting/main-setting';
 import OptionsNotItems from './options-not-items';
 import OptionsService from './options-service';

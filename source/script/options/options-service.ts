@@ -14,7 +14,11 @@ export default class OptionsService extends OptionsBase<IServiceManagerSetting> 
         return document.getElementById(ElementId.optionsService)!;
     }
 
-    public initialize() { }
+    public initialize() {
+        if(false) { 
+            this.logger.debug('block is empty');
+        }
+    }
 
     private restoreGoogle(setting: IReadOnlyGoogleServiceSetting): void {
         this.setById(ElementId.optionsServiceGoogle, e => e.checked = setting.enabled);
@@ -35,8 +39,8 @@ export default class OptionsService extends OptionsBase<IServiceManagerSetting> 
         const setting = new GoogleServiceSetting();
 
         setting.enabled = this.getInputById(ElementId.optionsServiceGoogle).checked;
-        setting.searchCount= +this.getInputById(ElementId.optionsServiceGoogleSearchCount).value;
-        setting.searchSafe= this.getInputById(ElementId.optionsServiceGoogleSearchSafe).checked;
+        setting.searchCount = +this.getInputById(ElementId.optionsServiceGoogleSearchCount).value;
+        setting.searchSafe = this.getInputById(ElementId.optionsServiceGoogleSearchSafe).checked;
 
         return setting;
     }

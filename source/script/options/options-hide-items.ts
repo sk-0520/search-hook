@@ -70,9 +70,9 @@ export default class OptionsHideItems extends OptionsBase<Array<IHideItemSetting
         this.logger.debug(JSON.stringify(item));
         this.addHideItem(item);
 
-        this.setById(ElementId.optionsHideItemInputWord, e => e.value = '');
-        this.setById(ElementId.optionsHideItemInputServiceGoogle, e => e.checked = true);
-        this.setById(ElementId.optionsHideItemInputServiceBing, e => e.checked = true);
+        this.setById(ElementId.optionsHideItemInputWord, elm => elm.value = '');
+        this.setById(ElementId.optionsHideItemInputServiceGoogle, elm => elm.checked = true);
+        this.setById(ElementId.optionsHideItemInputServiceBing, elm => elm.checked = true);
     }
 
     private addHideItem(item: HideItemSetting) {

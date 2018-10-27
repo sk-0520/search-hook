@@ -65,9 +65,9 @@ export default class OptionsNotItems extends OptionsBase<Array<INotItemSetting>>
         this.logger.debug(JSON.stringify(item));
         this.addNotItem(item);
 
-        this.setById(ElementId.optionsNotItemInputWord, e => e.value = '');
-        this.setById(ElementId.optionsNotItemInputServiceGoogle, e => e.checked = true);
-        this.setById(ElementId.optionsNotItemInputServiceBing, e => e.checked = true);
+        this.setById(ElementId.optionsNotItemInputWord, elm => elm.value = '');
+        this.setById(ElementId.optionsNotItemInputServiceGoogle, elm => elm.checked = true);
+        this.setById(ElementId.optionsNotItemInputServiceBing, elm => elm.checked = true);
     }
 
     private addNotItem(item: INotItemSetting) {
