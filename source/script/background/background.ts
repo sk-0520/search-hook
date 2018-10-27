@@ -32,11 +32,12 @@ export default class Background extends ActionBase {
         this.logger.log('setting loaded');
         this.logger.debug(JSON.stringify(setting));
 
-        new BackgroundServiceGoogle().resistRedirectGoogle(setting, this.filterNotItems(ServiceKind.google, setting));
-        new BackgroundServiceBing().resistRedirectBing(setting, this.filterNotItems(ServiceKind.bing, setting));
+        // TODO: 重複コード
+        const google = new BackgroundServiceGoogle(setting.service.google);
+        google.registerRedirect(setting.notItems);
 
-        //resistRedirectGoogle(setting, filterNotItems(ServiceKind_Google, setting));
-        //resistRedirectBing(setting, filterNotItems(ServiceKind_Bing, setting));
+        const bing = new BackgroundServiceBing(setting.service.bing);
+        bing.registerRedirect(setting.notItems);
 
         this.resistView(setting);
     }

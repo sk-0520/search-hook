@@ -1,88 +1,53 @@
 import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
-import { IMainSetting } from '../share/setting/main-setting';
-import BackgroundServiceBase from './background-service';
+import { BackgroundServiceBase, IRequestDetails } from './background-service';
+import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
 
-export default class BackgroundServiceBing extends BackgroundServiceBase {
+export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
+
+    protected get filter() {
+        return {
+            urls: [
+                "*://*.bing.com/search?*",
+            ]
+        };
+    }
 
     public get service(): ServiceKind {
         return ServiceKind.bing;
     }
-    
-    public constructor() {
-        super('Background Bing');
+
+    public constructor(setting: IReadOnlyBingServiceSetting) {
+        super('Background Bing', setting);
     }
 
-    public resistRedirectBing(setting: IMainSetting, notItems: Array<string>) {
+    protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {
+        // まだ検索してないっぽければ無視
+        if (!url.searchParams.has('q')) {
+            return;
+        }
 
-        const requestSet = new Set();
-        const bingSetting = setting.service.bing;
-    
-        // Google 登録
-        browser.webRequest.onBeforeRequest.addListener(
-            requestDetails => {
-                this.logger.log('Loading: ' + requestDetails.url);
-                this.logger.debug(JSON.stringify(requestDetails));
-            
-                if(!bingSetting.enabled) {
-                    this.logger.debug('disabled bing');
-                    return;
-                }
-            
-                this.logger.debug('enabled bing');
-            
-                if(requestSet.has(requestDetails.requestId)) {
-                    this.logger.debug('setted request: ' + requestDetails.requestId);
-                    requestSet.delete(requestDetails.requestId);
-                    return;
-                }
-                requestSet.add(requestDetails.requestId);
-            
-                const url = new URL(requestDetails.url);
-            
-                // まだ検索してないっぽければ無視
-                if(!url.searchParams.has('q')) {
-                    return;
-                }
-            
-                // 既に検索済みのページとして何もしない
-                if(url.searchParams.has('first')) {
-                    this.logger.debug('ignore request');
-                    return;
-                }
-            
-                // // 検索数の指定が無ければ設定値に書き換え
-                // if(!url.searchParams.has('num')) {
-                //     url.searchParams.append('num', bingSetting.searchCount)
-                // }
+        // 既に検索済みのページとして何もしない
+        if (url.searchParams.has('first')) {
+            this.logger.debug('ignore request');
+            return;
+        }
 
-                const query = new BingQuery();
-            
-                const rawQuery = url.searchParams.get('q')!;
-                this.logger.debug('raw: ' + rawQuery);
-                const queryItems = query.splitQuery(rawQuery);
-                this.logger.debug('items: ' + queryItems);
-            
-                const customQuery = query.makeCustomQuery(queryItems, notItems);
-                this.logger.debug('customQuery: ' + JSON.stringify(customQuery));
-            
-                const queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
-                this.logger.debug('queryString: ' + queryString);
-            
-                url.searchParams.set('q', queryString);
-                this.logger.debug(JSON.stringify(url));
-            
-                return {
-                    redirectUrl: url.toString(),
-                };
-            },
-            {
-                urls: [
-                    "*://*.bing.com/search?*",
-                ],
-            },
-            ["blocking"],
-        );
+        // // 検索数の指定が無ければ設定値に書き換え
+        // if(!url.searchParams.has('num')) {
+        //     url.searchParams.append('num', bingSetting.searchCount)
+        // }
+
+        const rawQuery = url.searchParams.get('q')!;
+        const queryString = this.tuneSearchWord(rawQuery, new BingQuery(), notItemWords);
+
+        url.searchParams.set('q', queryString);
+        this.logger.debug(JSON.stringify(url));
+
+        return {
+            redirectUrl: url.toString(),
+        };
     }
-    
+
+
 }

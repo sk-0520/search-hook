@@ -1,95 +1,59 @@
 import { ServiceKind } from '../share/define/service-kind';
 import GoogleQuery from '../share/query/query-google';
-import { IMainSetting } from '../share/setting/main-setting';
-import BackgroundServiceBase from './background-service';
+import { BackgroundServiceBase, IRequestDetails } from './background-service';
+import { IReadOnlyGoogleServiceSetting } from '../share/setting/service-setting-google';
 
-export default class BackgroundServiceGoogle extends BackgroundServiceBase {
+export default class BackgroundServiceGoogle extends BackgroundServiceBase<IReadOnlyGoogleServiceSetting> {
+
+    protected get filter() {
+        return {
+            urls: [
+                "*://*.google.com/search?*",
+            ]
+        };
+    }
 
     public get service(): ServiceKind {
         return ServiceKind.google;
     }
-    
-    public constructor() {
-        super('Background Google');
+
+    public constructor(setting: IReadOnlyGoogleServiceSetting) {
+        super('Background Google', setting);
     }
 
-    public resistRedirectGoogle(setting: IMainSetting, notItems: Array<string>) {
+    protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {
+        // まだ検索してないっぽければ無視
+        if (!url.searchParams.has('q')) {
+            return;
+        }
 
-        const requestSet = new Set();
-        const googleSetting = setting.service.google;
-    
-        // Google 登録
-        browser.webRequest.onBeforeRequest.addListener(
-            requestDetails => {
-                this.logger.log('Loading: ' + requestDetails.url);
-                this.logger.debug(JSON.stringify(requestDetails));
-            
-                if(!googleSetting.enabled) {
-                    this.logger.debug('disabled google');
-                    return;
-                }
-            
-                this.logger.debug('enabled google');
-            
-                if(requestSet.has(requestDetails.requestId)) {
-                    this.logger.debug('setted request: ' + requestDetails.requestId);
-                    requestSet.delete(requestDetails.requestId);
-                    return;
-                }
-                requestSet.add(requestDetails.requestId);
-            
-                const url = new URL(requestDetails.url);
-            
-                // まだ検索してないっぽければ無視
-                if(!url.searchParams.has('q')) {
-                    return;
-                }
-            
-                // 既に検索済みのページとして何もしない
-                if(url.searchParams.has('start')) {
-                    this.logger.debug('ignore request');
-                    return;
-                }
-            
-                // 検索数の指定が無ければ設定値に書き換え
-                if(!url.searchParams.has('num')) {
-                    url.searchParams.append('num', String(googleSetting.searchCount));
-                }
-            
-                // セーフサーチの指定が無ければ設定値に書き換え
-                if(!url.searchParams.has('safe')) {
-                    if(googleSetting.searchSafe) {
-                        url.searchParams.append('safe', 'strict');
-                    }
-                }
-            
-                const query = new GoogleQuery();
+        // 既に検索済みのページとして何もしない
+        if (url.searchParams.has('start')) {
+            this.logger.debug('ignore request');
+            return;
+        }
 
-                const rawQuery = url.searchParams.get('q')!;
-                this.logger.debug('raw: ' + rawQuery);
-                const queryItems = query.splitQuery(rawQuery);
-                this.logger.debug('items: ' + queryItems);
-            
-                const customQuery = query.makeCustomQuery(queryItems, notItems);
-                this.logger.debug('customQuery: ' + JSON.stringify(customQuery));
-            
-                const queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
-                this.logger.debug('queryString: ' + queryString);
-            
-                url.searchParams.set('q', queryString);
-                this.logger.debug(JSON.stringify(url));
-            
-                return {
-                    redirectUrl: url.toString(),
-                };
-            },
-            {
-                urls: [
-                    "*://*.google.com/search?*",
-                ],
-            },
-            ["blocking"],
-        );
+        // 検索数の指定が無ければ設定値に書き換え
+        if (!url.searchParams.has('num')) {
+            url.searchParams.append('num', String(this.setting.searchCount));
+        }
+
+        // セーフサーチの指定が無ければ設定値に書き換え
+        if (!url.searchParams.has('safe')) {
+            if (this.setting.searchSafe) {
+                url.searchParams.append('safe', 'strict');
+            }
+        }
+
+        const rawQuery = url.searchParams.get('q')!;
+        const queryString = this.tuneSearchWord(rawQuery, new GoogleQuery(), notItemWords);
+
+        url.searchParams.set('q', queryString);
+        this.logger.debug(JSON.stringify(url));
+
+        return {
+            redirectUrl: url.toString(),
+        };
     }
-    
+
 }
