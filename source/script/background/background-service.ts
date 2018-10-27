@@ -132,7 +132,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     }
 
-    protected tuneSearchWord(word: string, query:QueryBase): string {
+    protected tuneSearchWord(word: string, query: QueryBase): string {
         this.logger.debug('raw: ' + word);
         const queryItems = query.splitQuery(word);
         this.logger.debug('items: ' + queryItems);

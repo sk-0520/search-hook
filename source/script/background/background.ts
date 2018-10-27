@@ -37,11 +37,11 @@ export default class Background extends ActionBase {
         this.logger.log('start');
         this.logger.debug(JSON.stringify(setting));
 
-        const settingItems:ISettingItems = {
+        const settingItems: ISettingItems = {
             notItems: setting.notItems,
             hideItems: setting.hideItems,
-        }
-        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(setting.service.google, settingItems))
+        };
+        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(setting.service.google, settingItems));
         this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(setting.service.google, settingItems));
 
         for (const [key, service] of this.backgroundServiceMap) {
@@ -65,7 +65,7 @@ export default class Background extends ActionBase {
                 // 未調査: 自アドオンの接続だけ？
                 const message = rawMessage as BridgeMeesage<IServiceBridgeData>;
                 const service = this.backgroundServiceMap.get(message.data.service)!;
-                
+
                 service.receiveServiceMessage(this.port!, message);
             });
         });

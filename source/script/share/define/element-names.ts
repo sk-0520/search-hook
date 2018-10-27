@@ -1,3 +1,25 @@
+import { Exception } from "../common";
+
+export enum ElementId {
+    optionsServiceGoogle = 'service-is-enabled-google',
+    optionsServiceGoogleSearchCount = 'service-google-search-count',
+    optionsServiceGoogleSearchSafe = 'service-google-search-safe',
+    optionsServiceIsEnabledBing = 'service-is-enabled-bing',
+
+    optionsNotItemList = 'engine-not-word-list',
+    optionsNotItemInputWord = 'engine-input-not-word',
+    optionsNotItemInputServiceGoogle = 'engine-input-is-enabled-google',
+    optionsNotItemInputServiceBing = 'engine-input-is-enabled-bing',
+    optionsNotItemInputAdd = 'command-engine-add-not-item',
+
+    optionsHideItemList = 'view-hide-host-list',
+    optionsHideItemInputWord  = 'view-input-hide-host',
+    optionsHideItemInputMatchKind  = 'view-input-hide-match-kind',
+    optionsHideItemInputMatchCase  = 'view-input-hide-match-case',
+    optionsHideItemInputServiceGoogle  = 'view-input-is-enabled-google',
+    optionsHideItemInputServiceBing  = 'view-input-is-enabled-bing',
+    optionsHideItemInputAdd  = 'command-view-add-hide-item',
+}
 
 export enum ElementClass {
     hidden = 'WE___search-hook-_-_-hidden',
@@ -5,6 +27,30 @@ export enum ElementClass {
     switch = 'WE___search-hook-_-_-switch',
 }
 
-export function toSelector(ec: ElementClass): string {
-    return '.' + ec;
+export enum ElementName {
+    optionsNotItemWord = 'engine-not-item-word',
+    optionsNotItemServiceGoogle = 'engine-not-item-service-google',
+    optionsNotItemServiceBing = 'engine-not-item-service-bing',
+    optionsNotItemRemove = 'engine-not-item-remove',
+
+    optionsHideItemWord = 'view-hide-item-host',
+    optionsHideItemMatchKind = 'view-hide-item-match-kind',
+    optionsHideItemMatchCase = 'view-hide-item-match-case',
+    optionsHideItemServiceGoogle = 'view-hide-item-service-google',
+    optionsHideItemServiceBing = 'view-hide-item-service-bing',
+    optionsHideItemRemove = 'engine-not-item-remove',
+}
+
+export function toSelector(ec: ElementId|ElementClass|ElementName): string {
+    if(ec as ElementId) {
+        return '#' + ec;
+    }
+    if(ec as ElementClass) {
+        return '.' + ec;
+    }
+    if(ec as ElementName) {
+        return `[name="${ec}"]`;
+    }
+
+    throw new Exception(ec);
 }
