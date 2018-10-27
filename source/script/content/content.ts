@@ -1,6 +1,6 @@
 import * as shared from "../share/common";
 import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import { ElementClass } from "../share/define/element-names";
+import { ElementClass, toSelector } from "../share/define/element-names";
 
 const outputContent = new shared.Logger('Content');
 
@@ -124,7 +124,7 @@ export function hideElement(element: Element) {
 }
 
 export function switchHideItems() {
-    const items = document.querySelectorAll('.' + ElementClass.hidden);
+    const items = document.querySelectorAll(toSelector(ElementClass.hidden));
     if (!items.length) {
         return;
     }
