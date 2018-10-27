@@ -54,7 +54,13 @@
         "no-empty-interface": false,
         "no-consecutive-blank-lines": false,
         "ordered-imports": false,
-        "no-angle-bracket-type-assertion": false
+        "no-angle-bracket-type-assertion": false,
+        "member-ordering": [
+            false,
+            {
+                "order": "fields-first"
+            }
+        ]
     },
     "rulesDirectory": []
 }

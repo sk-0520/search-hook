@@ -60,7 +60,7 @@ export function merge<T>(source: T, overwrite: T): T {
     }
 
     for (const key in overwrite) {
-        if(overwrite[key]) {
+        if (overwrite[key]) {
             try {
                 if (overwrite[key].constructor === Object) {
                     source[key] = merge(source[key], overwrite[key]);
@@ -105,3 +105,8 @@ export class Exception {
         this.error = error;
     }
 }
+
+export function isNullOrEmpty(s: string): boolean {
+    return !(s && s !== '');
+}
+

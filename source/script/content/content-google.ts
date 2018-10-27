@@ -1,8 +1,7 @@
 import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/query-google";
 import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import * as content from "./content";
-import ContentServiceBase from "./content-service-base";
+import { ContentServiceBase } from "./content";
 
 export default class ContentGoogleService extends ContentServiceBase {
 
@@ -20,7 +19,7 @@ export default class ContentGoogleService extends ContentServiceBase {
 
     protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
 
-        const checkers = content.getCheckers(hideItems);
+        const checkers = this.getCheckers(hideItems);
 
         const elementSelectors = [
             {
@@ -63,15 +62,15 @@ export default class ContentGoogleService extends ContentServiceBase {
                 this.logger.debug('link: ' + link);
 
                 // 普通パターン
-                if (content.matchSimpleUrl(link, checkers)) {
-                    content.hideElement(element);
+                if (this.matchSimpleUrl(link, checkers)) {
+                    this.hideElement(element);
                     success = true;
                     continue;
                 }
 
                 // /path?q=XXX 形式
-                if (content.matchQueryUrl(link, checkers)) {
-                    content.hideElement(element);
+                if (this.matchQueryUrl(link, checkers)) {
+                    this.hideElement(element);
                     success = true;
                     continue;
                 }
@@ -85,7 +84,7 @@ export default class ContentGoogleService extends ContentServiceBase {
         }
 
         if (success) {
-            content.appendHiddenSwitch();
+            this.appendHiddenSwitch();
         }
     }
 

@@ -1,13 +1,13 @@
 import { ServiceKind } from "../define/service-kind";
-import QueryBase from "./query-base";
+import QueryBase from "./query";
 
 export default class GoogleQuery extends QueryBase {
 
-    get service(): ServiceKind {
+    public get service(): ServiceKind {
         return ServiceKind.google;
     }
 
-    constructor() {
+    public constructor() {
         super('GoogleQuery');
     }
 }

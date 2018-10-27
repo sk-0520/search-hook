@@ -5,7 +5,7 @@ export default abstract class BackgroundServiceBase extends LoggingBase implemen
 
     public abstract readonly service: ServiceKind;
 
-    constructor(name: string) {
+    protected constructor(name: string) {
         super(name);
     }
 }

@@ -6,6 +6,10 @@
 		{
 			"name": "ソース",
 			"path": "source",
+		},
+		{
+			"name": "ソース/コード",
+			"path": "source/script",
 		}
 	],
 	"settings": {

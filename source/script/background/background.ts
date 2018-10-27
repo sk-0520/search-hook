@@ -1,23 +1,26 @@
+import { Setting } from '../browser/setting';
 import { EraseBridgeData, IServiceBridgeData, ItemsBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import * as shared from '../share/common';
+import { ActionBase } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
-import BackgroundBingService from './background-bing';
-import BackgroundGoogle from './background-google';
-import { Setting } from '../browser/setting';
+import BackgroundServiceBing from './background-service-bing';
+import BackgroundServiceGoogle from './background-service-google';
 
-export default class Background extends shared.ActionBase {
-    constructor() {
+export default class Background extends ActionBase {
+    public constructor() {
         super('Background');
     }
 
     public initialize() {
+        this.logger.log('init');
         this.loadSetting();
     }
 
     private loadSetting(): Promise<void> {
+        this.logger.log('loading');
+
         const setting = new Setting();
         return setting.loadMainSettingAsync().then(
             result => this.loadSettingCore(setting.tuneMainSetting(result)),
@@ -29,8 +32,8 @@ export default class Background extends shared.ActionBase {
         this.logger.log('setting loaded');
         this.logger.debug(JSON.stringify(setting));
 
-        new BackgroundGoogle().resistRedirectGoogle(setting, this.filterNotItems(ServiceKind.google, setting));
-        new BackgroundBingService().resistRedirectBing(setting, this.filterNotItems(ServiceKind.bing, setting));
+        new BackgroundServiceGoogle().resistRedirectGoogle(setting, this.filterNotItems(ServiceKind.google, setting));
+        new BackgroundServiceBing().resistRedirectBing(setting, this.filterNotItems(ServiceKind.bing, setting));
 
         //resistRedirectGoogle(setting, filterNotItems(ServiceKind_Google, setting));
         //resistRedirectBing(setting, filterNotItems(ServiceKind_Bing, setting));
@@ -151,3 +154,4 @@ export default class Background extends shared.ActionBase {
     }
 
 }
+
