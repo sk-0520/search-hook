@@ -1,6 +1,6 @@
 import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
-import { BackgroundServiceBase, IRequestDetails } from './background-service';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-service';
 import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
 
 export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
@@ -17,8 +17,8 @@ export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOn
         return ServiceKind.bing;
     }
 
-    public constructor(setting: IReadOnlyBingServiceSetting) {
-        super('Background Bing', setting);
+    public constructor(setting: IReadOnlyBingServiceSetting, settingItems: ISettingItems) {
+        super('Background Bing', setting, settingItems);
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {
@@ -39,7 +39,7 @@ export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOn
         // }
 
         const rawQuery = url.searchParams.get('q')!;
-        const queryString = this.tuneSearchWord(rawQuery, new BingQuery(), notItemWords);
+        const queryString = this.tuneSearchWord(rawQuery, new BingQuery());
 
         url.searchParams.set('q', queryString);
         this.logger.debug(JSON.stringify(url));

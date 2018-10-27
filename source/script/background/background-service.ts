@@ -3,6 +3,8 @@ import { IService, ServiceKind } from '../share/define/service-kind';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import QueryBase from '../share/query/query';
+import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
+import { MatchKind } from '../share/define/match-kind';
 
 /** Fxから持ってきた */
 export interface IRequestDetails {
@@ -22,6 +24,11 @@ export interface IRequestDetails {
     originUrl: string;
 }
 
+export interface ISettingItems {
+    notItems: ReadonlyArray<IReadOnlyNotItemSetting>;
+    hideItems: ReadonlyArray<IReadOnlyHideItemSetting>;
+}
+
 export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IReadOnlyServiceSetting> extends LoggingBase implements IService {
 
     public abstract readonly service: ServiceKind;
@@ -31,13 +38,17 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
     private requestSet = new Set();
     protected setting: TReadOnlyServiceSetting;
 
-    protected constructor(name: string, setting: TReadOnlyServiceSetting) {
+    protected notItemWords: ReadonlyArray<string>;
+    protected hideItems: ReadonlyArray<IReadOnlyHideItemSetting>;
+
+    protected constructor(name: string, setting: TReadOnlyServiceSetting, settingItems: ISettingItems) {
         super(name);
 
         this.setting = setting;
-    }
 
-    protected abstract redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined;
+        this.notItemWords = this.getEnabledNotItemWords(settingItems.notItems);
+        this.hideItems = this.getEnabledHideItems(settingItems.hideItems);
+    }
 
     protected getEnabledNotItemWords(notItems: ReadonlyArray<IReadOnlyNotItemSetting>): Array<string> {
         return notItems.filter(i => {
@@ -59,10 +70,38 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     }
 
-    public registerRedirect(notItems: ReadonlyArray<IReadOnlyNotItemSetting>): void {
+    public getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
+        return hideItems.filter(i => {
+            switch (this.service) {
+                case ServiceKind.google:
+                    return i.service.google;
 
-        const notItemWords = this.getEnabledNotItemWords(notItems);
+                case ServiceKind.bing:
+                    return i.service.bing;
 
+                default:
+                    throw new Exception(i);
+            }
+        }).filter(i => {
+            return !isNullOrEmpty(i.word);
+        }).filter(i => {
+            if (i.match.kind === MatchKind.regex) {
+                try {
+                    new RegExp(i.word);
+                } catch (ex) {
+                    this.logger.dumpError(i);
+                    this.logger.error(ex);
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    }
+
+    protected abstract redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined;
+
+    public registerRedirect(): void {
         browser.webRequest.onBeforeRequest.addListener(
             requestDetails => {
                 this.logger.log('loading: ' + requestDetails.url);
@@ -82,7 +121,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
                 this.requestSet.add(requestDetails.requestId);
                 const url = new URL(requestDetails.url);
 
-                return this.redirect(requestDetails, url, notItemWords);
+                return this.redirect(requestDetails, url, this.notItemWords);
             },
             this.filter,
             ['blocking'] // このアプリケーションはこれしか使わん
@@ -90,12 +129,12 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     }
 
-    protected tuneSearchWord(word: string, query:QueryBase, notItemWords:ReadonlyArray<string>): string {
+    protected tuneSearchWord(word: string, query:QueryBase): string {
         this.logger.debug('raw: ' + word);
         const queryItems = query.splitQuery(word);
         this.logger.debug('items: ' + queryItems);
 
-        const customQuery = query.makeCustomQuery(queryItems, notItemWords);
+        const customQuery = query.makeCustomQuery(queryItems, this.notItemWords);
         this.logger.debug('customQuery: ' + JSON.stringify(customQuery));
 
         const queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
@@ -104,5 +143,8 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         return queryString;
     }
 
+    public receiveServiceMessage(port: browser.runtime.Port) {
+
+    }
 
 }

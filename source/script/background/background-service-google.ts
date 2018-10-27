@@ -1,6 +1,6 @@
 import { ServiceKind } from '../share/define/service-kind';
 import GoogleQuery from '../share/query/query-google';
-import { BackgroundServiceBase, IRequestDetails } from './background-service';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-service';
 import { IReadOnlyGoogleServiceSetting } from '../share/setting/service-setting-google';
 
 export default class BackgroundServiceGoogle extends BackgroundServiceBase<IReadOnlyGoogleServiceSetting> {
@@ -17,8 +17,8 @@ export default class BackgroundServiceGoogle extends BackgroundServiceBase<IRead
         return ServiceKind.google;
     }
 
-    public constructor(setting: IReadOnlyGoogleServiceSetting) {
-        super('Background Google', setting);
+    public constructor(setting: IReadOnlyGoogleServiceSetting, settingItems: ISettingItems) {
+        super('Background Google', setting, settingItems);
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {
@@ -46,7 +46,7 @@ export default class BackgroundServiceGoogle extends BackgroundServiceBase<IRead
         }
 
         const rawQuery = url.searchParams.get('q')!;
-        const queryString = this.tuneSearchWord(rawQuery, new GoogleQuery(), notItemWords);
+        const queryString = this.tuneSearchWord(rawQuery, new GoogleQuery());
 
         url.searchParams.set('q', queryString);
         this.logger.debug(JSON.stringify(url));

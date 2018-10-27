@@ -7,8 +7,13 @@ import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
 import BackgroundServiceBing from './background-service-bing';
 import BackgroundServiceGoogle from './background-service-google';
+import { BackgroundServiceBase, ISettingItems } from './background-service';
+import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 
 export default class Background extends ActionBase {
+
+    private backgroundServiceMap = new Map<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>();
+
     public constructor() {
         super('Background');
     }
@@ -23,21 +28,26 @@ export default class Background extends ActionBase {
 
         const setting = new Setting();
         return setting.loadMainSettingAsync().then(
-            result => this.loadSettingCore(setting.tuneMainSetting(result)),
+            result => this.startBackground(setting.tuneMainSetting(result)),
             error => this.logger.dumpError(error)
         );
     }
 
-    private loadSettingCore(setting: IMainSetting) {
-        this.logger.log('setting loaded');
+    private startBackground(setting: IMainSetting) {
+        this.logger.log('start');
         this.logger.debug(JSON.stringify(setting));
 
-        // TODO: 重複コード
-        const google = new BackgroundServiceGoogle(setting.service.google);
-        google.registerRedirect(setting.notItems);
+        const settingItems:ISettingItems = {
+            notItems: setting.notItems,
+            hideItems: setting.hideItems,
+        }
+        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(setting.service.google, settingItems))
+        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(setting.service.google, settingItems));
 
-        const bing = new BackgroundServiceBing(setting.service.bing);
-        bing.registerRedirect(setting.notItems);
+        for (const [key, service] of this.backgroundServiceMap) {
+            this.logger.debug(`build service ${key}`);
+            service.registerRedirect();
+        }
 
         this.resistView(setting);
     }
