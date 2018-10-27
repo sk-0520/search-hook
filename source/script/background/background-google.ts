@@ -1,8 +1,14 @@
-import GoogleQuery from '../share/query/google-query';
+import GoogleQuery from '../share/query/query-google';
 import { IMainSetting } from '../share/setting/main-setting';
 import BackgroundServiceBase from './background-service-base';
+import { ServiceKind } from '../share/define/service-kind';
 
 export default class BackgroundGoogle extends BackgroundServiceBase {
+
+    get service(): ServiceKind {
+        return ServiceKind.google;
+    }
+
     constructor() {
         super('Background Google');
     }

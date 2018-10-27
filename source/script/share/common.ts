@@ -94,3 +94,14 @@ export abstract class ActionBase extends LoggingBase {
     public abstract initialize(): void;
 }
 
+export interface IException {
+    readonly error: any;
+}
+
+export class Exception {
+    public readonly error: any;
+
+    constructor(error: any) {
+        this.error = error;
+    }
+}

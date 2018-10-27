@@ -1,65 +1,24 @@
-import { EraseBridgeData, ServiceBridgeData, IHideItemsBridgeData } from "../share/bridge/bridge-data";
-import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
-import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ServiceKind } from "../share/define/service-kind";
-import BingQuery from "../share/query/bing-query";
+import BingQuery from "../share/query/query-bing";
 import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import * as content from "./content";
 import ContentServiceBase from "./content-service-base";
 
 export default class ContentBingService extends ContentServiceBase {
+    
+    get service(): ServiceKind {
+        return ServiceKind.bing;
+    }
+    
     constructor() {
         super('Content Bing');
     }
 
     public initialize() {
-        const port = browser.runtime.connect();
-        port.onMessage.addListener(rawMessage => {
-            const message = rawMessage as BridgeMeesageBase;
-            this.logger.debug("CLIENT RECV!");
-            this.logger.debug(JSON.stringify(message));
-
-            switch (message.kind) {
-                case BridgeMeesageKind.items:
-                    const itemsMessage = message as BridgeMeesage<IHideItemsBridgeData>;
-                    if (!itemsMessage.data.enabled) {
-                        this.logger.debug("ignore bing content");
-                        return;
-                    }
-
-                    const hideItems = itemsMessage.data.items;
-                    this.hideGoogleItems(hideItems);
-                    break;
-
-                case BridgeMeesageKind.erase:
-                    const eraseMessage = message as BridgeMeesage<EraseBridgeData>;
-                    if (!eraseMessage.data.enabled) {
-                        this.logger.debug("ignore google content");
-                        return;
-                    }
-
-                    const items = eraseMessage.data.items;
-                    this.eraseBingQuery(items);
-                    break;
-
-                default:
-                    throw { error: message };
-            }
-
-        });
-        port.postMessage(
-            new BridgeMeesage(
-                BridgeMeesageKind.service,
-                new ServiceBridgeData(ServiceKind.google)
-            )
-        );
+        this.connect();
     }
 
-    private hideGoogleItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
-        if (!hideItems.length) {
-            this.logger.debug('empty hide items');
-            return;
-        }
+    protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
 
         const checkers = content.getCheckers(hideItems);
 
@@ -115,7 +74,7 @@ export default class ContentBingService extends ContentServiceBase {
         }
     }
 
-    private eraseBingQuery(items: ReadonlyArray<string>) {
+    protected eraseQuery(items: ReadonlyArray<string>) {
         const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
         const queryValue = queryElement.value;
         this.logger.debug('q: ' + queryValue);

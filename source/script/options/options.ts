@@ -6,7 +6,7 @@ import { NotItemSetting } from '../share/setting/not-item-setting';
 import { ServiceManagerSetting } from '../share/setting/service-manager-setting';
 import { BingServiceSetting } from '../share/setting/service-setting-bing';
 import { GoogleServiceSetting } from '../share/setting/service-setting-google';
-import { Setting } from '../browser/outside/setting';
+import { Setting } from '../browser/setting';
 
 export default class Options extends shared.ActionBase {
     constructor() {

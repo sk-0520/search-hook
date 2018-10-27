@@ -1,14 +1,12 @@
 import { LoggingBase } from "../common";
-import { ServiceKind } from "../define/service-kind";
+import { ServiceKind, IService } from "../define/service-kind";
 
-export default abstract class QueryBase extends LoggingBase {
+export default abstract class QueryBase extends LoggingBase implements IService {
 
-    public readonly service: ServiceKind;
+    public abstract readonly service: ServiceKind;
 
-    constructor(service: ServiceKind, name: string) {
+    constructor(name: string) {
         super(name);
-
-        this.service = service;
     }
 
     public splitQuery(query: string) {

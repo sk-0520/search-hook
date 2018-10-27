@@ -6,7 +6,7 @@ import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
 import BackgroundBingService from './background-bing';
 import BackgroundGoogle from './background-google';
-import { Setting } from '../browser/outside/setting';
+import { Setting } from '../browser/setting';
 
 export default class Background extends shared.ActionBase {
     constructor() {

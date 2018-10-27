@@ -1,5 +1,5 @@
-import { LoggingBase, merge } from "../../share/common";
-import { IMainSetting, MainSetting } from "../../share/setting/main-setting";
+import { LoggingBase, merge } from "../share/common";
+import { IMainSetting, MainSetting } from "../share/setting/main-setting";
 
 export class Setting extends LoggingBase {
 
@@ -14,7 +14,7 @@ export class Setting extends LoggingBase {
                 return null;
             }
 
-            return (<any>o.setting) as IMainSetting;
+            return (o.setting as any) as IMainSetting;
         });
     }
 

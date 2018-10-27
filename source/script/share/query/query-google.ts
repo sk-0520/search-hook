@@ -3,7 +3,11 @@ import QueryBase from "./query-base";
 
 export default class GoogleQuery extends QueryBase {
 
+    get service(): ServiceKind {
+        return ServiceKind.google;
+    }
+
     constructor() {
-        super(ServiceKind.google, 'GoogleQuery');
+        super('GoogleQuery');
     }
 }

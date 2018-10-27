@@ -1,8 +1,14 @@
-import BingQuery from '../share/query/bing-query';
+import BingQuery from '../share/query/query-bing';
 import { IMainSetting } from '../share/setting/main-setting';
 import BackgroundServiceBase from './background-service-base';
+import { ServiceKind } from '../share/define/service-kind';
 
 export default class BackgroundBingService extends BackgroundServiceBase {
+
+    get service(): ServiceKind {
+        return ServiceKind.bing;
+    }
+    
     constructor() {
         super('Background Bing');
     }
