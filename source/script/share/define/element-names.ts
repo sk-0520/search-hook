@@ -1,10 +1,10 @@
-import { Exception } from "../common";
 
 export enum ElementId {
+    optionsService = 'service',
     optionsServiceGoogle = 'service-is-enabled-google',
     optionsServiceGoogleSearchCount = 'service-google-search-count',
     optionsServiceGoogleSearchSafe = 'service-google-search-safe',
-    optionsServiceIsEnabledBing = 'service-is-enabled-bing',
+    optionsServiceBing = 'service-is-enabled-bing',
 
     optionsNotItemList = 'engine-not-word-list',
     optionsNotItemInputWord = 'engine-input-not-word',
@@ -41,16 +41,14 @@ export enum ElementName {
     optionsHideItemRemove = 'engine-not-item-remove',
 }
 
-export function toSelector(ec: ElementId|ElementClass|ElementName): string {
-    if(ec as ElementId) {
-        return '#' + ec;
-    }
-    if(ec as ElementClass) {
-        return '.' + ec;
-    }
-    if(ec as ElementName) {
-        return `[name="${ec}"]`;
-    }
-
-    throw new Exception(ec);
+export function toIdSelector(elementId: ElementId): string {
+    return '#' + elementId;
 }
+export function toClassSelector(className: ElementClass): string {
+    return '.' + className;
+}
+export function toNameSelector(elementName: ElementName): string {
+    return `[name="${elementName}"]`;
+}
+
+

@@ -1,5 +1,5 @@
 import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import { ElementClass, toSelector } from "../share/define/element-names";
+import { ElementClass, toClassSelector } from "../share/define/element-names";
 import { ActionBase, Exception } from "../share/common";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
@@ -198,7 +198,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     }
 
     protected switchHideItems() {
-        const items = document.querySelectorAll(toSelector(ElementClass.hidden));
+        const items = document.querySelectorAll(toClassSelector(ElementClass.hidden));
         if (!items.length) {
             return;
         }
