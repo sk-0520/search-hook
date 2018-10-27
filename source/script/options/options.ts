@@ -1,4 +1,3 @@
-import * as shared from '../share/common';
 import { convertMatchKind } from '../share/define/match-kind';
 import { HideItemSetting } from '../share/setting/hide-item-setting';
 import { IMainSetting, MainSetting } from '../share/setting/main-setting';
@@ -7,8 +6,9 @@ import { ServiceManagerSetting } from '../share/setting/service-manager-setting'
 import { BingServiceSetting } from '../share/setting/service-setting-bing';
 import { GoogleServiceSetting } from '../share/setting/service-setting-google';
 import { Setting } from '../browser/setting';
+import { ActionBase } from '../share/common';
 
-export default class Options extends shared.ActionBase {
+export default class Options extends ActionBase {
     constructor() {
         super('Options');
     }

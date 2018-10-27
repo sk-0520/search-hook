@@ -1,7 +1,6 @@
-import * as shared from "../share/common";
 import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ElementClass, toSelector } from "../share/define/element-names";
-import { ActionBase } from "../share/common";
+import { ActionBase, Exception } from "../share/common";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
@@ -54,7 +53,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
                 break;
 
             default:
-                throw new shared.Exception(baseMessage);
+                throw new Exception(baseMessage);
         }
     }
 

@@ -4,12 +4,16 @@
 			"path": "."
 		},
 		{
-			"name": "ソース",
-			"path": "source",
+			"name": "Script",
+			"path": "source/script",
 		},
 		{
-			"name": "ソース/コード",
-			"path": "source/script",
+			"name": "View",
+			"path": "source/view",
+		},
+		{
+			"name": "Style",
+			"path": "source/style",
 		}
 	],
 	"settings": {
