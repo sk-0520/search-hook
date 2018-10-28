@@ -1,6 +1,6 @@
 {
   "version": "0.3.7",
-  "name": "__MSG_extensionName__",
+  "name": "search-hook",
   "description": "__MSG_extensionDescription__",
   "manifest_version": 2,
   "developer": {

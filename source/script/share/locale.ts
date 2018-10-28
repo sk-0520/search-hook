@@ -45,11 +45,9 @@ export class Locale extends LoggingBase {
 
         const targets = element.dataset[ElementData.localeTargets];
         if(!targets) {
-            this.logger.debug('@@@@ ' + localeKey);
             const localeValue = browser.i18n.getMessage(localeKey);
             if(localeValue) {
-                this.logger.debug('++++ ' + browser.i18n.getMessage(localeKey));
-                if(element.innerText !== localeValue) {
+                if(localeValue !== '@ignore@' && element.innerText !== localeValue) {
                     element.innerText = localeValue;
                 } 
             }
