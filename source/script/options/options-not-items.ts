@@ -1,5 +1,5 @@
 import OptionsBase from "./options-base";
-import { ElementId, ElementName, toIdSelector, toNameSelector } from "../share/define/element-names";
+import { ElementId, ElementName, toNameSelector } from "../share/define/element-names";
 import { INotItemSetting, NotItemSetting } from "../share/setting/not-item-setting";
 
 export default class OptionsNotItems extends OptionsBase<Array<INotItemSetting>> {

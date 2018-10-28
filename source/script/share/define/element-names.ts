@@ -34,12 +34,13 @@ export enum ElementName {
     optionsNotItemServiceBing = 'engine-not-item-service-bing',
     optionsNotItemRemove = 'engine-not-item-remove',
 
+    optionsHideItemGroup = 'view-hide-item-group',
     optionsHideItemWord = 'view-hide-item-host',
     optionsHideItemMatchKind = 'view-hide-item-match-kind',
     optionsHideItemMatchCase = 'view-hide-item-match-case',
     optionsHideItemServiceGoogle = 'view-hide-item-service-google',
     optionsHideItemServiceBing = 'view-hide-item-service-bing',
-    optionsHideItemRemove = 'engine-not-item-remove',
+    optionsHideItemRemove = 'view-hide-item-remove',
 }
 
 export function toIdSelector(elementId: ElementId): string {

@@ -1,6 +1,6 @@
 import OptionsBase from "./options-base";
 import { IHideItemSetting, HideItemSetting } from "../share/setting/hide-item-setting";
-import { toIdSelector, ElementId, ElementName } from "../share/define/element-names";
+import { toIdSelector, ElementId, ElementName, toNameSelector } from "../share/define/element-names";
 import { MatchKind } from "../share/define/match-kind";
 
 export default class OptionsHideItems extends OptionsBase<Array<IHideItemSetting>> {
@@ -80,94 +80,21 @@ export default class OptionsHideItems extends OptionsBase<Array<IHideItemSetting
     }
 
     private addHideItemCore(parent: Element, item: HideItemSetting) {
-        const groupElement = document.createElement('tr');
 
-        const wordInputElement = document.createElement('input');
-        wordInputElement.setAttribute('type', 'text');
-        wordInputElement.setAttribute('name', 'view-hide-item-host');
-        wordInputElement.value = item.word;
-        const wordElement = document.createElement('td');
-        wordElement.appendChild(wordInputElement);
+        const templateElement = parent.querySelector("template")!;
+        const clonedElement = document.importNode(templateElement.content, true);
 
-        const matchKindElement = document.createElement('select');
-        matchKindElement.setAttribute('name', 'view-hide-item-match-kind');
-        const matchElementCreator = (displayValue: string, elementValue: string) => {
-            const option = document.createElement('option');
-            option.setAttribute('value', elementValue);
-            option.appendChild(document.createTextNode(displayValue));
-
-            return option;
-        };
-        matchKindElement.appendChild(matchElementCreator('partial', 'partial'));
-        matchKindElement.appendChild(matchElementCreator('forward', 'forward'));
-        matchKindElement.appendChild(matchElementCreator('perfect', 'perfect'));
-        matchKindElement.appendChild(matchElementCreator('regex', 'regex'));
-        matchKindElement.value = item.match.kind;
-
-        const matchKindItemElement = document.createElement('li');
-        matchKindItemElement.appendChild(matchKindElement);
-
-        const matchCaseCheckElement = document.createElement('input');
-        matchCaseCheckElement.setAttribute('name', 'view-hide-item-match-case');
-        matchCaseCheckElement.setAttribute('type', 'checkbox');
-        matchCaseCheckElement.checked = item.match.case;
-
-        const matchCaseLabelElement = document.createElement('label');
-        matchCaseLabelElement.appendChild(matchCaseCheckElement);
-        matchCaseLabelElement.appendChild(document.createTextNode('case'));
-
-        const matchCaseItemElement = document.createElement('li');
-        matchCaseItemElement.appendChild(matchCaseLabelElement);
-
-        const matchGroupElement = document.createElement('ul');
-        matchGroupElement.className = 'horizontal';
-        matchGroupElement.appendChild(matchKindItemElement);
-        matchGroupElement.appendChild(matchCaseItemElement);
-
-        const matchElement = document.createElement('td');
-        matchElement.appendChild(matchGroupElement);
-
-        const serviceElementCreator = (displayValue: string, elementName: string, isChecked: boolean) => {
-            const check = document.createElement('input');
-            check.setAttribute('type', 'checkbox');
-            check.setAttribute('name', elementName);
-            check.checked = isChecked;
-
-            const label = document.createElement('label');
-            label.appendChild(check);
-            label.appendChild(document.createTextNode(displayValue));
-
-            const li = document.createElement('li');
-            li.appendChild(label);
-
-            return li;
-        };
-        const serviceGroupElement = document.createElement('ul');
-        serviceGroupElement.className = 'horizontal';
-        serviceGroupElement.appendChild(serviceElementCreator('google', 'view-hide-item-service-google', item.service.google));
-        serviceGroupElement.appendChild(serviceElementCreator('bing', 'view-hide-item-service-bing', item.service.bing));
-
-        const serviceGroupWrapperElement = document.createElement('form');
-        serviceGroupWrapperElement.appendChild(serviceGroupElement);
-
-        const serviceElement = document.createElement('td');
-        serviceElement.appendChild(serviceGroupWrapperElement);
-
-        const removeCommandElement = document.createElement('button');
-        removeCommandElement.appendChild(document.createTextNode('remove'));
-        removeCommandElement.addEventListener('click', e => {
+        this.setByName(clonedElement, ElementName.optionsHideItemWord, elm => elm.value = item.word);
+        this.setByName(clonedElement, ElementName.optionsHideItemMatchKind, elm => elm.value = item.match.kind);
+        this.setByName(clonedElement, ElementName.optionsHideItemMatchCase, elm => elm.checked = item.match.case);
+        this.setByName(clonedElement, ElementName.optionsHideItemServiceGoogle, elm => elm.checked = item.service.google);
+        this.setByName(clonedElement, ElementName.optionsHideItemServiceBing, elm => elm.checked = item.service.bing);
+        this.setByName(clonedElement, ElementName.optionsHideItemRemove, elm => elm.addEventListener('click', e => {
             e.preventDefault();
 
-            groupElement.remove();
-        });
-        const removeElement = document.createElement('td');
-        removeElement.appendChild(removeCommandElement);
-
-        groupElement.appendChild(wordElement);
-        groupElement.appendChild(matchElement);
-        groupElement.appendChild(serviceElement);
-        groupElement.appendChild(removeElement);
-
-        parent.appendChild(groupElement);
+            const itemGroupElement = e.srcElement!.closest(toNameSelector(ElementName.optionsHideItemGroup));
+            itemGroupElement!.remove();
+        }));
+        parent.appendChild(clonedElement);
     }
 }

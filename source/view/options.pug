@@ -89,7 +89,7 @@ html
               th remove
           tbody#view-hide-host-list
             template
-              tr
+              tr(name="view-hide-item-group")
                 td
                   input(name="view-hide-item-host" type="text")
                 td
@@ -102,7 +102,7 @@ html
                         option(value="regex") regex
                     li
                       label
-                        input(type="checkbox" name="view-hide-item-match-case")
+                        input(name="view-hide-item-match-case" type="checkbox")
                         | case
                 td
                   ul.horizontal
