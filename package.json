@@ -23,10 +23,10 @@
     "watch:core:content-script": "  parcel watch --public-url . ./source/script/content/content-google.loader.ts ./source/script/content/content-bing.loader.ts",
     "watch:core:content-style": "   parcel watch --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
     "compile:firefox": "npm run tslint && npm-run-all --print-label compile:core:*",
-    "watch:firefox": "npm run tslint && npm-run-all --parallel watch:core:*",
+    "watch:firefox": "npm-run-all --parallel watch:core:*",
     "debug:firefox": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox",
     "debug:firefox-sk": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox-sk",
-    "release:firefox": "npm-run-all --print-label clean resource:firefox compile:firefox lint:firefox build:firefox"
+    "release:firefox": "npm-run-all --print-label clean test resource:firefox compile:firefox lint:firefox build:firefox"
   },
   "repository": {
     "type": "git",
