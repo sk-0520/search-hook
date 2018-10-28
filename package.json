@@ -5,6 +5,8 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "tslint": "tslint ./source/script/**/*.ts",
+    "test:script": "mocha --recursive --require ts-node/register ./source/test/script/**/*.ts",
+    "test": "nyc npm run test:script",
     "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
     "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
     "resource:firefox": "npm-run-all resource:image-firefox resource:manifest-firefox",
@@ -22,7 +24,7 @@
     "watch:core:content-script": "  parcel watch --public-url . ./source/script/content/content-google.loader.ts ./source/script/content/content-bing.loader.ts",
     "watch:core:content-style": "   parcel watch --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
     "compile:firefox": "npm run tslint && npm-run-all --print-label compile:core:*",
-    "watch:firefox": "npm run tslint && npm-run-all --parallel watch:core:*",
+    "watch:firefox": "npm-run-all --parallel watch:core:*",
     "debug:firefox": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox",
     "debug:firefox-sk": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox-sk",
     "release:firefox": "npm-run-all --print-label clean resource:firefox compile:firefox lint:firefox build:firefox"
@@ -34,16 +36,40 @@
   "author": "sk",
   "license": "GPLv3",
   "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "node_modules",
+      "artifacts",
+      "dist",
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "report-dir": "./artifacts/coverage",
+    "all": true
+  },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
+    "chai": "^4.2.0",
     "cp-cli": "^1.1.2",
     "mkdirp": "^0.5.1",
+    "mocha": "^5.2.0",
     "npm-run-all": "^4.1.3",
+    "nyc": "^13.1.0",
     "parcel-bundler": "^1.10.3",
     "pug": "^2.0.3",
     "rimraf": "^2.6.2",
     "sass": "^1.14.3",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.3",
     "web-ext": "^2.9.1",
