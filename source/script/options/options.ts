@@ -12,7 +12,7 @@ export default class Options extends ActionBase {
     private optionsNotItems = new OptionsNotItems();
     private optionsHideItems = new OptionsHideItems();
 
-    private locale = new Locale()
+    private locale = new Locale();
 
     constructor() {
         super('Options');

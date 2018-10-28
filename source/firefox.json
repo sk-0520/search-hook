@@ -1,8 +1,8 @@
 {
-  "description": "customize: search engine query, result items.",
-  "manifest_version": 2,
-  "name": "search-hook",
   "version": "0.3.7",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "manifest_version": 2,
   "developer": {
     "name": "sk",
     "url": "https://bitbucket.org/sk_0520/search-hook/"

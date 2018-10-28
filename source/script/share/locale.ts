@@ -32,7 +32,7 @@ export class Locale extends LoggingBase {
     }
 
     public applyLocale(element: HTMLElement) {
-        var localeKey = element.dataset[ElementData.locale];
+        const localeKey = element.dataset[ElementData.locale];
         if (localeKey) {
             this.applyLocaleCore(element, localeKey);
         }
@@ -43,8 +43,8 @@ export class Locale extends LoggingBase {
 
         const targets = element.dataset[ElementData.localeTargets];
         if(!targets) {
-            this.logger.debug(localeKey);
-            element.innerText = browser.i18n.getMessage(localeKey);
+            this.logger.debug('@@@@ ' + localeKey);
+            //element.innerText = browser.i18n.getMessage(localeKey);
         } else {
             this.logger.warn(`targets: ${targets}`);
         }
