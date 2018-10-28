@@ -7,7 +7,7 @@
     "tslint": "tslint ./source/script/**/*.ts",
     "test:script": "mocha --recursive --require ts-node/register ./source/test/script/**/*.ts",
     "test": "nyc npm run test:script",
-    "resource:locales-core": "    cp-cli ./source/_locales ./dist/_locales && cp-cli ./source/_locales/ja ./dist/_locales/ja_JP",
+    "resource:locales-core": "    cp-cli ./source/_locales ./dist/_locales",
     "resource:locales-firefox": " npm run resource:locales-core",
     "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
     "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
