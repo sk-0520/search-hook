@@ -106,7 +106,7 @@ export class Exception {
     }
 }
 
-export function isNullOrEmpty(s: string): boolean {
+export function isNullOrEmpty(s: string|null|undefined): boolean {
     return !(s && s !== '');
 }
 

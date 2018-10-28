@@ -1,6 +1,6 @@
 import { describe, it } from "mocha";
 import { assert } from "chai"
-import { merge } from "../../../script/share/common";
+import { merge, isNullOrEmpty } from "../../../script/share/common";
 
 describe('merge', () => {
     it('normal', () => {
@@ -80,4 +80,14 @@ describe('merge', () => {
         }, JSON.stringify(src));
     });
 
-})
+});
+
+describe('merge', () => {
+    it('empty', () => {
+        assert.isTrue(isNullOrEmpty(null));
+        assert.isTrue(isNullOrEmpty(undefined));
+        assert.isTrue(isNullOrEmpty(""));
+        assert.isNotTrue(isNullOrEmpty(" "));
+        assert.isNotTrue(isNullOrEmpty("a"));
+    });
+});
