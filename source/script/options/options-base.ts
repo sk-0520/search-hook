@@ -12,8 +12,13 @@ export default abstract class OptionsBase<TSetting> extends ActionBase {
 
     protected abstract getParentElement(): Element;
 
-    protected setById(elementId: string, setter: (e: HTMLInputElement) => void): void {
+    protected setById(elementId: ElementId, setter: (elm: HTMLInputElement) => void): void {
         const element = document.getElementById(elementId) as HTMLInputElement;
+        setter(element);
+    }
+
+    protected setByName(parentElement: Element|DocumentFragment, elementName: ElementName, setter: (elm: HTMLInputElement) => void): void {
+        const element = parentElement.querySelector(toNameSelector(elementName)) as HTMLInputElement;
         setter(element);
     }
 
@@ -25,7 +30,7 @@ export default abstract class OptionsBase<TSetting> extends ActionBase {
         return document.getElementById(elementId) as HTMLInputElement;
     }
 
-    protected getInputByName(parentElement: Element, name: ElementName): HTMLInputElement {
-        return parentElement.querySelector(toNameSelector(name)) as HTMLInputElement;
+    protected getInputByName(parentElement: Element|DocumentFragment, elementName: ElementName): HTMLInputElement {
+        return parentElement.querySelector(toNameSelector(elementName)) as HTMLInputElement;
     }
 }

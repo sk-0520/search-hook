@@ -1,5 +1,5 @@
 import OptionsBase from "./options-base";
-import { ElementId, ElementName } from "../share/define/element-names";
+import { ElementId, ElementName, toIdSelector, toNameSelector } from "../share/define/element-names";
 import { INotItemSetting, NotItemSetting } from "../share/setting/not-item-setting";
 
 export default class OptionsNotItems extends OptionsBase<Array<INotItemSetting>> {
@@ -75,52 +75,20 @@ export default class OptionsNotItems extends OptionsBase<Array<INotItemSetting>>
     }
 
     private addNotItemCore(parent: Element, item: INotItemSetting) {
-        const groupElement = document.createElement('tr');
 
-        const wordInputElement = document.createElement('input');
-        wordInputElement.setAttribute('type', 'text');
-        wordInputElement.setAttribute('name', 'engine-not-item-word');
-        wordInputElement.value = item.word;
-        const wordElement = document.createElement('td');
-        wordElement.appendChild(wordInputElement);
+        const templateElement = parent.querySelector("template")!;
+        const clonedElement = document.importNode(templateElement.content, true);
 
-        const serviceElementCreator = (displayValue: string, elementName: string, isChecked: boolean) => {
-            const check = document.createElement('input');
-            check.setAttribute('type', 'checkbox');
-            check.setAttribute('name', elementName);
-            check.checked = isChecked;
-
-            const label = document.createElement('label');
-            label.appendChild(check);
-            label.appendChild(document.createTextNode(displayValue));
-
-            const li = document.createElement('li');
-            li.appendChild(label);
-
-            return li;
-        };
-        const serviceGroupElement = document.createElement('ul');
-        serviceGroupElement.className = 'horizontal';
-        serviceGroupElement.appendChild(serviceElementCreator('google', 'engine-not-item-service-google', item.service.google));
-        serviceGroupElement.appendChild(serviceElementCreator('bing', 'engine-not-item-service-bing', item.service.bing));
-
-        const serviceElement = document.createElement('td');
-        serviceElement.appendChild(serviceGroupElement);
-
-        const removeCommandElement = document.createElement('button');
-        removeCommandElement.appendChild(document.createTextNode('remove'));
-        removeCommandElement.addEventListener('click', e => {
+        this.setByName(clonedElement, ElementName.optionsNotItemWord, elm => elm.value = item.word);
+        this.setByName(clonedElement, ElementName.optionsNotItemServiceGoogle, elm => elm.checked = item.service.google);
+        this.setByName(clonedElement, ElementName.optionsNotItemServiceBing, elm => elm.checked = item.service.bing);
+        this.setByName(clonedElement, ElementName.optionsNotItemRemove, elm => elm.addEventListener('click', e => {
             e.preventDefault();
 
-            groupElement.remove();
-        });
-        const removeElement = document.createElement('td');
-        removeElement.appendChild(removeCommandElement);
+            const itemGroupElement = e.srcElement!.closest(toNameSelector(ElementName.optionsNotItemGroup));
+            itemGroupElement!.remove();
+        }));
 
-        groupElement.appendChild(wordElement);
-        groupElement.appendChild(serviceElement);
-        groupElement.appendChild(removeElement);
-
-        parent.appendChild(groupElement);
+        parent.appendChild(clonedElement);
     }
 }

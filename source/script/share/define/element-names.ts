@@ -28,6 +28,7 @@ export enum ElementClass {
 }
 
 export enum ElementName {
+    optionsNotItemGroup = 'engine-not-item-group', 
     optionsNotItemWord = 'engine-not-item-word',
     optionsNotItemServiceGoogle = 'engine-not-item-service-google',
     optionsNotItemServiceBing = 'engine-not-item-service-bing',
