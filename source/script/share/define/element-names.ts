@@ -22,6 +22,7 @@ export enum ElementId {
 }
 
 export enum ElementClass {
+    localeRoot = 'WE___search-hook-_-_-locale-root',
     hidden = 'WE___search-hook-_-_-hidden',
     hiddenItem = 'WE___search-hook-_-_-hidden-item',
     switch = 'WE___search-hook-_-_-switch',
@@ -43,6 +44,11 @@ export enum ElementName {
     optionsHideItemRemove = 'view-hide-item-remove',
 }
 
+export enum ElementData {
+    locale = 'locale',
+    localeTargets = 'locale-targets',
+}
+
 export function toIdSelector(elementId: ElementId): string {
     return '#' + elementId;
 }
@@ -52,5 +58,7 @@ export function toClassSelector(className: ElementClass): string {
 export function toNameSelector(elementName: ElementName): string {
     return `[name="${elementName}"]`;
 }
-
+export function toDataSelector(elementData: ElementData): string {
+    return `[data-${elementData}]`;
+}
 
