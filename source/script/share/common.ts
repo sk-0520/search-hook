@@ -60,7 +60,7 @@ export function merge<T>(source: T, overwrite: T): T {
     }
 
     for (const key in overwrite) {
-        if (overwrite[key]) {
+        if (key in overwrite) {
             try {
                 if (overwrite[key].constructor === Object) {
                     source[key] = merge(source[key], overwrite[key]);
