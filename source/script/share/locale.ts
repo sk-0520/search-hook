@@ -10,6 +10,12 @@ export class Locale extends LoggingBase {
     public attachLocaleRoot() {
         const rootElements = document.querySelectorAll(toClassSelector(ElementClass.localeRoot));
 
+        for (const element of rootElements) {
+            for (const dataElement of element.querySelectorAll(toDataSelector(ElementData.locale))) {
+                this.applyLocale(dataElement as HTMLElement);
+            }
+        }
+        
         const observer = new MutationObserver(mutations => {
             for (const mutation of mutations) {
                 const elm = mutation.target as HTMLElement;
@@ -22,12 +28,8 @@ export class Locale extends LoggingBase {
             childList: true,
             subtree: true,
         };
-
         for (const element of rootElements) {
             observer.observe(element, config);
-            for (const dataElement of element.querySelectorAll(toDataSelector(ElementData.locale))) {
-                this.applyLocale(dataElement as HTMLElement);
-            }
         }
     }
 
@@ -44,7 +46,13 @@ export class Locale extends LoggingBase {
         const targets = element.dataset[ElementData.localeTargets];
         if(!targets) {
             this.logger.debug('@@@@ ' + localeKey);
-            //element.innerText = browser.i18n.getMessage(localeKey);
+            const localeValue = browser.i18n.getMessage(localeKey);
+            if(localeValue) {
+                this.logger.debug('++++ ' + browser.i18n.getMessage(localeKey));
+                if(element.innerText !== localeValue) {
+                    element.innerText = localeValue;
+                } 
+            }
         } else {
             this.logger.warn(`targets: ${targets}`);
         }
