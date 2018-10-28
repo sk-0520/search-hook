@@ -8,6 +8,7 @@ import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { IServiceBridgeData, ItemsBridgeData, EraseBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
+import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 
 /** Fxから持ってきた */
 export interface IRequestDetails {
@@ -53,38 +54,32 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         this.hideItems = this.getEnabledHideItems(settingItems.hideItems);
     }
 
+    protected checkService(setting: IReadOnlyServiceEnabledSetting) {
+        switch (this.service) {
+            case ServiceKind.google:
+                return setting.google;
+
+            case ServiceKind.bing:
+                return setting.bing;
+
+            default:
+                throw new Exception(setting);
+        }
+    }
+
     protected getEnabledNotItemWords(notItems: ReadonlyArray<IReadOnlyNotItemSetting>): Array<string> {
         return notItems.filter(i => {
-            switch (this.service) {
-                case ServiceKind.google:
-                    return i.service.google;
-
-                case ServiceKind.bing:
-                    return i.service.bing;
-
-                default:
-                    throw new Exception(i);
-            }
+            return this.checkService(i.service);
         }).filter(i => {
             return !isNullOrEmpty(i.word);
         }).map(i => {
             return i.word;
         });
-
     }
 
     protected getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
         return hideItems.filter(i => {
-            switch (this.service) {
-                case ServiceKind.google:
-                    return i.service.google;
-
-                case ServiceKind.bing:
-                    return i.service.bing;
-
-                default:
-                    throw new Exception(i);
-            }
+            return this.checkService(i.service);
         }).filter(i => {
             return !isNullOrEmpty(i.word);
         }).filter(i => {
@@ -92,8 +87,8 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
                 try {
                     new RegExp(i.word);
                 } catch (ex) {
-                    this.logger.dumpError(i);
                     this.logger.error(ex);
+                    this.logger.dumpError(i);
                     return false;
                 }
             }

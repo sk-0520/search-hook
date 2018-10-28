@@ -12,6 +12,15 @@ export interface IHideCheker {
     match: (s: string) => boolean;
 }
 
+export interface IHideElementSelector {
+    target: string;
+    /** 隠す要素 */
+    element: string;
+    /** チェック対象のアンカー要素 */
+    link: string;
+
+}
+
 export abstract class ContentServiceBase extends ActionBase implements IService {
 
     public abstract readonly service: ServiceKind;
@@ -144,7 +153,6 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         });
     }
 
-
     private matchUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
 
         let url: URL;
@@ -228,6 +236,50 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         document.getElementsByTagName('body')[0].appendChild(parent);
     }
 
+    protected hideItemsCore(elementSelectors: ReadonlyArray<IHideElementSelector>, checkers: ReadonlyArray<IHideCheker>): void {
+        let success = false;
+        for (const elementSelector of elementSelectors) {
+
+            this.logger.debug('target: ' + elementSelector.target);
+
+            const elements = document.querySelectorAll(elementSelector.element);
+            this.logger.debug('elements: ' + elements.length);
+
+            for (const element of elements) {
+                const linkElement = element.querySelector(elementSelector.link);
+                if (!linkElement) {
+                    continue;
+                }
+
+                const link = linkElement.getAttribute('href')! || '';
+                this.logger.debug('link: ' + link);
+
+                // 普通パターン
+                if (this.matchSimpleUrl(link, checkers)) {
+                    this.hideElement(element);
+                    success = true;
+                    continue;
+                }
+
+                // /path?q=XXX 形式
+                if (this.matchQueryUrl(link, checkers)) {
+                    this.hideElement(element);
+                    success = true;
+                    continue;
+                }
+
+                this.logger.debug('show: ' + link);
+            }
+
+            if (success) {
+                break;
+            }
+        }
+
+        if (success) {
+            this.appendHiddenSwitch();
+        }
+    }
 }
 
 
