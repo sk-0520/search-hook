@@ -26,7 +26,7 @@
     "watch:firefox": "npm-run-all --parallel watch:core:*",
     "debug:firefox": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox",
     "debug:firefox-sk": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox-sk",
-    "release:firefox": "npm-run-all --print-label clean test resource:firefox compile:firefox lint:firefox build:firefox"
+    "release:firefox": "npm-run-all --print-label clean resource:firefox compile:firefox lint:firefox build:firefox"
   },
   "repository": {
     "type": "git",
