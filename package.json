@@ -14,7 +14,7 @@
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
     "browser:firefox-sk": "npm run browser:firefox -- --keep-profile-changes --firefox-profile=X:\\fx ",
     "lint:firefox": "web-ext lint --source-dir=./dist",
-    "build:firefox": "web-ext build --source-dir=./dist --artifacts-dir=./artifacts/firefox --overwrite-dest",
+    "build:firefox": "web-ext build --source-dir=./dist --artifacts-dir=./artifacts/firefox --overwrite-dest --ignore-files=**/*.map",
     "compile:core:options": "       parcel build --public-url . ./source/view/options.pug",
     "compile:core:background": "    parcel build --public-url . ./source/view/background.pug",
     "compile:core:content-script": "parcel build --public-url . ./source/script/content/content-google.loader.ts ./source/script/content/content-bing.loader.ts ",
