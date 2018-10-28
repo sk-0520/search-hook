@@ -4,7 +4,10 @@
   "description": "",
   "scripts": {
     "clean": "rimraf ./dist",
-    "manifest:firefox": "cp-cli ./source/firefox.json ./dist/manifest.json & cp-cli ./source/resources/icon.svg ./dist/icon.svg",
+    "tslint": "tslint ./source/script/**/*.ts",
+    "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
+    "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
+    "resource:firefox": "npm-run-all resource:image-firefox resource:manifest-firefox",
     "browser:firefox": "web-ext run --source-dir=./dist --start-url about:debugging about:addons",
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
     "browser:firefox-sk": "npm run browser:firefox -- --keep-profile-changes --firefox-profile=X:\\fx ",
@@ -12,16 +15,17 @@
     "build:firefox": "web-ext build --source-dir=./dist --artifacts-dir=./artifacts/firefox --overwrite-dest",
     "compile:core:options": "       parcel build --public-url . ./source/view/options.pug",
     "compile:core:background": "    parcel build --public-url . ./source/view/background.pug",
-    "compile:core:content-script": "parcel build --public-url . ./source/script/content/content-google-action.ts ./source/script/content/content-bing-action.ts ",
-    "compile:core:content-style":"  parcel build --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
+    "compile:core:content-script": "parcel build --public-url . ./source/script/content/content-google.loader.ts ./source/script/content/content-bing.loader.ts ",
+    "compile:core:content-style": " parcel build --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
     "watch:core:options": "         parcel watch --public-url . ./source/view/options.pug",
     "watch:core:background": "      parcel watch --public-url . ./source/view/background.pug",
-    "watch:core:content-script": "  parcel watch --public-url . ./source/script/content/content-google-action.ts ./source/script/content/content-bing-action.ts",
+    "watch:core:content-script": "  parcel watch --public-url . ./source/script/content/content-google.loader.ts ./source/script/content/content-bing.loader.ts",
     "watch:core:content-style": "   parcel watch --public-url . ./source/style/content-google.scss ./source/style/content-bing.scss",
-    "compile:firefox": "npm-run-all --parallel compile:core:*",
-    "watch:firefox": "npm-run-all --parallel watch:core:*",
-    "debug:firefox": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox",
-    "debug:firefox-sk": "npm run manifest:firefox & npm-run-all --parallel watch:firefox browser:firefox-sk"
+    "compile:firefox": "npm run tslint && npm-run-all --print-label compile:core:*",
+    "watch:firefox": "npm run tslint && npm-run-all --parallel watch:core:*",
+    "debug:firefox": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox",
+    "debug:firefox-sk": "npm run resource:firefox && npm-run-all --parallel watch:firefox browser:firefox-sk",
+    "release:firefox": "npm-run-all --print-label clean resource:firefox compile:firefox lint:firefox build:firefox"
   },
   "repository": {
     "type": "git",
@@ -31,6 +35,8 @@
   "license": "GPLv3",
   "homepage": "https://bitbucket.org/sk_0520/search-hook#readme",
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "cp-cli": "^1.1.2",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.1.3",
@@ -38,11 +44,10 @@
     "pug": "^2.0.3",
     "rimraf": "^2.6.2",
     "sass": "^1.14.3",
+    "tslint": "^5.11.0",
     "typescript": "^3.1.3",
     "web-ext": "^2.9.1",
-    "web-ext-types": "^2.3.0"
+    "web-ext-types": "^3.0.0"
   },
-  "dependencies": {
-    "content.css": "^3.2.0"
-  }
+  "dependencies": {}
 }

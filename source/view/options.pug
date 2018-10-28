@@ -5,7 +5,7 @@ html
     link(rel="stylesheet" href="../style/options.scss")
   body
     form.setting
-      fieldset
+      fieldset#service
         legend service
         ul
           li
@@ -41,6 +41,22 @@ html
               th enabled
               th remove
           tbody#engine-not-word-list
+            template
+              tr(name="engine-not-item-group")
+                td
+                  input(name="engine-not-item-word" type="text")
+                td
+                  ul.horizontal
+                    li
+                      label
+                        input(name="engine-not-item-service-google", type="checkbox")
+                        | google
+                    li
+                      label
+                        input(name="engine-not-item-service-bing", type="checkbox")
+                        | bing
+                td
+                  button(name="engine-not-item-remove") remove
             // script
           tfoot.input
             tr
@@ -50,11 +66,11 @@ html
                 ul.horizontal
                   li
                     label
-                      input#engine-input-is-enabled-google(type="checkbox" checked="")
+                      input#engine-input-is-enabled-google(type="checkbox" checked)
                       | google
                   li
                     label
-                      input#engine-input-is-enabled-bing(type="checkbox" checked="")
+                      input#engine-input-is-enabled-bing(type="checkbox" checked)
                       | bing
               th
                 button#command-engine-add-not-item(type="button") add
@@ -72,6 +88,34 @@ html
               th enabled
               th remove
           tbody#view-hide-host-list
+            template
+              tr(name="view-hide-item-group")
+                td
+                  input(name="view-hide-item-host" type="text")
+                td
+                  ul.horizontal
+                    li
+                      select(name="view-hide-item-match-kind")
+                        option(value="partial") partial
+                        option(value="forward") forward
+                        option(value="perfect") perfect
+                        option(value="regex") regex
+                    li
+                      label
+                        input(name="view-hide-item-match-case" type="checkbox")
+                        | case
+                td
+                  ul.horizontal
+                    li
+                      label
+                        input(name="view-hide-item-service-google", type="checkbox")
+                        | google
+                    li
+                      label
+                        input(name="view-hide-item-service-bing", type="checkbox")
+                        | bing
+                td
+                  button(name="view-hide-item-remove") remove
             // script
           tfoot.input
             tr
@@ -81,23 +125,23 @@ html
                 ul.horizontal
                   li
                     select#view-input-hide-match-kind
-                      option#view-input-hide-match-kind-partial(value="partial" checked="") partial
-                      option#view-input-hide-match-kind-forward(value="forward" checked="") forward
-                      option#view-input-hide-match-kind-perfect(value="perfect") perfect
-                      option#view-input-hide-match-kind-regex(value="regex") regex
+                      option(value="partial" checked) partial
+                      option(value="forward") forward
+                      option(value="perfect") perfect
+                      option(value="regex") regex
                   li
                     label
-                      input#view-input-hide-match-case(type="checkbox" checked="")
+                      input#view-input-hide-match-case(type="checkbox")
                       | case
               th
                 ul.horizontal
                   li
                     label
-                      input#view-input-is-enabled-google(type="checkbox" checked="")
+                      input#view-input-is-enabled-google(type="checkbox" checked)
                       | google
                   li
                     label
-                      input#view-input-is-enabled-bing(type="checkbox" checked="")
+                      input#view-input-is-enabled-bing(type="checkbox" checked)
                       | bing
               th
                 button#command-view-add-hide-item(type="button") add
@@ -107,4 +151,4 @@ html
           strong TODO
           | , reserve permissions: <all_urls>
       button(type="submit") save
-    script(src="../script/options/options-action.ts")
+    script(src="../script/options/options.loader.ts")
