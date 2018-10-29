@@ -52,21 +52,13 @@ export default class Options extends ActionBase {
     private save(e: Event): void {
         e.preventDefault();
 
-        const setting = new MainSetting();
-        setting.service = this.optionsService.export();
-        setting.notItems = this.optionsNotItems.export();
-        setting.hideItems = this.optionsHideItems.export();
+        const mainSetting = new MainSetting();
+        mainSetting.service = this.optionsService.export();
+        mainSetting.notItems = this.optionsNotItems.export();
+        mainSetting.hideItems = this.optionsHideItems.export();
 
-        browser.storage.local.set({
-            setting: setting as any
-        }).then(
-            result => {
-                browser.runtime.reload();
-            },
-            error => {
-                this.logger.error(error);
-            }
-        );
+        const setting = new Setting();
+        setting.saveMainSettingAsync(mainSetting, true);
     }
 
 
