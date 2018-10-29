@@ -7,32 +7,31 @@ html
     form.setting.WE___search-hook-_-_-locale-root
       fieldset#service
         legend
-          span(data-locale="optionsServiceTitle") service
+          span(data-locale="optionsServiceTitle") [検索エンジン基本設定]
         ul
           li
             label
               input#service-is-enabled-google(type="checkbox")
-              | google
+              span(data-locale="optionsServiceGoogle") [Google]
             table
               tr
                 td
-                  label(for="service-google-search-count") count
+                  label(for="service-google-search-count")
+                    span(data-locale="optionsServiceGoogleSearchCount") [検索数]
                 td
                   input#service-google-search-count(type="number" min="10" max="100" step="10")
               tr
-                td safe
+                td 
+                  span(data-locale="optionsServiceGoogleSearchSafe") [セーフサーチ]
                 td
                   label
                     input#service-google-search-safe(type="checkbox")
-                    | enabled
+                    span(data-locale="commonEnabled") [有効]
           li
             label
               input#service-is-enabled-bing(type="checkbox")
-              | bing
-            //
-              <ul>
-              <li><label>count: <input id="service-bing-search-count" type="number" min="10" max="100" step="10" /></label></li>
-              </ul>
+              span(data-locale="optionsServiceBing") [Bing]
+
       fieldset
         legend [engine] not word or host
         table
@@ -75,6 +74,7 @@ html
                       | bing
               th
                 button#command-engine-add-not-item(type="button") add
+                
       fieldset
         legend [view] hide host/path/query
         p

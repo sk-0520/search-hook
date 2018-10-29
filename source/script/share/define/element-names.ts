@@ -46,7 +46,10 @@ export enum ElementName {
 
 export enum ElementData {
     locale = 'locale',
-    localeTargets = 'locale-targets',
+    /** ロケールを属性に設定する旨を印付ける */
+    localeAttributes = 'locale-attributes',
+    /** ロケールを属性に設定する場合の属性名の識別子 */
+    localeAttributeHead = 'locale-attribute-',
 }
 
 export function toIdSelector(elementId: ElementId): string {
