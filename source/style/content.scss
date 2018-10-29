@@ -18,7 +18,26 @@
     background: #cccccc;
     color: #111111;
     font-weight: bold;
-    padding: 0.5ex 1ex;
+    padding: 0;
     border: 1px solid #888888;
+
+    input[type="checkbox"] {
+        display: none;
+
+        &+label {
+            $size: 3em;
+
+            position: relative;
+            display: block;
+            background-repeat: no-repeat;
+            background-size:contain;
+            width: $size;
+            height:$size;
+            background-image: url("content-item-visible.svg");
+       }
+        &:checked+label {
+            background-image: url("content-item-hidden.svg");
+        }
+    }
 }
 

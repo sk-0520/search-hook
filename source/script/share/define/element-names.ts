@@ -19,6 +19,8 @@ export enum ElementId {
     optionsHideItemInputServiceGoogle  = 'view-input-is-enabled-google',
     optionsHideItemInputServiceBing  = 'view-input-is-enabled-bing',
     optionsHideItemInputAdd  = 'command-view-add-hide-item',
+
+    contentShowState = 'WE___search-hook-_-_-state'
 }
 
 export enum ElementClass {

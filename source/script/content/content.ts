@@ -1,5 +1,5 @@
 import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import { ElementClass, toClassSelector } from "../share/define/element-names";
+import { ElementClass, toClassSelector, ElementId } from "../share/define/element-names";
 import { ActionBase, Exception } from "../share/common";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
@@ -219,18 +219,19 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected appendHiddenSwitch() {
 
         const switchElement = document.createElement('input');
+        switchElement.setAttribute('id', ElementId.contentShowState);
         switchElement.setAttribute('type', 'checkbox');
         switchElement.checked = true;
         switchElement.addEventListener('change', e => {
             this.switchHideItems();
         });
 
-        const groupElement = document.createElement('label');
-        groupElement.appendChild(switchElement);
-        groupElement.appendChild(document.createTextNode('hide items'));
+        const switchImageElement = document.createElement('label');
+        switchImageElement.setAttribute('for', ElementId.contentShowState);
 
         const parent = document.createElement('div');
-        parent.appendChild(groupElement);
+        parent.appendChild(switchElement);
+        parent.appendChild(switchImageElement);
         parent.classList.add(ElementClass.switch);
 
         document.getElementsByTagName('body')[0].appendChild(parent);
