@@ -6,8 +6,7 @@ html
   body
     form.setting.WE___search-hook-_-_-locale-root
       fieldset#service
-        legend
-          span(data-locale="optionsServiceTitle") [検索エンジン基本設定]
+        legend(data-locale="optionsServiceTitle") [検索エンジン基本設定]
         ul
           li
             label
@@ -75,18 +74,18 @@ html
                 button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
 
       fieldset
-        legend [view] hide host/path/query
+        legend(data-locale="optionsHideItemTitle") [非表示設定]
         p
-          | use: HOST, PATH, QUERY
+          span(data-locale="optionsHideItemDescriptionUse") [ホスト名、パス、クエリ部分を比較に使用します。]
           br
-          |                 ignore: PROTOCOL, USER, PASSWORD, PORT
+          span(data-locale="optionsHideItemDescriptionIgnore") [プロトコル、ユーザー、パスワード、ポート番号は無視されます。]
         table
           thead
             tr
-              th host
-              th match
-              th enabled
-              th remove
+              th(data-locale="optionsHideItemHeaderWord") [非表示対象ワード]
+              th(data-locale="optionsHideItemHeaderMatch") [比較方法]
+              th(data-locale="commonEnabled") [有効]
+              th(data-locale="commonRemove") [削除]
           tbody#view-hide-host-list
             template
               tr(name="view-hide-item-group")
@@ -96,26 +95,26 @@ html
                   ul.horizontal
                     li
                       select(name="view-hide-item-match-kind")
-                        option(value="partial") partial
-                        option(value="forward") forward
-                        option(value="perfect") perfect
-                        option(value="regex") regex
+                        option(value="partial" data-locale="matchKindPartial") [部分一致]
+                        option(value="forward" data-locale="matchKindForward") [前方一致]
+                        option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                        option(value="regex"   data-locale="matchKindRegex")   [正規表現]
                     li
                       label
                         input(name="view-hide-item-match-case" type="checkbox")
-                        | case
+                        span(data-locale="commonCaseSensitive") [大文字小文字を区別]
                 td
                   ul.horizontal
                     li
                       label
-                        input(name="view-hide-item-service-google", type="checkbox")
+                        input(name="view-hide-item-service-google" type="checkbox")
                         | google
                     li
                       label
-                        input(name="view-hide-item-service-bing", type="checkbox")
+                        input(name="view-hide-item-service-bing" type="checkbox")
                         | bing
                 td
-                  button(name="view-hide-item-remove") remove
+                  button(name="view-hide-item-remove" data-locale="commonRemove") [削除]
             // script
           tfoot.input
             tr
@@ -125,14 +124,14 @@ html
                 ul.horizontal
                   li
                     select#view-input-hide-match-kind
-                      option(value="partial" checked) partial
-                      option(value="forward") forward
-                      option(value="perfect") perfect
-                      option(value="regex") regex
+                        option(value="partial" selected data-locale="matchKindPartial") [部分一致]
+                        option(value="forward" data-locale="matchKindForward") [前方一致]
+                        option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                        option(value="regex"   data-locale="matchKindRegex")   [正規表現]
                   li
                     label
                       input#view-input-hide-match-case(type="checkbox")
-                      | case
+                      span(data-locale="commonCaseSensitive") [大文字小文字を区別]
               th
                 ul.horizontal
                   li
@@ -144,11 +143,11 @@ html
                       input#view-input-is-enabled-bing(type="checkbox" checked)
                       | bing
               th
-                button#command-view-add-hide-item(type="button") add
+                button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]
       fieldset
-        legend [view] import
+        legend(data-locale="optionsDeliveryTitle")
         p
           strong TODO
           | , reserve permissions: <all_urls>
-      button(type="submit") save
+      button(type="submit" data-locale="optionsSave") [保存]
     script(src="../script/options/options.loader.ts")
