@@ -3,7 +3,7 @@ import { ElementId } from "../share/define/element-names";
 import { Setting } from "../browser/setting";
 import { IMainSetting } from "../share/setting/main-setting";
 
-export default class OptionsExportImport extends ActionBase  {
+export default class OptionsExportImport extends ActionBase {
 
     constructor() {
         super('Options Export/Import');
@@ -16,15 +16,15 @@ export default class OptionsExportImport extends ActionBase  {
     public initialize(): void {
         document.getElementById(ElementId.optionsInportExportExport)!.addEventListener(
             'click',
-            e =>this.export()
+            e => this.export()
         );
         document.getElementById(ElementId.optionsInportExportCopy)!.addEventListener(
             'click',
-            e =>this.copy()
+            e => this.copy()
         );
         document.getElementById(ElementId.optionsInportExportImport)!.addEventListener(
             'click',
-            e =>this.import()
+            e => this.import()
         );
     }
 
@@ -57,12 +57,9 @@ export default class OptionsExportImport extends ActionBase  {
 
             setting.saveMainSettingAsync(tunedMainSetting, true);
 
-        } catch(ex) {
+        } catch (ex) {
             this.logger.error(ex);
             alert(ex);
         }
-        
     }
-
-
 }
