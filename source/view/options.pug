@@ -159,4 +159,25 @@ html
           strong TODO
 
       button(type="submit" data-locale="optionsSave") [保存]
+
+    details.impexp.setting.WE___search-hook-_-_-locale-root
+      summary(data-locale="optionsImportExportTitle") [Import/Export]
+      p(data-locale="optionsImportExportDescription") [本機能は全設定データをテキストとして表示・取り込むものです。設定を簡単に持ち運ぶことを目的にしています。]
+      p.alert(data-locale="optionsImportExportDescriptionAlert") [取り込みにおいて正しいデータであることを期待しています。]
+      table
+        tr
+          td
+            button#command-imp-exp-export(data-locale="optionsImportExportExport") [Import/Export]
+          td
+            button#command-imp-exp-copy(data-locale="optionsImportExportCopy") [Import/Export]
+        tr
+          td(colspan="2")
+            textarea#imp-exp-export-area
+        tr
+          td
+          td
+            button#command-imp-exp-copy(data-locale="optionsImportExportCopy") [Import/Export]
+
+
+
     script(src="../script/options/options.loader.ts")

@@ -111,6 +111,32 @@
   "optionsSave": {
     "message": "保存",
     "description": "[Options] save"
+  },
+
+  "optionsImportExportTitle": {
+    "message": "Import/Export",
+    "description": "[Options] [ImportExport] title"
+  },
+  "optionsImportExportDescription": {
+    "message": "本機能は全設定データをテキストとして表示・取り込むものです。設定を簡単に持ち運ぶことを目的にしています。",
+    "description": "[Options] [ImportExport] description"
+  },
+  "optionsImportExportDescriptionAlert": {
+    "message": "取り込みにおいて正しいデータであることを期待しています。",
+    "description": "[Options] [ImportExport] description alert"
+  },
+  "optionsImportExportExport": {
+    "message": "出力",
+    "description": "[Options] [ImportExport] export"
+  },
+  "optionsImportExportCopy": {
+    "message": "コピー",
+    "description": "[Options] [ImportExport] copy"
+  },
+  "optionsImportExportImport": {
+    "message": "取り込み",
+    "description": "[Options] [ImportExport] import"
   }
+  
 
 }
