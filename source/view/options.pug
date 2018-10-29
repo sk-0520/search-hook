@@ -4,42 +4,43 @@ html
     meta(charset="utf-8")
     link(rel="stylesheet" href="../style/options.scss")
   body
-    form.setting
+    form.setting.WE___search-hook-_-_-locale-root
       fieldset#service
-        legend service
+        legend(data-locale="optionsServiceTitle") [検索エンジン基本設定]
         ul
           li
             label
               input#service-is-enabled-google(type="checkbox")
-              | google
+              img.icon(src="./service-icon-google.svg")
+              span(data-locale="commonServiceGoogle") [Google]
             table
               tr
                 td
-                  label(for="service-google-search-count") count
+                  label(for="service-google-search-count")
+                    span(data-locale="optionsServiceGoogleSearchCount") [検索数]
                 td
                   input#service-google-search-count(type="number" min="10" max="100" step="10")
               tr
-                td safe
+                td 
+                  span(data-locale="optionsServiceGoogleSearchSafe") [セーフサーチ]
                 td
                   label
                     input#service-google-search-safe(type="checkbox")
-                    | enabled
+                    span(data-locale="commonEnabled") [有効]
           li
             label
               input#service-is-enabled-bing(type="checkbox")
-              | bing
-            //
-              <ul>
-              <li><label>count: <input id="service-bing-search-count" type="number" min="10" max="100" step="10" /></label></li>
-              </ul>
+              img.icon(src="./service-icon-bing.svg")
+              span(data-locale="commonServiceBing") [Bing]
+
       fieldset
-        legend [engine] not word or host
-        table
+        legend(data-locale="optionsNotItemTitle") [検索除外]
+        table.list
           thead
             tr
-              th word
-              th enabled
-              th remove
+              th(data-locale="optionsNotItemHeaderWord") [除外ワード]
+              th(data-locale="commonEnabled") [有効]
+              th(data-locale="commonRemove") [削除]
           tbody#engine-not-word-list
             template
               tr(name="engine-not-item-group")
@@ -48,45 +49,45 @@ html
                 td
                   ul.horizontal
                     li
-                      label
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                         input(name="engine-not-item-service-google", type="checkbox")
-                        | google
+                        img.icon(src="./service-icon-google.svg")
                     li
-                      label
-                        input(name="engine-not-item-service-bing", type="checkbox")
-                        | bing
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                        input(name="engine-not-item-service-bing" type="checkbox")
+                        img.icon(src="./service-icon-bing.svg")
                 td
-                  button(name="engine-not-item-remove") remove
-            // script
+                  button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
           tfoot.input
             tr
-              th
+              td
                 input#engine-input-not-word(type="text")
-              th
+              td
                 ul.horizontal
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                       input#engine-input-is-enabled-google(type="checkbox" checked)
-                      | google
+                      img.icon(src="./service-icon-google.svg")
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
                       input#engine-input-is-enabled-bing(type="checkbox" checked)
-                      | bing
-              th
-                button#command-engine-add-not-item(type="button") add
+                      img.icon(src="./service-icon-bing.svg")
+              td
+                button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
+
       fieldset
-        legend [view] hide host/path/query
+        legend(data-locale="optionsHideItemTitle") [非表示設定]
         p
-          | use: HOST, PATH, QUERY
+          span(data-locale="optionsHideItemDescriptionUse") [ホスト名、パス、クエリ部分を比較に使用します。]
           br
-          |                 ignore: PROTOCOL, USER, PASSWORD, PORT
-        table
+          span(data-locale="optionsHideItemDescriptionIgnore") [プロトコル、ユーザー、パスワード、ポート番号は無視されます。]
+        table.list
           thead
             tr
-              th host
-              th match
-              th enabled
-              th remove
+              th(data-locale="optionsHideItemHeaderWord") [非表示対象ワード]
+              th(data-locale="optionsHideItemHeaderMatch") [比較方法]
+              th(data-locale="commonEnabled") [有効]
+              th(data-locale="commonRemove") [削除]
           tbody#view-hide-host-list
             template
               tr(name="view-hide-item-group")
@@ -96,59 +97,66 @@ html
                   ul.horizontal
                     li
                       select(name="view-hide-item-match-kind")
-                        option(value="partial") partial
-                        option(value="forward") forward
-                        option(value="perfect") perfect
-                        option(value="regex") regex
+                        option(value="partial" data-locale="matchKindPartial") [部分一致]
+                        option(value="forward" data-locale="matchKindForward") [前方一致]
+                        option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                        option(value="regex"   data-locale="matchKindRegex")   [正規表現]
                     li
                       label
                         input(name="view-hide-item-match-case" type="checkbox")
-                        | case
+                        span(data-locale="commonCaseSensitive") [大文字小文字を区別]
                 td
                   ul.horizontal
                     li
-                      label
-                        input(name="view-hide-item-service-google", type="checkbox")
-                        | google
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                        input(name="view-hide-item-service-google" type="checkbox")
+                        img.icon(src="./service-icon-google.svg")
                     li
-                      label
-                        input(name="view-hide-item-service-bing", type="checkbox")
-                        | bing
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                        input(name="view-hide-item-service-bing" type="checkbox")
+                        img.icon(src="./service-icon-bing.svg")
                 td
-                  button(name="view-hide-item-remove") remove
+                  button(name="view-hide-item-remove" data-locale="commonRemove") [削除]
             // script
           tfoot.input
             tr
-              th
+              td
                 input#view-input-hide-host(type="text")
-              th
+              td
                 ul.horizontal
                   li
                     select#view-input-hide-match-kind
-                      option(value="partial" checked) partial
-                      option(value="forward") forward
-                      option(value="perfect") perfect
-                      option(value="regex") regex
+                        option(value="partial" selected data-locale="matchKindPartial") [部分一致]
+                        option(value="forward" data-locale="matchKindForward") [前方一致]
+                        option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                        option(value="regex"   data-locale="matchKindRegex")   [正規表現]
                   li
                     label
                       input#view-input-hide-match-case(type="checkbox")
-                      | case
-              th
+                      span(data-locale="commonCaseSensitive") [大文字小文字を区別]
+              td
                 ul.horizontal
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                       input#view-input-is-enabled-google(type="checkbox" checked)
-                      | google
+                      img.icon(src="./service-icon-google.svg")
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
                       input#view-input-is-enabled-bing(type="checkbox" checked)
-                      | bing
-              th
-                button#command-view-add-hide-item(type="button") add
+                      img.icon(src="./service-icon-bing.svg")
+              td
+                button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]
+
       fieldset
-        legend [view] import
+        legend(data-locale="optionsDeliveryTitle") [外部非表示設定]
         p
           strong TODO
           | , reserve permissions: <all_urls>
-      button(type="submit") save
+
+      fieldset
+        legend(data-locale="optionsWhitelistTitle") [非表示ホワイトリスト]
+        p
+          strong TODO
+
+      button(type="submit" data-locale="optionsSave") [保存]
     script(src="../script/options/options.loader.ts")

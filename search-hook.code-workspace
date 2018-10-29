@@ -4,8 +4,16 @@
 			"path": "."
 		},
 		{
+			"name": "i18n",
+			"path": "source/_locales",
+		},
+		{
 			"name": "Script",
 			"path": "source/script",
+		},
+		{
+			"name": "TEST",
+			"path": "source/test/script",
 		},
 		{
 			"name": "View",

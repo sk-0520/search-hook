@@ -19,9 +19,12 @@ export enum ElementId {
     optionsHideItemInputServiceGoogle  = 'view-input-is-enabled-google',
     optionsHideItemInputServiceBing  = 'view-input-is-enabled-bing',
     optionsHideItemInputAdd  = 'command-view-add-hide-item',
+
+    contentShowState = 'WE___search-hook-_-_-state'
 }
 
 export enum ElementClass {
+    localeRoot = 'WE___search-hook-_-_-locale-root',
     hidden = 'WE___search-hook-_-_-hidden',
     hiddenItem = 'WE___search-hook-_-_-hidden-item',
     switch = 'WE___search-hook-_-_-switch',
@@ -43,6 +46,14 @@ export enum ElementName {
     optionsHideItemRemove = 'view-hide-item-remove',
 }
 
+export enum ElementData {
+    locale = 'locale',
+    /** ロケールを属性に設定する旨を印付ける */
+    localeAttributes = 'localeAttributes',
+    /** ロケールを属性に設定する場合の属性名の識別子 */
+    localeAttributeHead = 'localeAttribute',
+}
+
 export function toIdSelector(elementId: ElementId): string {
     return '#' + elementId;
 }
@@ -52,5 +63,7 @@ export function toClassSelector(className: ElementClass): string {
 export function toNameSelector(elementName: ElementName): string {
     return `[name="${elementName}"]`;
 }
-
+export function toDataSelector(elementData: ElementData): string {
+    return `[data-${elementData}]`;
+}
 

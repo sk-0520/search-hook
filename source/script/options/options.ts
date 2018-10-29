@@ -4,12 +4,15 @@ import { IMainSetting, MainSetting } from '../share/setting/main-setting';
 import OptionsNotItems from './options-not-items';
 import OptionsService from './options-service';
 import OptionsHideItems from './options-hide-items';
+import { Locale } from '../share/locale';
 
 export default class Options extends ActionBase {
 
     private optionsService = new OptionsService();
     private optionsNotItems = new OptionsNotItems();
     private optionsHideItems = new OptionsHideItems();
+
+    private locale = new Locale();
 
     constructor() {
         super('Options');
@@ -21,6 +24,8 @@ export default class Options extends ActionBase {
         this.optionsService.initialize();
         this.optionsNotItems.initialize();
         this.optionsHideItems.initialize();
+
+        this.locale.attachLocaleRoot();
 
         this.restore();
     }
