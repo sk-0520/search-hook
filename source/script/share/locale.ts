@@ -3,7 +3,7 @@ import { LoggingBase } from "./common";
 
 export class Locale extends LoggingBase {
 
-    static readonly emptyMark = '@EMPTY';
+    private static readonly emptyMark = '@EMPTY';
 
     constructor() {
         super('Locale');
@@ -61,7 +61,7 @@ export class Locale extends LoggingBase {
         }
 
         // 属性割り当て(locale-attributesが設定されている項目に限定)
-        var attributes: Array<{ attr: string, localeKey: string }> = [];
+        const attributes: Array<{ attr: string, localeKey: string }> = [];
         for (const key in element.dataset) {
             if (element.dataset[key] && key.startsWith(ElementData.localeAttributeHead)) {
                 const pair = {
@@ -73,7 +73,7 @@ export class Locale extends LoggingBase {
         }
         if (attributes.length) {
             for (const pair of attributes) {
-                var currentValue = element.getAttribute(pair.attr);
+                const currentValue = element.getAttribute(pair.attr);
                 const localeValue = browser.i18n.getMessage(pair.localeKey);
                 if (localeValue) {
                     if (currentValue) {
