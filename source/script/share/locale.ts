@@ -17,7 +17,7 @@ export class Locale extends LoggingBase {
                 this.applyLocale(dataElement as HTMLElement);
             }
         }
-        
+
         const observer = new MutationObserver(mutations => {
             for (const mutation of mutations) {
                 const element = mutation.target as HTMLElement;
@@ -45,43 +45,43 @@ export class Locale extends LoggingBase {
     }
 
     private applyLocaleCore(element: HTMLElement, localeKey: string) {
-        this.logger.debug(element.outerHTML);
-        this.logger.debug(localeKey);
 
         // テキスト割り当て
-        if(localeKey !== Locale.emptyMark){
+        if (localeKey !== Locale.emptyMark) {
             const localeValue = browser.i18n.getMessage(localeKey);
-            if(localeValue) {
-                if(element.textContent !== localeValue) {
+            if (localeValue) {
+                if (element.textContent !== localeValue) {
                     element.textContent = localeValue;
-                } 
+                }
             }
+        } else {
+            this.logger.dumpDebug(element.dataset);
+            this.logger.dumpDebug(element.dataset[ElementData.localeAttributes]);
+
         }
 
         // 属性割り当て(locale-attributesが設定されている項目に限定)
-        if(element.dataset[ElementData.localeAttributes]) {
-            var attributes: Array<{ attr:string, localeKey:string }> = [];
-            for(const key in element.dataset) {
-                if(element.dataset[key] && key.startsWith(ElementData.localeAttributeHead)) {
-                    const pair = {
-                        attr: key.substr(ElementData.localeAttributeHead.length),
-                        localeKey: element.dataset[key]!
-                    };
-                    attributes.push(pair);
-                }
+        var attributes: Array<{ attr: string, localeKey: string }> = [];
+        for (const key in element.dataset) {
+            if (element.dataset[key] && key.startsWith(ElementData.localeAttributeHead)) {
+                const pair = {
+                    attr: key.substr(ElementData.localeAttributeHead.length),
+                    localeKey: element.dataset[key]!
+                };
+                attributes.push(pair);
             }
-            if(attributes.length) {
-                for(const pair of attributes) {
-                    var currentValue = element.getAttribute(pair.attr);
-                    const localeValue = browser.i18n.getMessage(pair.localeKey);
-                    if(localeValue) {
-                        if(currentValue) {
-                            if(currentValue !== localeValue) {
-                                element.setAttribute(pair.attr, localeValue);
-                            }
-                        } else {
+        }
+        if (attributes.length) {
+            for (const pair of attributes) {
+                var currentValue = element.getAttribute(pair.attr);
+                const localeValue = browser.i18n.getMessage(pair.localeKey);
+                if (localeValue) {
+                    if (currentValue) {
+                        if (currentValue !== localeValue) {
                             element.setAttribute(pair.attr, localeValue);
                         }
+                    } else {
+                        element.setAttribute(pair.attr, localeValue);
                     }
                 }
             }
@@ -89,28 +89,5 @@ export class Locale extends LoggingBase {
     }
 
 }
-
-
-/*
-            const observer = new MutationObserver(mutations => {
-                if (document.activeElement !== queryElement) {
-                    if (suggestElement!.style.display !== 'none') {
-                        this.logger.debug('suggest disable');
-                        suggestElement!.style.display = 'none';
-                    }
-                } else {
-                    this.logger.debug('suggest enable');
-                }
-                observer.disconnect();
-            });
-            const config = {
-                attributes: true,
-                childList: false,
-                characterData: false
-            };
-            observer.observe(suggestElement, config);
-*/
-
-
 
 

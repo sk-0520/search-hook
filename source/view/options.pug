@@ -11,6 +11,7 @@ html
           li
             label
               input#service-is-enabled-google(type="checkbox")
+              img.icon(src="./service-icon-google.svg")
               span(data-locale="commonServiceGoogle") [Google]
             table
               tr
@@ -29,6 +30,7 @@ html
           li
             label
               input#service-is-enabled-bing(type="checkbox")
+              img.icon(src="./service-icon-bing.svg")
               span(data-locale="commonServiceBing") [Bing]
 
       fieldset
@@ -47,13 +49,13 @@ html
                 td
                   ul.horizontal
                     li
-                      label
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                         input(name="engine-not-item-service-google", type="checkbox")
-                        | google
+                        img.icon(src="./service-icon-google.svg")
                     li
-                      label
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
                         input(name="engine-not-item-service-bing" type="checkbox")
-                        | bing
+                        img.icon(src="./service-icon-bing.svg")
                 td
                   button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
           tfoot.input
@@ -63,13 +65,13 @@ html
               td
                 ul.horizontal
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                       input#engine-input-is-enabled-google(type="checkbox" checked)
-                      | google
+                      img.icon(src="./service-icon-google.svg")
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
                       input#engine-input-is-enabled-bing(type="checkbox" checked)
-                      | bing
+                      img.icon(src="./service-icon-bing.svg")
               td
                 button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
 
@@ -106,13 +108,13 @@ html
                 td
                   ul.horizontal
                     li
-                      label
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                         input(name="view-hide-item-service-google" type="checkbox")
-                        | google
+                        img.icon(src="./service-icon-google.svg")
                     li
-                      label
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
                         input(name="view-hide-item-service-bing" type="checkbox")
-                        | bing
+                        img.icon(src="./service-icon-bing.svg")
                 td
                   button(name="view-hide-item-remove" data-locale="commonRemove") [削除]
             // script
@@ -135,13 +137,13 @@ html
               td
                 ul.horizontal
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
                       input#view-input-is-enabled-google(type="checkbox" checked)
-                      | google
+                      img.icon(src="./service-icon-google.svg")
                   li
-                    label
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
                       input#view-input-is-enabled-bing(type="checkbox" checked)
-                      | bing
+                      img.icon(src="./service-icon-bing.svg")
               td
                 button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]
 
