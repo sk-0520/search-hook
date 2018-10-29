@@ -1,5 +1,13 @@
 # search-hook
 
+## Setup
+
+```
+
+npm install
+
+```
+
 ## Build
 
 ```
@@ -26,3 +34,4 @@ npm run debug:firefox
 ## Link
 
 - https://addons.mozilla.org/ja/firefox/addon/search-hook/
+
