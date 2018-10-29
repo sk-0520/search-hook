@@ -47,8 +47,8 @@ export class Locale extends LoggingBase {
         if(!targets) {
             const localeValue = browser.i18n.getMessage(localeKey);
             if(localeValue) {
-                if(localeValue !== '@ignore@' && element.innerText !== localeValue) {
-                    element.innerText = localeValue;
+                if(element.textContent !== localeValue) {
+                    element.textContent = localeValue;
                 } 
             }
         } else {
