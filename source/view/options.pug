@@ -33,7 +33,7 @@ html
 
       fieldset
         legend(data-locale="optionsNotItemTitle") [検索除外]
-        table
+        table.list
           thead
             tr
               th(data-locale="optionsNotItemHeaderWord") [除外ワード]
@@ -58,9 +58,9 @@ html
                   button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
           tfoot.input
             tr
-              th
+              td
                 input#engine-input-not-word(type="text")
-              th
+              td
                 ul.horizontal
                   li
                     label
@@ -70,7 +70,7 @@ html
                     label
                       input#engine-input-is-enabled-bing(type="checkbox" checked)
                       | bing
-              th
+              td
                 button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
 
       fieldset
@@ -79,7 +79,7 @@ html
           span(data-locale="optionsHideItemDescriptionUse") [ホスト名、パス、クエリ部分を比較に使用します。]
           br
           span(data-locale="optionsHideItemDescriptionIgnore") [プロトコル、ユーザー、パスワード、ポート番号は無視されます。]
-        table
+        table.list
           thead
             tr
               th(data-locale="optionsHideItemHeaderWord") [非表示対象ワード]
@@ -118,9 +118,9 @@ html
             // script
           tfoot.input
             tr
-              th
+              td
                 input#view-input-hide-host(type="text")
-              th
+              td
                 ul.horizontal
                   li
                     select#view-input-hide-match-kind
@@ -132,7 +132,7 @@ html
                     label
                       input#view-input-hide-match-case(type="checkbox")
                       span(data-locale="commonCaseSensitive") [大文字小文字を区別]
-              th
+              td
                 ul.horizontal
                   li
                     label
@@ -142,12 +142,19 @@ html
                     label
                       input#view-input-is-enabled-bing(type="checkbox" checked)
                       | bing
-              th
+              td
                 button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]
+
       fieldset
-        legend(data-locale="optionsDeliveryTitle")
+        legend(data-locale="optionsDeliveryTitle") [外部非表示設定]
         p
           strong TODO
           | , reserve permissions: <all_urls>
+
+      fieldset
+        legend(data-locale="optionsWhitelistTitle") [非表示ホワイトリスト]
+        p
+          strong TODO
+
       button(type="submit" data-locale="optionsSave") [保存]
     script(src="../script/options/options.loader.ts")

@@ -1,9 +1,25 @@
 
 table {
-    width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: auto;
+
+    th, td {
+        padding: 0.2ex 0.5em;
+    }
+
+    &.list {
+        border: 1px solid #ccc;
+
+        thead {
+            background: #dd88;
+        }
+
+        tfoot.input {
+            background: rgba(0, 0, 0, 0.3)
+        }
+    }
 }
 
 ul.horizontal, ol.horizontal {
@@ -13,14 +29,11 @@ ul.horizontal > li, ol.horizontal > li {
     display: inline-block;
 }
 
-form.setting tfoot.input {
-    background: rgba(0, 0, 0, 0.3)
-}
-form.setting input[type=text] {
-    width: 90%;
+input[type=text] {
+    width: 100%;
 }
 
-form button[type=submit] {
+button[type=submit] {
     width: 80%;
     font-size: 120%;
     font-weight: bold;
