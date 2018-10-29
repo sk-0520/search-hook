@@ -20,9 +20,11 @@ export class Locale extends LoggingBase {
         
         const observer = new MutationObserver(mutations => {
             for (const mutation of mutations) {
-                const elm = mutation.target as HTMLElement;
-                if (elm) {
-                    this.applyLocale(elm);
+                const element = mutation.target as HTMLElement;
+                if (element) {
+                    for (const dataElement of element.querySelectorAll(toDataSelector(ElementData.locale))) {
+                        this.applyLocale(dataElement as HTMLElement);
+                    }
                 }
             }
         });

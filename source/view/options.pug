@@ -12,7 +12,7 @@ html
           li
             label
               input#service-is-enabled-google(type="checkbox")
-              span(data-locale="optionsServiceGoogle") [Google]
+              span(data-locale="commonServiceGoogle") [Google]
             table
               tr
                 td
@@ -30,16 +30,16 @@ html
           li
             label
               input#service-is-enabled-bing(type="checkbox")
-              span(data-locale="optionsServiceBing") [Bing]
+              span(data-locale="commonServiceBing") [Bing]
 
       fieldset
-        legend [engine] not word or host
+        legend(data-locale="optionsNotItemTitle") [検索除外]
         table
           thead
             tr
-              th word
-              th enabled
-              th remove
+              th(data-locale="optionsNotItemHeaderWord") [除外ワード]
+              th(data-locale="commonEnabled") [有効]
+              th(data-locale="commonRemove") [削除]
           tbody#engine-not-word-list
             template
               tr(name="engine-not-item-group")
@@ -53,11 +53,10 @@ html
                         | google
                     li
                       label
-                        input(name="engine-not-item-service-bing", type="checkbox")
+                        input(name="engine-not-item-service-bing" type="checkbox")
                         | bing
                 td
-                  button(name="engine-not-item-remove") remove
-            // script
+                  button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
           tfoot.input
             tr
               th
@@ -73,8 +72,8 @@ html
                       input#engine-input-is-enabled-bing(type="checkbox" checked)
                       | bing
               th
-                button#command-engine-add-not-item(type="button") add
-                
+                button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
+
       fieldset
         legend [view] hide host/path/query
         p
