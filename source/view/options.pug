@@ -1,0 +1,183 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="stylesheet" href="../style/options.scss")
+  body
+    form.setting.WE___search-hook-_-_-locale-root
+      fieldset#service
+        legend(data-locale="optionsServiceTitle") [検索エンジン基本設定]
+        ul
+          li
+            label
+              input#service-is-enabled-google(type="checkbox")
+              img.icon(src="./service-icon-google.svg")
+              span(data-locale="commonServiceGoogle") [Google]
+            table
+              tr
+                td
+                  label(for="service-google-search-count")
+                    span(data-locale="optionsServiceGoogleSearchCount") [検索数]
+                td
+                  input#service-google-search-count(type="number" min="10" max="100" step="10")
+              tr
+                td 
+                  span(data-locale="optionsServiceGoogleSearchSafe") [セーフサーチ]
+                td
+                  label
+                    input#service-google-search-safe(type="checkbox")
+                    span(data-locale="commonEnabled") [有効]
+          li
+            label
+              input#service-is-enabled-bing(type="checkbox")
+              img.icon(src="./service-icon-bing.svg")
+              span(data-locale="commonServiceBing") [Bing]
+
+      fieldset
+        legend(data-locale="optionsNotItemTitle") [検索除外]
+        table.list
+          thead
+            tr
+              th(data-locale="optionsNotItemHeaderWord") [除外ワード]
+              th(data-locale="commonEnabled") [有効]
+              th(data-locale="commonRemove") [削除]
+          tbody#engine-not-word-list
+            template
+              tr(name="engine-not-item-group")
+                td
+                  input(name="engine-not-item-word" type="text")
+                td
+                  ul.horizontal
+                    li
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                        input(name="engine-not-item-service-google", type="checkbox")
+                        img.icon(src="./service-icon-google.svg")
+                    li
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                        input(name="engine-not-item-service-bing" type="checkbox")
+                        img.icon(src="./service-icon-bing.svg")
+                td
+                  button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
+          tfoot.input
+            tr
+              td
+                input#engine-input-not-word(type="text")
+              td
+                ul.horizontal
+                  li
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                      input#engine-input-is-enabled-google(type="checkbox" checked)
+                      img.icon(src="./service-icon-google.svg")
+                  li
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                      input#engine-input-is-enabled-bing(type="checkbox" checked)
+                      img.icon(src="./service-icon-bing.svg")
+              td
+                button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
+
+      fieldset
+        legend(data-locale="optionsHideItemTitle") [非表示設定]
+        p
+          span(data-locale="optionsHideItemDescriptionUse") [ホスト名、パス、クエリ部分を比較に使用します。]
+          br
+          span(data-locale="optionsHideItemDescriptionIgnore") [プロトコル、ユーザー、パスワード、ポート番号は無視されます。]
+        table.list
+          thead
+            tr
+              th(data-locale="optionsHideItemHeaderWord") [非表示対象ワード]
+              th(data-locale="optionsHideItemHeaderMatch") [比較方法]
+              th(data-locale="commonEnabled") [有効]
+              th(data-locale="commonRemove") [削除]
+          tbody#view-hide-host-list
+            template
+              tr(name="view-hide-item-group")
+                td
+                  input(name="view-hide-item-host" type="text")
+                td
+                  ul.horizontal
+                    li
+                      select(name="view-hide-item-match-kind")
+                        option(value="partial" data-locale="matchKindPartial") [部分一致]
+                        option(value="forward" data-locale="matchKindForward") [前方一致]
+                        option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                        option(value="regex"   data-locale="matchKindRegex")   [正規表現]
+                    li
+                      label
+                        input(name="view-hide-item-match-case" type="checkbox")
+                        img.icon(src="./case-sensitive.svg" data-locale="@EMPTY" data-locale-attribute-title="commonCaseSensitive")
+                td
+                  ul.horizontal
+                    li
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                        input(name="view-hide-item-service-google" type="checkbox")
+                        img.icon(src="./service-icon-google.svg")
+                    li
+                      label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                        input(name="view-hide-item-service-bing" type="checkbox")
+                        img.icon(src="./service-icon-bing.svg")
+                td
+                  button(name="view-hide-item-remove" data-locale="commonRemove") [削除]
+            // script
+          tfoot.input
+            tr
+              td
+                input#view-input-hide-host(type="text")
+              td
+                ul.horizontal
+                  li
+                    select#view-input-hide-match-kind
+                        option(value="partial" selected data-locale="matchKindPartial") [部分一致]
+                        option(value="forward" data-locale="matchKindForward") [前方一致]
+                        option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                        option(value="regex"   data-locale="matchKindRegex")   [正規表現]
+                  li
+                    label
+                      input#view-input-hide-match-case(type="checkbox")
+                      img.icon(src="./case-sensitive.svg" data-locale="@EMPTY" data-locale-attribute-title="commonCaseSensitive")
+              td
+                ul.horizontal
+                  li
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                      input#view-input-is-enabled-google(type="checkbox" checked)
+                      img.icon(src="./service-icon-google.svg")
+                  li
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                      input#view-input-is-enabled-bing(type="checkbox" checked)
+                      img.icon(src="./service-icon-bing.svg")
+              td
+                button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]
+
+      fieldset
+        legend(data-locale="optionsDeliveryTitle") [外部非表示設定]
+        p
+          strong TODO
+          | , reserve permissions: <all_urls>
+
+      fieldset
+        legend(data-locale="optionsWhitelistTitle") [非表示ホワイトリスト]
+        p
+          strong TODO
+
+      button(type="submit" data-locale="optionsSave") [保存]
+
+    details.impexp.setting.WE___search-hook-_-_-locale-root
+      summary(data-locale="optionsImportExportTitle") [Import/Export]
+      p(data-locale="optionsImportExportDescription") [本機能は全設定データをテキストとして表示・取り込むものです。設定を簡単に持ち運ぶことを目的にしています。]
+      p.alert(data-locale="optionsImportExportDescriptionAlert") [取り込みにおいて正しいデータであることを期待しています。]
+      table
+        tr
+          td
+            button#command-imp-exp-export(data-locale="optionsImportExportExport") [出力]
+          td
+            button#command-imp-exp-copy(data-locale="optionsImportExportCopy") [コピー]
+        tr
+          td(colspan="2")
+            textarea#imp-exp-export-area
+        tr
+          td
+          td
+            button#command-imp-exp-import(data-locale="optionsImportExportImport") [取り込み]
+
+
+
+    script(src="../script/options/options.loader.ts")

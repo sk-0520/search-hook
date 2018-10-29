@@ -1,0 +1,142 @@
+{
+  
+  "extensionDescription": {
+    "message": "検索エンジンに対してあれこれします。",
+    "description": "Description of the extension."
+  },
+
+  "commonEnabled": {
+    "message": "有効",
+    "description": "enabled"
+  },
+  "commonAdd": {
+    "message": "追加",
+    "description": "add"
+  },
+  "commonRemove": {
+    "message": "削除",
+    "description": "remove"
+  },
+  "commonCaseSensitive": {
+    "message": "大文字小文字を区別",
+    "description": "remove"
+  },
+  "commonServiceGoogle": {
+    "message": "Google",
+    "description": "google"
+  },
+  "commonServiceBing": {
+    "message": "Bing",
+    "description": "bing"
+  },
+
+  "matchKindPartial": {
+    "message": "部分一致",
+    "description": "MatchKind.partial"
+  },
+  "matchKindForward": {
+    "message": "前方一致",
+    "description": "MatchKind.forward"
+  },
+  "matchKindPerfect": {
+    "message": "完全一致",
+    "description": "MatchKind.perfect"
+  },
+  "matchKindRegex": {
+    "message": "正規表現",
+    "description": "MatchKind.regex"
+  },
+
+  "optionsServiceTitle": {
+    "message": "検索エンジン基本設定",
+    "description": "[Options] [service] title"
+  },
+  "optionsServiceGoogle": {
+    "message": "Google",
+    "description": "[Options] [service] google"
+  },
+  "optionsServiceGoogleSearchCount": {
+    "message": "検索数",
+    "description": "[Options] [service] [google] search count"
+  },
+  "optionsServiceGoogleSearchSafe": {
+    "message": "サーチセーフ",
+    "description": "[Options] [service] [google] search safe"
+  },
+  "optionsServiceBing": {
+    "message": "Bing",
+    "description": "[Options] [service] Bing"
+  },
+
+  "optionsNotItemTitle": {
+    "message": "検索除外",
+    "description": "[Options] [not item] title"
+  },
+  "optionsNotItemHeaderWord": {
+    "message": "除外ワード",
+    "description": "[Options] [not item] [header] word"
+  },
+
+  "optionsHideItemTitle": {
+    "message": "非表示設定",
+    "description": "[Options] [hide item] title"
+  },
+  "optionsHideItemDescriptionUse": {
+    "message": "ホスト名、パス、クエリ部分を使用します。",
+    "description": "[Options] [hide item] [description] use HOST, PATH, QUERY"
+  },
+  "optionsHideItemDescriptionIgnore": {
+    "message": "プロトコル、ユーザー、パスワード、ポート番号は無視されます。",
+    "description": "[Options] [hide item] [description] ignore PROTOCOL, USER, PASSWORD, PORT"
+  },
+  "optionsHideItemHeaderWord": {
+    "message": "非表示対象ワード",
+    "description": "[Options] [hide item] [header] word"
+  },
+  "optionsHideItemHeaderMatch": {
+    "message": "比較方法",
+    "description": "[Options] [hide item] [header] match"
+  },
+
+  "optionsDeliveryTitle": {
+    "message": "外部非表示設定",
+    "description": "[Options] [delivery item] title"
+  },
+
+  "optionsWhitelistTitle": {
+    "message": "非表示ホワイトリスト",
+    "description": "[Options] [whitelist item] title"
+  },
+
+  "optionsSave": {
+    "message": "保存",
+    "description": "[Options] save"
+  },
+
+  "optionsImportExportTitle": {
+    "message": "Import/Export",
+    "description": "[Options] [ImportExport] title"
+  },
+  "optionsImportExportDescription": {
+    "message": "本機能は全設定データをテキストとして表示・取り込むものです。設定を簡単に持ち運ぶことを目的にしています。",
+    "description": "[Options] [ImportExport] description"
+  },
+  "optionsImportExportDescriptionAlert": {
+    "message": "取り込みにおいて正しいデータであることを期待しています。",
+    "description": "[Options] [ImportExport] description alert"
+  },
+  "optionsImportExportExport": {
+    "message": "出力",
+    "description": "[Options] [ImportExport] export"
+  },
+  "optionsImportExportCopy": {
+    "message": "コピー",
+    "description": "[Options] [ImportExport] copy"
+  },
+  "optionsImportExportImport": {
+    "message": "取り込み",
+    "description": "[Options] [ImportExport] import"
+  }
+  
+
+}

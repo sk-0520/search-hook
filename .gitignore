@@ -1,11 +1,15 @@
-/package-lock.json
 /node_modules
+/.cache
 /artifacts
+/output
+/dist
 .*
 *.bak
 *.zip
 $*
 -*
-_*
+__*
 @*
 __auto__*
+/source/script/*.map
+/source/script/*.js

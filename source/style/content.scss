@@ -1,0 +1,43 @@
+
+.WE___search-hook-_-_-hidden {
+    background: rgba(0.5, 0.5, 0.5, 0.3) !important
+}
+
+.WE___search-hook-_-_-hidden > * {
+    opacity: 0.5
+}
+
+.WE___search-hook-_-_-hidden-item {
+    display: none !important;
+}
+
+.WE___search-hook-_-_-switch {
+    position: fixed;
+    right: 2%;
+    bottom: 2%;
+    background: #cccccc;
+    color: #111111;
+    font-weight: bold;
+    padding: 0;
+    border: 1px solid #888888;
+
+    input[type="checkbox"] {
+        display: none;
+
+        &+label {
+            $size: 3em;
+
+            position: relative;
+            display: block;
+            background-repeat: no-repeat;
+            background-size:contain;
+            width: $size;
+            height:$size;
+            background-image: url("content-item-visible.svg");
+       }
+        &:checked+label {
+            background-image: url("content-item-hidden.svg");
+        }
+    }
+}
+
