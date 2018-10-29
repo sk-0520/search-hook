@@ -5,12 +5,15 @@ import OptionsNotItems from './options-not-items';
 import OptionsService from './options-service';
 import OptionsHideItems from './options-hide-items';
 import { Locale } from '../share/locale';
+import OptionsExportImport from './options-exp-imp';
 
 export default class Options extends ActionBase {
 
     private optionsService = new OptionsService();
     private optionsNotItems = new OptionsNotItems();
     private optionsHideItems = new OptionsHideItems();
+
+    private optionsExpImp = new OptionsExportImport();
 
     private locale = new Locale();
 
@@ -24,6 +27,8 @@ export default class Options extends ActionBase {
         this.optionsService.initialize();
         this.optionsNotItems.initialize();
         this.optionsHideItems.initialize();
+
+        this.optionsExpImp.initialize();
 
         this.locale.attachLocaleRoot();
 
