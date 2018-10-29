@@ -5,12 +5,15 @@ import OptionsNotItems from './options-not-items';
 import OptionsService from './options-service';
 import OptionsHideItems from './options-hide-items';
 import { Locale } from '../share/locale';
+import OptionsExportImport from './options-exp-imp';
 
 export default class Options extends ActionBase {
 
     private optionsService = new OptionsService();
     private optionsNotItems = new OptionsNotItems();
     private optionsHideItems = new OptionsHideItems();
+
+    private optionsExpImp = new OptionsExportImport();
 
     private locale = new Locale();
 
@@ -24,6 +27,8 @@ export default class Options extends ActionBase {
         this.optionsService.initialize();
         this.optionsNotItems.initialize();
         this.optionsHideItems.initialize();
+
+        this.optionsExpImp.initialize();
 
         this.locale.attachLocaleRoot();
 
@@ -47,21 +52,13 @@ export default class Options extends ActionBase {
     private save(e: Event): void {
         e.preventDefault();
 
-        const setting = new MainSetting();
-        setting.service = this.optionsService.export();
-        setting.notItems = this.optionsNotItems.export();
-        setting.hideItems = this.optionsHideItems.export();
+        const mainSetting = new MainSetting();
+        mainSetting.service = this.optionsService.export();
+        mainSetting.notItems = this.optionsNotItems.export();
+        mainSetting.hideItems = this.optionsHideItems.export();
 
-        browser.storage.local.set({
-            setting: setting as any
-        }).then(
-            result => {
-                browser.runtime.reload();
-            },
-            error => {
-                this.logger.error(error);
-            }
-        );
+        const setting = new Setting();
+        setting.saveMainSettingAsync(mainSetting, true);
     }
 
 

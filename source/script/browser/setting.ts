@@ -30,4 +30,16 @@ export class Setting extends LoggingBase {
         return baseSetting;
     }
 
+    public saveMainSettingAsync(mainSetting: IMainSetting, isReload: boolean): Promise<void> {
+        return browser.storage.local.set({
+            setting: mainSetting as any
+        }).then(
+            result => {
+                browser.runtime.reload();
+            },
+            error => {
+                this.logger.error(error);
+            }
+        );
+    }
 }

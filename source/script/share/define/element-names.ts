@@ -20,6 +20,11 @@ export enum ElementId {
     optionsHideItemInputServiceBing  = 'view-input-is-enabled-bing',
     optionsHideItemInputAdd  = 'command-view-add-hide-item',
 
+    optionsInportExportExport = 'command-imp-exp-export',
+    optionsInportExportCopy = 'command-imp-exp-copy',
+    optionsInportExportExportArea = 'imp-exp-export-area',
+    optionsInportExportImport = 'command-imp-exp-import',
+
     contentShowState = 'WE___search-hook-_-_-state'
 }
 
