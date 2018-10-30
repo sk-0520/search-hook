@@ -1,9 +1,10 @@
 {
   "name": "hook-search",
-  "version": "1.0.0",
+  "version": "0.4.1",
   "description": "",
   "scripts": {
     "clean": "rimraf ./dist",
+    "sync-version": "node ./build/version.js",
     "tslint": "tslint ./source/script/**/*.ts",
     "test:script": "mocha --recursive --require ts-node/register ./source/test/script/**/*.ts",
     "test": "nyc npm run test:script",
@@ -11,6 +12,7 @@
     "resource:locales-firefox": " npm run resource:locales-core",
     "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
     "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
+    "postresource:manifest-firefox": "npm run sync-version",
     "resource:firefox": "npm-run-all resource:image-firefox resource:manifest-firefox resource:locales-firefox",
     "browser:firefox": "web-ext run --source-dir=./dist --start-url about:debugging about:addons",
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
