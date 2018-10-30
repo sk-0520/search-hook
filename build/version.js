@@ -7,10 +7,7 @@ const path = require('path');
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const packageVersion = packageJson['version'];
 
-const targets = ['firefox.json'];
-for(const target of targets) {
-    const filePath = path.join('source', target);
-    const targetJson = JSON.parse(fs.readFileSync(filePath), 'utf8');
-    targetJson['version'] = packageVersion;
-    fs.writeFileSync(filePath, JSON.stringify(targetJson, undefined, 2));
-}
+const filePath = path.join('dist', 'manifest.json');
+const targetJson = JSON.parse(fs.readFileSync(filePath), 'utf8');
+targetJson['version'] = packageVersion;
+fs.writeFileSync(filePath, JSON.stringify(targetJson, undefined, 2));
