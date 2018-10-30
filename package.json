@@ -13,7 +13,7 @@
     "resource:image-firefox": "   cp-cli ./source/resources/icon.svg ./dist/icon.svg",
     "resource:manifest-firefox": "cp-cli ./source/firefox.json ./dist/manifest.json",
     "postresource:manifest-firefox": "npm run sync-version",
-    "resource:firefox": "npm-run-all resource:image-firefox resource:manifest-firefox resource:locales-firefox",
+    "resource:firefox": "npm-run-all --print-label resource:image-firefox resource:manifest-firefox resource:locales-firefox",
     "browser:firefox": "web-ext run --source-dir=./dist --start-url about:debugging about:addons",
     "prebrowser:firefox-sk": "mkdirp X:\\fx",
     "browser:firefox-sk": "npm run browser:firefox -- --keep-profile-changes --firefox-profile=X:\\fx ",
