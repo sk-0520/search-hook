@@ -2,7 +2,7 @@ import { LoggingBase, isNullOrEmpty, Exception } from '../share/common';
 import { IService, ServiceKind } from '../share/define/service-kind';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import QueryBase from '../share/query/query';
+import { QueryBase } from '../share/query/query';
 import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
@@ -129,13 +129,13 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     protected tuneSearchWord(word: string, query: QueryBase): string {
         this.logger.debug('raw: ' + word);
-        const queryItems = query.splitQuery(word);
+        const queryItems = query.split(word);
         this.logger.debug('items: ' + queryItems);
 
-        const customQuery = query.makeCustomQuery(queryItems, this.notItemWords);
+        const customQuery = query.addNotItemWords(queryItems, this.notItemWords);
         this.logger.debug('customQuery: ' + JSON.stringify(customQuery));
 
-        const queryString = query.toQueryString(customQuery.users.concat(customQuery.applications));
+        const queryString = query.toString(customQuery.users.concat(customQuery.applications));
         this.logger.debug('queryString: ' + queryString);
 
         return queryString;

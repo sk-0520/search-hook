@@ -54,8 +54,8 @@ export default class ContentGoogleService extends ContentServiceBase {
 
         const query = new GoogleQuery();
 
-        const currentQuery = query.splitQuery(queryValue);
-        const userInputQuery = query.getUserInputQuery(currentQuery, items);
+        const currentQuery = query.split(queryValue);
+        const userInputQuery = query.getUserInput(currentQuery, items);
         this.logger.debug('u: ' + userInputQuery);
 
         queryElement.value = userInputQuery.join(' ') + ' ';

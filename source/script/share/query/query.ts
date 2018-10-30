@@ -1,7 +1,14 @@
-import { LoggingBase } from "../common";
+import { LoggingBase, isNullOrEmpty } from "../common";
 import { ServiceKind, IService } from "../define/service-kind";
 
-export default abstract class QueryBase extends LoggingBase implements IService {
+export interface IUserAndApplicationQuery {
+    /** ユーザー入力 */
+    users: Array<string>;
+    /** アプリケーション入力 */
+    applications: Array<string>;
+}
+
+export abstract class QueryBase extends LoggingBase implements IService {
 
     public abstract readonly service: ServiceKind;
 
@@ -9,7 +16,11 @@ export default abstract class QueryBase extends LoggingBase implements IService 
         super(name);
     }
 
-    public splitQuery(query: string) {
+    /**
+     * クエリ文字列を分割
+     * @param query 
+     */
+    public split(query: string) {
         if (!query) {
             return [];
         }
@@ -50,74 +61,69 @@ export default abstract class QueryBase extends LoggingBase implements IService 
         return result;
     }
 
-    public makeCustomQuery(queryItems: ReadonlyArray<string>, notItems: ReadonlyArray<string>) {
-        // 既に存在する否定ワードはそのまま、設定されていなければ追加していく
+    /** 既に存在する否定ワードはそのまま、設定されていなければ追加していく */
+    public addNotItemWords(queryWords: ReadonlyArray<string>, notItemWords: ReadonlyArray<string>): IUserAndApplicationQuery {
+        const addNotWords = notItemWords.concat();
+        const userInputWords: Array<string> = [];
+        for (const word of queryWords) {
 
-        const addNotItems = notItems.concat();
-        const customQuery = [];
-        for (const query of queryItems) {
-
-            if (!query.length) {
+            if (!word.length) {
                 continue;
             }
 
-            //<JS>if(query.charAt('-')) {
-            if (query.charAt(0) === '-') {
-                const notWord = query.substr(1);
-                const index = addNotItems.indexOf(notWord);
-                customQuery.push(query);
+            if (word.charAt(0) === '-') {
+                const notWord = word.substr(1);
+                const index = addNotWords.indexOf(notWord);
+                userInputWords.push(word);
                 if (index !== -1) {
-                    addNotItems.splice(index, 1);
+                    addNotWords.splice(index, 1);
                 }
             } else {
-                customQuery.push(query);
+                userInputWords.push(word);
             }
         }
 
-        this.logger.debug('notItems: ' + notItems);
-        this.logger.debug('addNotItems: ' + addNotItems);
-
-        for (let j = 0; j < addNotItems.length; j++) {
-            const word = addNotItems[j];
-            addNotItems[j] = '-' + word;
+        for (let i = 0; i < addNotWords.length; i++) {
+            const word = addNotWords[i];
+            addNotWords[i] = '-' + word;
         }
 
         return {
-            users: customQuery,
-            applications: addNotItems
-        };
+            users: userInputWords,
+            applications: addNotWords
+        } as IUserAndApplicationQuery;
     }
 
-    public getUserInputQuery(queryItems: ReadonlyArray<string>, notItems: ReadonlyArray<string>) {
-        // 否定ワードを除外
-        const addNotItems = notItems.concat();
-        const userQuerys = [];
-        for (const query of queryItems) {
+    /** 設定否定文言を除外 */
+    public getUserInput(queryWords: ReadonlyArray<string>, notItemWords: ReadonlyArray<string>) {
+        const addNotWords = notItemWords.concat();
+        const userInputWords: Array<string> = [];
+        for (const word of queryWords) {
 
-            if (!query.length) {
+            if (!word.length) {
                 continue;
             }
 
-            //<JS>if(query.charAt('-')) {
-            if (query.charAt(0) === '-') {
-                const notWord = query.substr(1);
-                const index = addNotItems.indexOf(notWord);
+            if (word.charAt(0) === '-') {
+                const notWord = word.substr(1);
+                const index = addNotWords.indexOf(notWord);
                 if (index !== -1) {
-                    addNotItems.splice(index, 1);
+                    addNotWords.splice(index, 1);
                 } else {
-                    userQuerys.push(query);
+                    userInputWords.push(word);
                 }
             } else {
-                userQuerys.push(query);
+                userInputWords.push(word);
             }
         }
 
-        return userQuerys;
+        return userInputWords;
     }
 
-    public toQueryString(queryItems: Array<string>) {
+    /** クエリ文字列の構築 */
+    public toString(queryItems: ReadonlyArray<string>) {
         const items = queryItems.filter(s => {
-            return s && s.length;
+            return !isNullOrEmpty(s);
         }).map(s => {
             if (s.indexOf(' ') !== -1) {
                 if (s.charAt(0) === '-') {
