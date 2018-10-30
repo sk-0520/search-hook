@@ -23,6 +23,6 @@ zip -r "$ARCHIVE_FILE" "$ARTIFACTS_DIR"
 curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -X POST $API_FILE -F files=@"$ARCHIVE_FILE"
 
 # タグ付け
-TAG_JSON = "{ \"name\": \"$CURRENT_VERSION\", \"target\": { \"hash\": \"$CURRENT_REVISION\" } }"
+TAG_JSON="{ \"name\": \"$CURRENT_VERSION\", \"target\": { \"hash\": \"$CURRENT_REVISION\" } }"
 curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -H "Content-Type: application/json" -X POST $API_TAG -d "$TAG_JSON"
 
