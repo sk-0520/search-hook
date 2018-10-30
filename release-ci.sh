@@ -20,11 +20,11 @@ touch "./$ARTIFACTS_DIR/$CURRENT_REVISION"
 zip -r "$ARCHIVE_FILE" "$ARTIFACTS_DIR"
 
 # 転送！
-curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -X POST $API_FILE -F files="$ARCHIVE_FILE"
+curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -X POST $API_FILE -F files=@"$ARCHIVE_FILE"
 
 # # タグ準備
-TAG_FILE=tag.json
+#TAG_FILE=tag.json
 
 # # タグ付け
-# curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -H "Content-Type: application/json" -X POST $API_TAG -d @"$TAG_FILE"
+#curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -H "Content-Type: application/json" -X POST $API_TAG -d @"$TAG_FILE"
 
