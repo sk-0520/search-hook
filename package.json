@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "clean": "rimraf ./dist",
+    "sync-version": "node ./build/version.js",
     "tslint": "tslint ./source/script/**/*.ts",
     "test:script": "mocha --recursive --require ts-node/register ./source/test/script/**/*.ts",
     "test": "nyc npm run test:script",
