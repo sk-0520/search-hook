@@ -19,8 +19,8 @@ git archive HEAD --worktree-attributes --output="./$ARTIFACTS_DIR/source.zip"
 touch "./$ARTIFACTS_DIR/$CURRENT_REVISION"
 zip -r "$ARCHIVE_FILE" "$ARTIFACTS_DIR"
 
-# # 転送！
-# curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -X POST $API_FILE -F files="$ARCHIVE_FILE"
+# 転送！
+curl --user $REPOSITORY_USER:$REPOSITORY_PASSWORD -X POST $API_FILE -F files="$ARCHIVE_FILE"
 
 # # タグ準備
 TAG_FILE=tag.json
