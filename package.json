@@ -6,7 +6,7 @@
     "clean": "rimraf ./dist",
     "sync-version": "node ./build/sync-version.js",
     "tslint": "tslint ./source/script/**/*.ts",
-    "test:script": "mocha --recursive --require ts-node/register ./source/test/script/**/*.ts",
+    "test:script": "mocha --recursive --require ts-node/register ./source/test/script/**/*.ts ./source/test/script/**/**/*.ts",
     "test": "nyc npm run test:script",
     "resource:locales-core": "    cp-cli ./source/_locales ./dist/_locales",
     "resource:locales-firefox": " npm run resource:locales-core",
