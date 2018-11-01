@@ -3,7 +3,7 @@ import { IService, ServiceKind } from '../share/define/service-kind';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { QueryBase } from '../share/query/query';
-import { IReadOnlyHideItemSetting, HideItemSetting, IHideItemSetting } from '../share/setting/hide-item-setting';
+import { IReadOnlyHideItemSetting, IHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { IServiceBridgeData, EraseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData } from '../share/bridge/bridge-data';
@@ -162,7 +162,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             return {
                 item: i,
                 match: func,
-            };
+            } as IHideCheker;
         });
     }
 
@@ -211,18 +211,6 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
     }
 
     public receiveServiceMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
-        /*
-        port.postMessage(
-            new BridgeMeesage(
-                BridgeMeesageKind.items,
-                new ItemsBridgeData(
-                    this.setting.enabled,
-                    this.hideItems
-                )
-            )
-        );
-        */
-
         port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.erase,
@@ -234,49 +222,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         );
     }
 
-    public receiveHideResponseMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
-        if (!message.data.items.length) {
-            this.logger.debug('hide element 0');
-            return;
-        }
-
-        function createResponseItem(request: IHideRequestItem, hideTarget: boolean) {
-            return {
-                request: request,
-                hideTarget: hideTarget,
-            } as IHideResponseItem;
-        }
-
-        const responseItems = new Array<IHideResponseItem>();
-        for (const request of message.data.items) {
-            // 普通パターン
-            if (this.matchSimpleUrl(request.linkValue, this.hideChecker)) {
-                responseItems.push(createResponseItem(request, true))
-                continue;
-            }
-
-            // /path?q=XXX 形式
-            if (this.matchQueryUrl(request.linkValue, this.hideChecker)) {
-                responseItems.push(createResponseItem(request, true))
-                continue;
-            }
-
-            responseItems.push(createResponseItem(request, false));
-        }
-
-        port.postMessage(
-            new BridgeMeesage(
-                BridgeMeesageKind.hideResponse,
-                new HideResponseBridgeData(
-                    this.setting.enabled,
-                    responseItems
-                )
-            )
-        );
-    }
-
-
-
+    
     private matchUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
 
         let url: URL;
@@ -322,5 +268,46 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         }
 
         return false;
+    }
+    
+    public receiveHideRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
+        if (!message.data.items.length) {
+            this.logger.debug('hide element 0');
+            return;
+        }
+
+        function createResponseItem(request: IHideRequestItem, hideTarget: boolean) {
+            return {
+                request: request,
+                hideTarget: hideTarget,
+            } as IHideResponseItem;
+        }
+
+        const responseItems = new Array<IHideResponseItem>();
+        for (const request of message.data.items) {
+            // 普通パターン
+            if (this.matchSimpleUrl(request.linkValue, this.hideChecker)) {
+                responseItems.push(createResponseItem(request, true))
+                continue;
+            }
+
+            // /path?q=XXX 形式
+            if (this.matchQueryUrl(request.linkValue, this.hideChecker)) {
+                responseItems.push(createResponseItem(request, true))
+                continue;
+            }
+
+            responseItems.push(createResponseItem(request, false));
+        }
+
+        port.postMessage(
+            new BridgeMeesage(
+                BridgeMeesageKind.hideResponse,
+                new HideResponseBridgeData(
+                    this.setting.enabled,
+                    responseItems
+                )
+            )
+        );
     }
 }

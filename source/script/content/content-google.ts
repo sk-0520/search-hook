@@ -17,39 +17,6 @@ export default class ContentGoogleService extends ContentServiceBase {
         this.connect();
     }
 
-    protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
-
-        const checkers = this.getCheckers(hideItems);
-
-        const elementSelectors: Array<IHideElementSelector> = [
-            {
-                target: 'smart',
-                element: '#main > div',
-                link: 'a[href^="/url?q="]'
-            },
-            {
-                target: 'touch',
-                element: '.srg > div',
-                link: 'a[ping]'
-            },
-            {
-                target: 'universal',
-                element: '#universal > div',
-                link: 'a'
-            },
-            {
-                target: 'default',
-                element: '.g',
-                link: 'a'
-            }
-        ];
-
-        this.logger.dumpError(elementSelectors);
-
-        //this.hideItemsCore(elementSelectors, checkers);
-        this.requestHideItems(elementSelectors);
-    }
-
     protected eraseQuery(items: ReadonlyArray<string>) {
         const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
         const queryValue = queryElement.value;
