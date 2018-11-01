@@ -5,7 +5,7 @@
   "manifest_version": 2,
   "applications": {
     "gecko": {
-      "id": "{243027c3-0e11-446a-9d92-47facb99d780}",
+      "id": "{c04e54de-1075-4e61-8d4d-889b6052f8d7}",
       "strict_min_version": "60.0"
     }
   },
