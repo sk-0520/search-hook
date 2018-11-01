@@ -6,7 +6,7 @@ import { QueryBase } from '../share/query/query';
 import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { IServiceBridgeData, ItemsBridgeData, EraseBridgeData } from '../share/bridge/bridge-data';
+import { IServiceBridgeData, EraseBridgeData, IHideRequestBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 
@@ -142,6 +142,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
     }
 
     public receiveServiceMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
+        /*
         port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.items,
@@ -151,6 +152,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
                 )
             )
         );
+        */
 
         port.postMessage(
             new BridgeMeesage(
@@ -161,6 +163,10 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
                 )
             )
         );
+    }
+
+    public receiveHideResponseMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
+        this.logger.dumpDebug(message);
     }
 
 }

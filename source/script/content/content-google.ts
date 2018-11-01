@@ -44,7 +44,10 @@ export default class ContentGoogleService extends ContentServiceBase {
             }
         ];
 
-        this.hideItemsCore(elementSelectors, checkers);
+        this.logger.dumpError(elementSelectors);
+
+        //this.hideItemsCore(elementSelectors, checkers);
+        this.requestHideItems(elementSelectors);
     }
 
     protected eraseQuery(items: ReadonlyArray<string>) {

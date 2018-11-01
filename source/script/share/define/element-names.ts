@@ -57,6 +57,8 @@ export enum ElementData {
     localeAttributes = 'localeAttributes',
     /** ロケールを属性に設定する場合の属性名の識別子 */
     localeAttributeHead = 'localeAttribute',
+
+    hideId = 'hideId',
 }
 
 export function toIdSelector(elementId: ElementId): string {

@@ -1,10 +1,10 @@
 import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import { ElementClass, toClassSelector, ElementId } from "../share/define/element-names";
+import { ElementClass, toClassSelector, ElementId, ElementData } from "../share/define/element-names";
 import { ActionBase, Exception } from "../share/common";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
-import { ServiceBridgeData, ItemsBridgeData, EraseBridgeData } from "../share/bridge/bridge-data";
+import { ServiceBridgeData, ItemsBridgeData, EraseBridgeData, IHideRequestItem, HideRequestBridgeData, IHideResponseBridgeData } from "../share/bridge/bridge-data";
 import { MatchKind } from "../share/define/match-kind";
 
 export interface IHideCheker {
@@ -40,12 +40,15 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             const baseMessage = rawMessage as BridgeMeesageBase;
             this.receiveMessage(baseMessage);
         });
+
         this.port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.service,
                 new ServiceBridgeData(this.service)
             )
         );
+
+        this.hideItems([]);
     }
 
     private receiveMessage(baseMessage: BridgeMeesageBase) {
@@ -59,6 +62,10 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
             case BridgeMeesageKind.erase:
                 this.receiveEraseMessage(baseMessage as BridgeMeesage<EraseBridgeData>);
+                break;
+
+            case BridgeMeesageKind.hideResponse:
+                this.receiveHideResponseMessage(baseMessage as BridgeMeesage<IHideResponseBridgeData>);
                 break;
 
             default:
@@ -280,6 +287,65 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         if (success) {
             this.appendHiddenSwitch();
         }
+    }
+
+    protected requestHideItems(elementSelectors: ReadonlyArray<IHideElementSelector>) {
+        let hideIdCounter = 0;
+
+        const hideRequestItems = new Array<IHideRequestItem>();
+
+        for (const elementSelector of elementSelectors) {
+            this.logger.debug('target: ' + elementSelector.target);
+
+            const elements = document.querySelectorAll(elementSelector.element);
+            this.logger.debug('elements: ' + elements.length);
+
+            for (const element of elements) {
+                const linkElement = element.querySelector(elementSelector.link);
+                if (!linkElement) {
+                    continue;
+                }
+                const linkValue = linkElement.getAttribute('href');
+                if (!linkValue) {
+                    continue;
+                }
+
+                const parentElement = element as HTMLElement;
+                const currentHideId = '' + (++hideIdCounter);
+                parentElement.dataset[ElementData.hideId] = currentHideId;
+
+                const hideRequestItem: IHideRequestItem = {
+                    dataAttribute: currentHideId,
+                    linkValue: linkValue,
+                };
+                hideRequestItems.push(hideRequestItem);
+            }
+
+            if (hideRequestItems.length) {
+                break;
+            }
+        }
+
+        this.logger.dumpDebug(hideRequestItems);
+
+        if (hideRequestItems.length) {
+            this.requestHideItemsCore(hideRequestItems);
+        }
+    }
+
+    protected requestHideItemsCore(hideRequestItems: ReadonlyArray<IHideRequestItem>) {
+
+        this.port!.postMessage(
+            new BridgeMeesage(
+                BridgeMeesageKind.hideRequest,
+                new HideRequestBridgeData(this.service, hideRequestItems)
+            )
+        );
+
+    }
+
+    protected receiveHideResponseMessage(message: BridgeMeesage<IHideResponseBridgeData>) {
+        this.logger.dumpDebug(message);
     }
 }
 
