@@ -1,6 +1,5 @@
 import { ServiceKind } from "../share/define/service-kind";
 import BingQuery from "../share/query/query-bing";
-import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentServiceBase, IHideElementSelector } from "./content";
 
 export default class ContentBingService extends ContentServiceBase {

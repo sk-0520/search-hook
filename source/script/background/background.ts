@@ -1,5 +1,5 @@
 import { Setting } from '../browser/setting';
-import { IServiceBridgeData, IHideRequestBridgeData } from '../share/bridge/bridge-data';
+import { IHideRequestBridgeData, IBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { ActionBase } from '../share/common';
 import { ServiceKind } from '../share/define/service-kind';
@@ -68,12 +68,12 @@ export default class Background extends ActionBase {
                 this.logger.debug(JSON.stringify(rawMessage));
 
                 // 未調査: 自アドオンの接続だけ？
-                const message = rawMessage as BridgeMeesage<IServiceBridgeData>;
+                const message = rawMessage as BridgeMeesage<IBridgeData>;
                 const service = this.backgroundServiceMap.get(message.data.service)!;
 
                 switch (message.kind) {
-                    case BridgeMeesageKind.service:
-                        service.receiveServiceMessage(this.port, message);
+                    case BridgeMeesageKind.notWordRequest:
+                        service.receiveNotWordRequestMessage(this.port, message);
                         break;
 
                     case BridgeMeesageKind.hideRequest:

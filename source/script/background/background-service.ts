@@ -6,7 +6,7 @@ import { QueryBase } from '../share/query/query';
 import { IReadOnlyHideItemSetting, IHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { IServiceBridgeData, EraseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData } from '../share/bridge/bridge-data';
+import { NotWordResponseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData, IBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 
@@ -210,11 +210,12 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         return queryString;
     }
 
-    public receiveServiceMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
+    public receiveNotWordRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IBridgeData>) {
         port.postMessage(
             new BridgeMeesage(
-                BridgeMeesageKind.erase,
-                new EraseBridgeData(
+                BridgeMeesageKind.notWordResponse,
+                new NotWordResponseBridgeData(
+                    this.service,
                     this.setting.enabled,
                     this.notItemWords
                 )
@@ -269,7 +270,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
         return false;
     }
-    
+
     public receiveHideRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
         if (!message.data.items.length) {
             this.logger.debug('hide element 0');
@@ -304,6 +305,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             new BridgeMeesage(
                 BridgeMeesageKind.hideResponse,
                 new HideResponseBridgeData(
+                    this.service,
                     this.setting.enabled,
                     responseItems
                 )

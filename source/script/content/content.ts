@@ -1,12 +1,10 @@
-import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import { ElementClass, toClassSelector, ElementId, ElementData, toDataSelector } from "../share/define/element-names";
-import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
-import { IService, ServiceKind } from "../share/define/service-kind";
+import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, BridgeData } from "../share/bridge/bridge-data";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
+import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
-import { ServiceBridgeData, ItemsBridgeData, EraseBridgeData, IHideRequestItem, HideRequestBridgeData, IHideResponseBridgeData } from "../share/bridge/bridge-data";
-import { MatchKind } from "../share/define/match-kind";
-import { strict } from "assert";
+import { ElementClass, ElementData, ElementId, toClassSelector, toDataSelector } from "../share/define/element-names";
+import { IService, ServiceKind } from "../share/define/service-kind";
+import { HideItemSetting } from "../share/setting/hide-item-setting";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -44,8 +42,8 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
         this.port.postMessage(
             new BridgeMeesage(
-                BridgeMeesageKind.service,
-                new ServiceBridgeData(this.service)
+                BridgeMeesageKind.notWordRequest,
+                new BridgeData(this.service)
             )
         );
 
@@ -59,8 +57,8 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
         switch (baseMessage.kind) {
 
-            case BridgeMeesageKind.erase:
-                this.receiveEraseMessage(baseMessage as BridgeMeesage<EraseBridgeData>);
+            case BridgeMeesageKind.notWordResponse:
+                this.receiveNotWordResponseMessage(baseMessage as BridgeMeesage<NotWordResponseBridgeData>);
                 break;
 
             case BridgeMeesageKind.hideResponse:
@@ -72,7 +70,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         }
     }
 
-    private receiveEraseMessage(eraseMessage: BridgeMeesage<EraseBridgeData>): void {
+    private receiveNotWordResponseMessage(eraseMessage: BridgeMeesage<NotWordResponseBridgeData>): void {
         if (!eraseMessage.data.enabled) {
             this.logger.debug(`ignore ${this.service} content`);
             return;

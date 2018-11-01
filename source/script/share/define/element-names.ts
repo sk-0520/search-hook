@@ -1,4 +1,3 @@
-import { Logger } from "../common";
 
 export enum ElementId {
     optionsService = 'service',

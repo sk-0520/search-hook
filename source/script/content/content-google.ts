@@ -1,6 +1,5 @@
 import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/query-google";
-import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentServiceBase, IHideElementSelector } from "./content";
 
 export default class ContentGoogleService extends ContentServiceBase {
