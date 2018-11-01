@@ -85,10 +85,13 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     }
 
     protected attacQueryElement() {
-        if(!this.notWords) {
+        if (!this.notWords) {
             return;
         }
-        
+        if (!this.notWords.length) {
+            return;
+        }
+
         const inputElement = this.getQueryInputElement();
         inputElement.addEventListener('focus', e => {
             const currentPos = inputElement.selectionStart || 0;
@@ -96,7 +99,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             const queryWords = query.split(inputElement.value);
             const filterdWords = query.getUserInput(queryWords, this.notWords!);
             const filterdQuery = query.toString(filterdWords);
-            const newPos = filterdQuery.length < currentPos ? filterdQuery.length: currentPos;
+            const newPos = filterdQuery.length < currentPos ? filterdQuery.length : currentPos;
             inputElement.value = filterdQuery;
             inputElement.setSelectionRange(newPos, newPos);
         });
@@ -209,7 +212,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         let success = false;
         for (const responseItem of message.data.items) {
             if (responseItem.hideTarget) {
-                if(targetMap.has(responseItem.request.dataValue)) {
+                if (targetMap.has(responseItem.request.dataValue)) {
                     const element = targetMap.get(responseItem.request.dataValue);
                     this.hideElement(element!);
                     success = true;
@@ -217,7 +220,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             }
         }
 
-        if(success) {
+        if (success) {
             this.appendHiddenSwitch();
         }
     }
