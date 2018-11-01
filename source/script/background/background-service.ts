@@ -223,7 +223,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         );
     }
 
-    
+
     private matchUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
 
         let url: URL;
@@ -277,10 +277,10 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             return;
         }
 
-        function createResponseItem(request: IHideRequestItem, hideTarget: boolean) {
+        function createResponseItem(req: IHideRequestItem, isHide: boolean) {
             return {
-                request: request,
-                hideTarget: hideTarget,
+                request: req,
+                hideTarget: isHide,
             } as IHideResponseItem;
         }
 
@@ -288,13 +288,13 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         for (const request of message.data.items) {
             // 普通パターン
             if (this.matchSimpleUrl(request.linkValue, this.hideChecker)) {
-                responseItems.push(createResponseItem(request, true))
+                responseItems.push(createResponseItem(request, true));
                 continue;
             }
 
             // /path?q=XXX 形式
             if (this.matchQueryUrl(request.linkValue, this.hideChecker)) {
-                responseItems.push(createResponseItem(request, true))
+                responseItems.push(createResponseItem(request, true));
                 continue;
             }
 

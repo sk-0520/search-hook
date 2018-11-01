@@ -5,7 +5,7 @@ export interface IBridgeData extends IService {
 }
 
 export class BridgeData implements IBridgeData {
-    readonly service: ServiceKind;
+    public readonly service: ServiceKind;
 
     constructor(service: ServiceKind) {
         this.service = service;
@@ -30,9 +30,9 @@ export class NotWordResponseBridgeData extends BridgeData implements INotWordRes
 
 export interface IHideRequestItem {
     /** 一意の DATA 属性 */
-    dataValue: string,
+    dataValue: string;
     /** リンクの値 */
-    linkValue: string,
+    linkValue: string;
 }
 
 export interface IHideRequestBridgeData extends IBridgeData {
@@ -50,9 +50,9 @@ export class HideRequestBridgeData extends BridgeData implements IHideRequestBri
 
 export interface IHideResponseItem {
     /** 要求 */
-    readonly request: IHideRequestItem,
+    readonly request: IHideRequestItem;
     /** 非表示項目 */
-    readonly hideTarget: boolean,
+    readonly hideTarget: boolean;
 }
 
 export interface IHideResponseBridgeData extends IBridgeData {

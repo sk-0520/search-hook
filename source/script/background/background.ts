@@ -77,8 +77,7 @@ export default class Background extends ActionBase {
                         break;
 
                     case BridgeMeesageKind.hideRequest:
-                this.logger.debug('!!!!!!!!!!!!!!!!!!');
-                service.receiveHideRequestMessage(this.port, message as BridgeMeesage<IHideRequestBridgeData>);
+                        service.receiveHideRequestMessage(this.port, message as BridgeMeesage<IHideRequestBridgeData>);
                         break;
                 }
 
