@@ -1,7 +1,7 @@
 import { ServiceKind } from "../share/define/service-kind";
 import BingQuery from "../share/query/query-bing";
-import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentServiceBase, IHideElementSelector } from "./content";
+import { QueryBase } from "../share/query/query";
 
 export default class ContentBingService extends ContentServiceBase {
     
@@ -17,10 +17,16 @@ export default class ContentBingService extends ContentServiceBase {
         this.connect();
     }
 
-    protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
+    protected createQuery(): QueryBase {
+        return new BingQuery();
+    }
 
-        const checkers = this.getCheckers(hideItems);
+    protected getQueryInputElement() {
+        const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
+        return queryElement;
+    }
 
+    protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
         const elementSelectors: Array<IHideElementSelector> = [
             {
                 target: 'default',
@@ -29,20 +35,7 @@ export default class ContentBingService extends ContentServiceBase {
             },
         ];
 
-        this.hideItemsCore(elementSelectors, checkers);
+        return elementSelectors;
     }
 
-    protected eraseQuery(items: ReadonlyArray<string>) {
-        const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
-        const queryValue = queryElement.value;
-        this.logger.debug('q: ' + queryValue);
-
-        const query = new BingQuery();
-
-        const currentQuery = query.splitQuery(queryValue);
-        const userInputQuery = query.getUserInputQuery(currentQuery, items);
-        this.logger.debug('u: ' + userInputQuery);
-
-        queryElement.value = userInputQuery.join(' ') + ' ';
-    }
 }

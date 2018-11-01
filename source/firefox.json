@@ -1,8 +1,14 @@
 {
-  "version": "0.4.0",
+  "version": "package.scripts.sync-version",
   "name": "search-hook",
   "description": "__MSG_extensionDescription__",
   "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "{243027c3-0e11-446a-9d92-47facb99d780}",
+      "strict_min_version": "60.0"
+    }
+  },
   "developer": {
     "name": "sk",
     "url": "https://bitbucket.org/sk_0520/search-hook/"

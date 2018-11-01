@@ -1,7 +1,7 @@
 import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/query-google";
-import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentServiceBase, IHideElementSelector } from "./content";
+import { QueryBase } from "../share/query/query";
 
 export default class ContentGoogleService extends ContentServiceBase {
 
@@ -17,10 +17,16 @@ export default class ContentGoogleService extends ContentServiceBase {
         this.connect();
     }
 
-    protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
+    protected createQuery(): QueryBase {
+        return new GoogleQuery();
+    }
 
-        const checkers = this.getCheckers(hideItems);
+    protected getQueryInputElement(): HTMLInputElement {
+        const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
+        return queryElement;
+    }
 
+    protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
         const elementSelectors: Array<IHideElementSelector> = [
             {
                 target: 'smart',
@@ -43,44 +49,8 @@ export default class ContentGoogleService extends ContentServiceBase {
                 link: 'a'
             }
         ];
-
-        this.hideItemsCore(elementSelectors, checkers);
+        
+        return elementSelectors;
     }
 
-    protected eraseQuery(items: ReadonlyArray<string>) {
-        const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
-        const queryValue = queryElement.value;
-        this.logger.debug('q: ' + queryValue);
-
-        const query = new GoogleQuery();
-
-        const currentQuery = query.splitQuery(queryValue);
-        const userInputQuery = query.getUserInputQuery(currentQuery, items);
-        this.logger.debug('u: ' + userInputQuery);
-
-        queryElement.value = userInputQuery.join(' ') + ' ';
-
-        // サジェストが鬱陶しい問題
-        const suggestElement = document.querySelector('.sbdd_a, .gssb_c') as HTMLElement;
-        if (suggestElement) {
-            this.logger.debug('has suggest');
-            const observer = new MutationObserver(mutations => {
-                if (document.activeElement !== queryElement) {
-                    if (suggestElement!.style.display !== 'none') {
-                        this.logger.debug('suggest disable');
-                        suggestElement!.style.display = 'none';
-                    }
-                } else {
-                    this.logger.debug('suggest enable');
-                }
-                observer.disconnect();
-            });
-            const config = {
-                attributes: true,
-                childList: false,
-                characterData: false
-            };
-            observer.observe(suggestElement, config);
-        }
-    }
 }

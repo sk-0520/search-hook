@@ -57,6 +57,8 @@ export enum ElementData {
     localeAttributes = 'localeAttributes',
     /** ロケールを属性に設定する場合の属性名の識別子 */
     localeAttributeHead = 'localeAttribute',
+
+    hideId = 'weSearchHookHideId',
 }
 
 export function toIdSelector(elementId: ElementId): string {
@@ -69,6 +71,9 @@ export function toNameSelector(elementName: ElementName): string {
     return `[name="${elementName}"]`;
 }
 export function toDataSelector(elementData: ElementData): string {
-    return `[data-${elementData}]`;
+    const dataAttr = elementData.replace(/([A-Z])/g, m => {
+        return '-' + m.toLowerCase();
+    });
+    return `[data-${dataAttr}]`;
 }
 
