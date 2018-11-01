@@ -5,6 +5,7 @@ import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ElementClass, ElementData, ElementId, toClassSelector, toDataSelector } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { QueryBase } from "../share/query/query";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -25,12 +26,14 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     public abstract readonly service: ServiceKind;
 
     protected port?: browser.runtime.Port;
+    protected notWords?: ReadonlyArray<string>;
 
     constructor(name: string) {
         super(name);
     }
 
-    protected abstract eraseQuery(queryItems: ReadonlyArray<string>): void;
+    protected abstract createQuery(): QueryBase;
+    protected abstract getQueryInputElement(): HTMLInputElement;
     protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
 
     protected connect() {
@@ -76,8 +79,27 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             return;
         }
 
-        const queryItems = eraseMessage.data.items;
-        this.eraseQuery(queryItems);
+        this.notWords = eraseMessage.data.items;
+
+        this.attacQueryElement();
+    }
+
+    protected attacQueryElement() {
+        if(!this.notWords) {
+            return;
+        }
+        
+        const inputElement = this.getQueryInputElement();
+        inputElement.addEventListener('focus', e => {
+            const currentPos = inputElement.selectionStart || 0;
+            const query = this.createQuery();
+            const queryWords = query.split(inputElement.value);
+            const filterdWords = query.getUserInput(queryWords, this.notWords!);
+            const filterdQuery = query.toString(filterdWords);
+            const newPos = filterdQuery.length < currentPos ? filterdQuery.length: currentPos;
+            inputElement.value = filterdQuery;
+            inputElement.setSelectionRange(newPos, newPos);
+        });
     }
 
     protected hideElement(element: Element) {

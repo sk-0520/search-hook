@@ -1,6 +1,7 @@
 import { ServiceKind } from "../share/define/service-kind";
 import BingQuery from "../share/query/query-bing";
 import { ContentServiceBase, IHideElementSelector } from "./content";
+import { QueryBase } from "../share/query/query";
 
 export default class ContentBingService extends ContentServiceBase {
     
@@ -16,18 +17,13 @@ export default class ContentBingService extends ContentServiceBase {
         this.connect();
     }
 
-    protected eraseQuery(items: ReadonlyArray<string>) {
+    protected createQuery(): QueryBase {
+        return new BingQuery();
+    }
+
+    protected getQueryInputElement() {
         const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
-        const queryValue = queryElement.value;
-        this.logger.debug('q: ' + queryValue);
-
-        const query = new BingQuery();
-
-        const currentQuery = query.split(queryValue);
-        const userInputQuery = query.getUserInput(currentQuery, items);
-        this.logger.debug('u: ' + userInputQuery);
-
-        queryElement.value = userInputQuery.join(' ') + ' ';
+        return queryElement;
     }
 
     protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
