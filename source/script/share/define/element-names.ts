@@ -1,3 +1,4 @@
+import { Logger } from "../common";
 
 export enum ElementId {
     optionsService = 'service',
@@ -58,7 +59,7 @@ export enum ElementData {
     /** ロケールを属性に設定する場合の属性名の識別子 */
     localeAttributeHead = 'localeAttribute',
 
-    hideId = 'hideId',
+    hideId = 'weSearchHookHideId',
 }
 
 export function toIdSelector(elementId: ElementId): string {
@@ -71,7 +72,7 @@ export function toNameSelector(elementName: ElementName): string {
     return `[name="${elementName}"]`;
 }
 export function toDataSelector(elementData: ElementData): string {
-    const dataAttr = elementData.replace(/([A-Z])/, m => {
+    const dataAttr = elementData.replace(/([A-Z])/g, m => {
         return '-' + m.toLowerCase();
     });
     return `[data-${dataAttr}]`;

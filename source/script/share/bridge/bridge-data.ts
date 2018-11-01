@@ -52,7 +52,7 @@ export class EraseBridgeData extends BridgeData implements IEraseBridgeData {
 
 export interface IHideRequestItem {
     /** 一意の DATA 属性 */
-    dataAttribute: string,
+    dataValue: string,
     /** リンクの値 */
     linkValue: string,
 }

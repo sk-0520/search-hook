@@ -318,7 +318,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
                 parentElement.dataset[ElementData.hideId] = currentHideId;
 
                 const hideRequestItem: IHideRequestItem = {
-                    dataAttribute: currentHideId,
+                    dataValue: currentHideId,
                     linkValue: linkValue!,
                 };
                 hideRequestItems.push(hideRequestItem);
@@ -362,8 +362,8 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         let success = false;
         for (const responseItem of message.data.items) {
             if (responseItem.hideTarget) {
-                if(targetMap.has(responseItem.request.dataAttribute)) {
-                    const element = targetMap.get(responseItem.request.dataAttribute);
+                if(targetMap.has(responseItem.request.dataValue)) {
+                    const element = targetMap.get(responseItem.request.dataValue);
                     this.hideElement(element!);
                     success = true;
                 }
