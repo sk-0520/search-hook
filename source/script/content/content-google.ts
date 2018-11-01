@@ -1,6 +1,5 @@
 import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/query-google";
-import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentServiceBase, IHideElementSelector } from "./content";
 
 export default class ContentGoogleService extends ContentServiceBase {
@@ -15,36 +14,6 @@ export default class ContentGoogleService extends ContentServiceBase {
 
     public initialize() {
         this.connect();
-    }
-
-    protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
-
-        const checkers = this.getCheckers(hideItems);
-
-        const elementSelectors: Array<IHideElementSelector> = [
-            {
-                target: 'smart',
-                element: '#main > div',
-                link: 'a[href^="/url?q="]'
-            },
-            {
-                target: 'touch',
-                element: '.srg > div',
-                link: 'a[ping]'
-            },
-            {
-                target: 'universal',
-                element: '#universal > div',
-                link: 'a'
-            },
-            {
-                target: 'default',
-                element: '.g',
-                link: 'a'
-            }
-        ];
-
-        this.hideItemsCore(elementSelectors, checkers);
     }
 
     protected eraseQuery(items: ReadonlyArray<string>) {
@@ -83,4 +52,32 @@ export default class ContentGoogleService extends ContentServiceBase {
             observer.observe(suggestElement, config);
         }
     }
+
+    protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
+        const elementSelectors: Array<IHideElementSelector> = [
+            {
+                target: 'smart',
+                element: '#main > div',
+                link: 'a[href^="/url?q="]'
+            },
+            {
+                target: 'touch',
+                element: '.srg > div',
+                link: 'a[ping]'
+            },
+            {
+                target: 'universal',
+                element: '#universal > div',
+                link: 'a'
+            },
+            {
+                target: 'default',
+                element: '.g',
+                link: 'a'
+            }
+        ];
+        
+        return elementSelectors;
+    }
+
 }

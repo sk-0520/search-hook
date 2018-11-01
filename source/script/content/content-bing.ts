@@ -1,6 +1,5 @@
 import { ServiceKind } from "../share/define/service-kind";
 import BingQuery from "../share/query/query-bing";
-import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentServiceBase, IHideElementSelector } from "./content";
 
 export default class ContentBingService extends ContentServiceBase {
@@ -17,21 +16,6 @@ export default class ContentBingService extends ContentServiceBase {
         this.connect();
     }
 
-    protected hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>) {
-
-        const checkers = this.getCheckers(hideItems);
-
-        const elementSelectors: Array<IHideElementSelector> = [
-            {
-                target: 'default',
-                element: '.b_algo',
-                link: 'a'
-            },
-        ];
-
-        this.hideItemsCore(elementSelectors, checkers);
-    }
-
     protected eraseQuery(items: ReadonlyArray<string>) {
         const queryElement = document.querySelector('input[name="q"]') as HTMLInputElement;
         const queryValue = queryElement.value;
@@ -45,4 +29,17 @@ export default class ContentBingService extends ContentServiceBase {
 
         queryElement.value = userInputQuery.join(' ') + ' ';
     }
+
+    protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
+        const elementSelectors: Array<IHideElementSelector> = [
+            {
+                target: 'default',
+                element: '.b_algo',
+                link: 'a'
+            },
+        ];
+
+        return elementSelectors;
+    }
+
 }

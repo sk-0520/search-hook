@@ -1,5 +1,5 @@
 import { Setting } from '../browser/setting';
-import { IServiceBridgeData } from '../share/bridge/bridge-data';
+import { IHideRequestBridgeData, IBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { ActionBase } from '../share/common';
 import { ServiceKind } from '../share/define/service-kind';
@@ -8,6 +8,7 @@ import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { BackgroundServiceBase, ISettingItems } from './background-service';
 import BackgroundServiceBing from './background-service-bing';
 import BackgroundServiceGoogle from './background-service-google';
+import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 
 export default class Background extends ActionBase {
 
@@ -59,14 +60,27 @@ export default class Background extends ActionBase {
             this.port = port;
 
             port.onMessage.addListener(rawMessage => {
-                this.logger.debug('send!');
+                if (!this.port) {
+                    return;
+                }
+
+                this.logger.debug('recv!');
                 this.logger.debug(JSON.stringify(rawMessage));
 
                 // 未調査: 自アドオンの接続だけ？
-                const message = rawMessage as BridgeMeesage<IServiceBridgeData>;
+                const message = rawMessage as BridgeMeesage<IBridgeData>;
                 const service = this.backgroundServiceMap.get(message.data.service)!;
 
-                service.receiveServiceMessage(this.port!, message);
+                switch (message.kind) {
+                    case BridgeMeesageKind.notWordRequest:
+                        service.receiveNotWordRequestMessage(this.port, message);
+                        break;
+
+                    case BridgeMeesageKind.hideRequest:
+                        service.receiveHideRequestMessage(this.port, message as BridgeMeesage<IHideRequestBridgeData>);
+                        break;
+                }
+
             });
         });
     }

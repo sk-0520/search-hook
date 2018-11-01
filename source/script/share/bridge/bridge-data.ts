@@ -1,50 +1,71 @@
-import { ServiceKind } from "../define/service-kind";
-import { IReadOnlyHideItemSetting } from "../setting/hide-item-setting";
+import { ServiceKind, IService } from "../define/service-kind";
 
-export interface IBridgeData { }
-
-export abstract class BridgeData implements IBridgeData { }
-
-export interface IServiceBridgeData extends IBridgeData {
+export interface IBridgeData extends IService {
     readonly service: ServiceKind;
 }
 
-export class ServiceBridgeData extends BridgeData implements IServiceBridgeData {
+export class BridgeData implements IBridgeData {
     public readonly service: ServiceKind;
 
     constructor(service: ServiceKind) {
-        super();
         this.service = service;
     }
 }
 
-export interface IHideItemsBridgeData extends IBridgeData {
+export interface INotWordResponseBridgeData extends IBridgeData {
     readonly enabled: boolean;
-    readonly items: ReadonlyArray<IReadOnlyHideItemSetting>;
+    readonly items: ReadonlyArray<string>;
 }
 
-export class ItemsBridgeData extends BridgeData implements IHideItemsBridgeData {
+export class NotWordResponseBridgeData extends BridgeData implements INotWordResponseBridgeData {
     public readonly enabled: boolean;
-    public readonly items: ReadonlyArray<IReadOnlyHideItemSetting>;
+    public readonly items: ReadonlyArray<string>;
 
-    constructor(enabled: boolean, items: ReadonlyArray<IReadOnlyHideItemSetting>) {
-        super();
+    constructor(service: ServiceKind, enabled: boolean, items: ReadonlyArray<string>) {
+        super(service);
         this.enabled = enabled;
         this.items = items;
     }
 }
 
-export interface IEraseBridgeData extends IBridgeData {
-    readonly enabled: boolean;
-    readonly items: ReadonlyArray<string>;
+export interface IHideRequestItem {
+    /** 一意の DATA 属性 */
+    dataValue: string;
+    /** リンクの値 */
+    linkValue: string;
 }
 
-export class EraseBridgeData extends BridgeData implements IEraseBridgeData {
-    public readonly enabled: boolean;
-    public readonly items: ReadonlyArray<string>;
+export interface IHideRequestBridgeData extends IBridgeData {
+    readonly items: ReadonlyArray<IHideRequestItem>;
+}
 
-    constructor(enabled: boolean, items: ReadonlyArray<string>) {
-        super();
+export class HideRequestBridgeData extends BridgeData implements IHideRequestBridgeData {
+    public readonly items: ReadonlyArray<IHideRequestItem>;
+
+    constructor(service: ServiceKind, items: ReadonlyArray<IHideRequestItem>) {
+        super(service);
+        this.items = items;
+    }
+}
+
+export interface IHideResponseItem {
+    /** 要求 */
+    readonly request: IHideRequestItem;
+    /** 非表示項目 */
+    readonly hideTarget: boolean;
+}
+
+export interface IHideResponseBridgeData extends IBridgeData {
+     readonly enabled: boolean;
+    readonly items: ReadonlyArray<IHideResponseItem>;
+}
+
+export class HideResponseBridgeData extends BridgeData implements IHideResponseBridgeData {
+    public readonly enabled: boolean;
+    public readonly items: ReadonlyArray<IHideResponseItem>;
+
+    constructor(service: ServiceKind, enabled: boolean, items: ReadonlyArray<IHideResponseItem>) {
+        super(service);
         this.enabled = enabled;
         this.items = items;
     }
