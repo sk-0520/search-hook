@@ -1,11 +1,12 @@
 import { HideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
-import { ElementClass, toClassSelector, ElementId, ElementData } from "../share/define/element-names";
-import { ActionBase, Exception } from "../share/common";
+import { ElementClass, toClassSelector, ElementId, ElementData, toDataSelector } from "../share/define/element-names";
+import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ServiceBridgeData, ItemsBridgeData, EraseBridgeData, IHideRequestItem, HideRequestBridgeData, IHideResponseBridgeData } from "../share/bridge/bridge-data";
 import { MatchKind } from "../share/define/match-kind";
+import { strict } from "assert";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -33,6 +34,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
     protected abstract hideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): void;
     protected abstract eraseQuery(queryItems: ReadonlyArray<string>): void;
+    protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
 
     protected connect() {
         this.port = browser.runtime.connect();
@@ -48,7 +50,8 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             )
         );
 
-        this.hideItems([]);
+        const hideElementSelectors = this.getHideElementSelectors();
+        this.requestHideItems(hideElementSelectors);
     }
 
     private receiveMessage(baseMessage: BridgeMeesageBase) {
@@ -306,7 +309,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
                     continue;
                 }
                 const linkValue = linkElement.getAttribute('href');
-                if (!linkValue) {
+                if (isNullOrEmpty(linkValue)) {
                     continue;
                 }
 
@@ -316,7 +319,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
                 const hideRequestItem: IHideRequestItem = {
                     dataAttribute: currentHideId,
-                    linkValue: linkValue,
+                    linkValue: linkValue!,
                 };
                 hideRequestItems.push(hideRequestItem);
             }
@@ -345,7 +348,31 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     }
 
     protected receiveHideResponseMessage(message: BridgeMeesage<IHideResponseBridgeData>) {
-        this.logger.dumpDebug(message);
+        if (!message.data.enabled) {
+            this.logger.debug('ignore hide');
+            return;
+        }
+
+        const targetMap = new Map<string, HTMLElement>();
+        for (const element of document.querySelectorAll(toDataSelector(ElementData.hideId))) {
+            const htmlELement = element as HTMLElement;
+            targetMap.set(htmlELement.dataset[ElementData.hideId]!, htmlELement);
+        }
+
+        let success = false;
+        for (const responseItem of message.data.items) {
+            if (responseItem.hideTarget) {
+                if(targetMap.has(responseItem.request.dataAttribute)) {
+                    const element = targetMap.get(responseItem.request.dataAttribute);
+                    this.hideElement(element!);
+                    success = true;
+                }
+            }
+        }
+
+        if(success) {
+            this.appendHiddenSwitch();
+        }
     }
 }
 

@@ -45,4 +45,17 @@ export default class ContentBingService extends ContentServiceBase {
 
         queryElement.value = userInputQuery.join(' ') + ' ';
     }
+
+    protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
+        const elementSelectors: Array<IHideElementSelector> = [
+            {
+                target: 'default',
+                element: '.b_algo',
+                link: 'a'
+            },
+        ];
+
+        return elementSelectors;
+    }
+
 }

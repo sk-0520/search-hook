@@ -71,6 +71,9 @@ export function toNameSelector(elementName: ElementName): string {
     return `[name="${elementName}"]`;
 }
 export function toDataSelector(elementData: ElementData): string {
-    return `[data-${elementData}]`;
+    const dataAttr = elementData.replace(/([A-Z])/, m => {
+        return '-' + m.toLowerCase();
+    });
+    return `[data-${dataAttr}]`;
 }
 

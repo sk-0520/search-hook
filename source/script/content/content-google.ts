@@ -86,4 +86,32 @@ export default class ContentGoogleService extends ContentServiceBase {
             observer.observe(suggestElement, config);
         }
     }
+
+    protected getHideElementSelectors(): ReadonlyArray<IHideElementSelector> {
+        const elementSelectors: Array<IHideElementSelector> = [
+            {
+                target: 'smart',
+                element: '#main > div',
+                link: 'a[href^="/url?q="]'
+            },
+            {
+                target: 'touch',
+                element: '.srg > div',
+                link: 'a[ping]'
+            },
+            {
+                target: 'universal',
+                element: '#universal > div',
+                link: 'a'
+            },
+            {
+                target: 'default',
+                element: '.g',
+                link: 'a'
+            }
+        ];
+        
+        return elementSelectors;
+    }
+
 }

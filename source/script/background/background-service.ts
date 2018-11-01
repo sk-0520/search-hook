@@ -3,10 +3,10 @@ import { IService, ServiceKind } from '../share/define/service-kind';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { QueryBase } from '../share/query/query';
-import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
+import { IReadOnlyHideItemSetting, HideItemSetting, IHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { IServiceBridgeData, EraseBridgeData, IHideRequestBridgeData } from '../share/bridge/bridge-data';
+import { IServiceBridgeData, EraseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 
@@ -33,6 +33,11 @@ export interface ISettingItems {
     hideItems: ReadonlyArray<IReadOnlyHideItemSetting>;
 }
 
+interface IHideCheker {
+    item: IHideItemSetting;
+    match: (s: string) => boolean;
+}
+
 export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IReadOnlyServiceSetting> extends LoggingBase implements IService {
 
     public abstract readonly service: ServiceKind;
@@ -44,6 +49,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     protected notItemWords: ReadonlyArray<string>;
     protected hideItems: ReadonlyArray<IReadOnlyHideItemSetting>;
+    protected hideChecker: ReadonlyArray<IHideCheker>;
 
     protected constructor(name: string, setting: TReadOnlyServiceSetting, settingItems: ISettingItems) {
         super(name);
@@ -52,6 +58,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
         this.notItemWords = this.getEnabledNotItemWords(settingItems.notItems);
         this.hideItems = this.getEnabledHideItems(settingItems.hideItems);
+        this.hideChecker = this.getCheckers(this.hideItems);
     }
 
     protected checkService(setting: IReadOnlyServiceEnabledSetting) {
@@ -94,6 +101,68 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             }
 
             return true;
+        });
+    }
+
+    protected getCheckers(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): Array<IHideCheker> {
+        return hideItems.map(i => {
+            let func: (s: string) => boolean;
+
+            switch (i.match.kind) {
+                case MatchKind.partial:
+                    if (i.match.case) {
+                        const word = i.word.toUpperCase();
+                        func = s => {
+                            return s.toUpperCase().indexOf(word) !== -1;
+                        };
+                    } else {
+                        func = s => {
+                            return s.indexOf(i.word) !== -1;
+                        };
+                    }
+                    break;
+
+                case MatchKind.forward:
+                    if (i.match.case) {
+                        const word = i.word.toUpperCase();
+                        func = s => {
+                            return s.toUpperCase().indexOf(word) === 0;
+                        };
+                    } else {
+                        func = s => {
+                            return s.indexOf(i.word) === 0;
+                        };
+                    }
+                    break;
+
+                case MatchKind.perfect:
+                    if (i.match.case) {
+                        const word = i.word.toUpperCase();
+                        func = s => {
+                            return s.toUpperCase() === word;
+                        };
+                    } else {
+                        func = s => {
+                            return s === i.word;
+                        };
+                    }
+                    break;
+
+                case MatchKind.regex:
+                    const reg = i.match.case ? new RegExp(i.word) : new RegExp(i.word, 'i');
+                    func = s => {
+                        return reg.test(s);
+                    };
+                    break;
+
+                default:
+                    throw { error: i };
+            }
+
+            return {
+                item: i,
+                match: func,
+            };
         });
     }
 
@@ -166,7 +235,92 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
     }
 
     public receiveHideResponseMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
-        this.logger.dumpDebug(message);
+        if (!message.data.items.length) {
+            this.logger.debug('hide element 0');
+            return;
+        }
+
+        function createResponseItem(request: IHideRequestItem, hideTarget: boolean) {
+            return {
+                request: request,
+                hideTarget: hideTarget,
+            } as IHideResponseItem;
+        }
+
+        const responseItems = new Array<IHideResponseItem>();
+        for (const request of message.data.items) {
+            // 普通パターン
+            if (this.matchSimpleUrl(request.linkValue, this.hideChecker)) {
+                responseItems.push(createResponseItem(request, true))
+                continue;
+            }
+
+            // /path?q=XXX 形式
+            if (this.matchQueryUrl(request.linkValue, this.hideChecker)) {
+                responseItems.push(createResponseItem(request, true))
+                continue;
+            }
+
+            responseItems.push(createResponseItem(request, false));
+        }
+
+        port.postMessage(
+            new BridgeMeesage(
+                BridgeMeesageKind.hideResponse,
+                new HideResponseBridgeData(
+                    this.setting.enabled,
+                    responseItems
+                )
+            )
+        );
     }
 
+
+
+    private matchUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
+
+        let url: URL;
+        try {
+            url = new URL(linkValue);
+        } catch (ex) {
+            this.logger.error(ex);
+            return false;
+        }
+
+        // プロトコル、ポート、パスワード云々は無視
+        let urlValue = url.hostname;
+        if (url.pathname && url.pathname.length) {
+            urlValue += url.pathname;
+        }
+        if (url.search && url.search.length) {
+            urlValue += url.search;
+        }
+
+        return checkers.some(i => i.match(urlValue));
+    }
+
+    protected matchSimpleUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
+        return this.matchUrl(linkValue, checkers);
+    }
+
+    protected matchQueryUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
+        try {
+            const index = linkValue.indexOf('?');
+            if (index !== -1) {
+                const params = new URLSearchParams(linkValue.substr(index + 1));
+                this.logger.debug('params: ' + params);
+
+                if (params.has('q')) {
+                    const query = params.get('q')!;
+                    this.logger.debug('q: ' + query);
+
+                    return this.matchUrl(query, checkers);
+                }
+            }
+        } catch (ex) {
+            this.logger.error(ex);
+        }
+
+        return false;
+    }
 }
