@@ -179,8 +179,6 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             }
         }
 
-        this.logger.dumpDebug(hideRequestItems);
-
         if (hideRequestItems.length) {
             this.requestHideItemsCore(hideRequestItems);
         }
