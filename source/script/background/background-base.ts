@@ -6,7 +6,7 @@ import { QueryBase } from '../share/query/query-base';
 import { IReadOnlyHideItemSetting, IHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { NotWordResponseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData, IBridgeData } from '../share/bridge/bridge-data';
+import { NotWordResponseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 
@@ -210,7 +210,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         return queryString;
     }
 
-    public receiveNotWordRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IBridgeData>) {
+    public receiveNotWordRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
         port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.notWordResponse,

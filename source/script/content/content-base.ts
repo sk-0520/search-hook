@@ -1,11 +1,13 @@
-import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, BridgeData } from "../share/bridge/bridge-data";
+import { HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, NotWordResponseBridgeData, ServiceBridgeData } from "../share/bridge/bridge-data";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ElementClass, ElementData, ElementId, SelectorConverter } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
-import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { ILogger } from "../share/logger";
 import { QueryBase } from "../share/query/query-base";
+import { HideItemSetting } from "../share/setting/hide-item-setting";
+import { ContentLogger } from "./content-logger";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -28,6 +30,12 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected port?: browser.runtime.Port;
     protected notWords?: ReadonlyArray<string>;
 
+    private contentLogger?: ILogger;
+
+    protected get logger(): ILogger {
+        return this.contentLogger || super.logger;
+    }
+
     constructor(name: string) {
         super(name);
     }
@@ -38,6 +46,9 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
     protected connect() {
         this.port = browser.runtime.connect();
+
+        this.contentLogger = new ContentLogger(this.logger.name, this.port!);
+
         this.port.onMessage.addListener(rawMessage => {
             const baseMessage = rawMessage as BridgeMeesageBase;
             this.receiveMessage(baseMessage);
@@ -46,7 +57,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         this.port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.notWordRequest,
-                new BridgeData(this.service)
+                new ServiceBridgeData(this.service)
             )
         );
 
