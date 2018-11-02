@@ -78,10 +78,14 @@ export function merge<T>(source: T, overwrite: T): T {
 
 export abstract class LoggingBase {
 
-    protected readonly logger: Logger;
+    private readonly loggerEntity: Logger;
+    
+    protected get logger() {
+        return this.loggerEntity;
+    }
 
     protected constructor(name: string) {
-        this.logger = new Logger(name);
+        this.loggerEntity = new Logger(name);
     }
 
 }

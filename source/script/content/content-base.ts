@@ -31,7 +31,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
     private contentLogger?: Logger;
 
-    public get logger() {
+    protected get logger(): Logger {
         return this.contentLogger || super.logger;
     }
 
@@ -43,14 +43,10 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected abstract getQueryInputElement(): HTMLInputElement;
     protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
 
-    private switchLogger() {
-        this.contentLogger = new ContentLogger(this.logger.name);
-    }
-
     protected connect() {
         this.port = browser.runtime.connect();
 
-        this.switchLogger();
+        this.contentLogger = new ContentLogger(this.logger.name, this.port!);
 
         this.port.onMessage.addListener(rawMessage => {
             const baseMessage = rawMessage as BridgeMeesageBase;
