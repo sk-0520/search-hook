@@ -1,15 +1,15 @@
 import { Setting } from '../browser/setting';
-import { IHideRequestBridgeData, IServiceBridgeData, IOutputLogBridgeData, IBridgeData } from '../share/bridge/bridge-data';
+import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { ActionBase, Exception } from '../share/common';
+import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
+import { LogKind } from '../share/logger';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { BackgroundServiceBase, ISettingItems } from './background-base';
 import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
-import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
-import { Logger, LogKind } from '../share/logger';
 import BridgeLoger from './bridgelogger';
 
 export default class Background extends ActionBase {
