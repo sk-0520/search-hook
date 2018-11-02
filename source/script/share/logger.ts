@@ -30,27 +30,30 @@ export interface ILogger {
 export class Logger implements ILogger {
     public readonly name: string;
 
+    protected header = '🔍';
+
     constructor(name: string) {
         this.name = name;
     }
 
     public trace(value: string): void {
-        console.trace(`<SH> ${this.name} ${value}`);
+        console.trace(`${this.header} ${this.name} ${value}`);
     }
     public debug(value: string): void {
-        console.debug(`<SH> ${this.name} ${value}`);
+        console.debug(`${this.header} ${this.name} ${value}`);
     }
     public log(value: string): void {
-        console.log(`<SH> ${this.name} ${value}`);
+        console.log(`${this.header} ${this.name} ${value}`);
     }
     public warn(value: string): void {
-        console.warn(`<SH> ${this.name} ${value}`);
+        console.warn(`${this.header} ${this.name} ${value}`);
     }
     public error(value: string): void {
-        console.error(`<SH> ${this.name} ${value}`);
+        console.error(`${this.header} ${this.name} ${value}`);
     }
 
     public table(value: any): void {
+        this.log('TABLE:');
         console.table(value);
     }
 

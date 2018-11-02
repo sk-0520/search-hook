@@ -10,6 +10,7 @@ import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { Logger, LogKind } from '../share/logger';
+import BridgeLoger from './bridgelogger';
 
 export default class Background extends ActionBase {
 
@@ -99,7 +100,7 @@ export default class Background extends ActionBase {
     }
 
     private receiveOutputLogMessage(message: BridgeMeesage<IOutputLogBridgeData>): void {
-        const clientLogger = new Logger('(Bridge)' + message.data.name);
+        const clientLogger = new BridgeLoger(message.data.name);
         switch (message.data.logKind) {
             case LogKind.trace:
                 clientLogger.trace(message.data.message);
