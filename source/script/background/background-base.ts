@@ -2,7 +2,7 @@ import { LoggingBase, isNullOrEmpty, Exception } from '../share/common';
 import { IService, ServiceKind } from '../share/define/service-kind';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { QueryBase } from '../share/query/query';
+import { QueryBase } from '../share/query/query-base';
 import { IReadOnlyHideItemSetting, IHideItemSetting } from '../share/setting/hide-item-setting';
 import { MatchKind } from '../share/define/match-kind';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';

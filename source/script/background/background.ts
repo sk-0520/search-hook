@@ -5,9 +5,9 @@ import { ActionBase } from '../share/common';
 import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { BackgroundServiceBase, ISettingItems } from './background-service';
-import BackgroundServiceBing from './background-service-bing';
-import BackgroundServiceGoogle from './background-service-google';
+import { BackgroundServiceBase, ISettingItems } from './background-base';
+import BackgroundServiceBing from './background-bing';
+import BackgroundServiceGoogle from './background-google';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 
 export default class Background extends ActionBase {

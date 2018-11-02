@@ -1,6 +1,6 @@
 import { describe, it } from "mocha";
 import { assert } from "chai"
-import { QueryBase } from "../../../../script/share/query/query";
+import { QueryBase } from "../../../../script/share/query/query-base";
 import { ServiceKind } from "../../../../script/share/define/service-kind";
 
 const q = new class CommonQuery extends QueryBase {

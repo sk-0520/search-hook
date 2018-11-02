@@ -5,7 +5,7 @@ import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ElementClass, ElementData, ElementId, toClassSelector, toDataSelector } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
-import { QueryBase } from "../share/query/query";
+import { QueryBase } from "../share/query/query-base";
 
 export interface IHideCheker {
     item: HideItemSetting;

@@ -1,7 +1,7 @@
 import { ServiceKind } from "../share/define/service-kind";
 import BingQuery from "../share/query/query-bing";
-import { ContentServiceBase, IHideElementSelector } from "./content";
-import { QueryBase } from "../share/query/query";
+import { ContentServiceBase, IHideElementSelector } from "./content-base";
+import { QueryBase } from "../share/query/query-base";
 
 export default class ContentBingService extends ContentServiceBase {
     

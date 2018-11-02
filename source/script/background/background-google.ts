@@ -1,6 +1,6 @@
 import { ServiceKind } from '../share/define/service-kind';
 import GoogleQuery from '../share/query/query-google';
-import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-service';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
 import { IReadOnlyGoogleServiceSetting } from '../share/setting/service-setting-google';
 
 export default class BackgroundServiceGoogle extends BackgroundServiceBase<IReadOnlyGoogleServiceSetting> {

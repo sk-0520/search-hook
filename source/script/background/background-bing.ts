@@ -1,6 +1,6 @@
 import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
-import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-service';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
 import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
 
 export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
