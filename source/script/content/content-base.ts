@@ -1,11 +1,12 @@
 import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, BridgeData } from "../share/bridge/bridge-data";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
-import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
+import { ActionBase, Exception, isNullOrEmpty, Logger } from "../share/common";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ElementClass, ElementData, ElementId, SelectorConverter } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
 import { QueryBase } from "../share/query/query-base";
+import { ContentLogger } from "./content-logger";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -28,6 +29,12 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected port?: browser.runtime.Port;
     protected notWords?: ReadonlyArray<string>;
 
+    private contentLogger?: Logger;
+
+    public get logger() {
+        return this.contentLogger || super.logger;
+    }
+
     constructor(name: string) {
         super(name);
     }
@@ -36,8 +43,15 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected abstract getQueryInputElement(): HTMLInputElement;
     protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
 
+    private switchLogger() {
+        this.contentLogger = new ContentLogger(this.logger.name);
+    }
+
     protected connect() {
         this.port = browser.runtime.connect();
+
+        this.switchLogger();
+
         this.port.onMessage.addListener(rawMessage => {
             const baseMessage = rawMessage as BridgeMeesageBase;
             this.receiveMessage(baseMessage);
