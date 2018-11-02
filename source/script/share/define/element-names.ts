@@ -61,19 +61,27 @@ export enum ElementData {
     hideId = 'weSearchHookHideId',
 }
 
-export function toIdSelector(elementId: ElementId): string {
-    return '#' + elementId;
+export abstract class SelectorConverter {
+
+    public static fromId(elementId: ElementId): string {
+        return '#' + elementId;
+    }
+
+    public static fromClass(className: ElementClass): string {
+        return '.' + className;
+    }
+
+    public static fromName(elementName: ElementName): string {
+        return `[name="${elementName}"]`;
+    }
+
+    public static fromData(elementData: ElementData): string {
+        const dataAttr = elementData.replace(/([A-Z])/g, m => {
+            return '-' + m.toLowerCase();
+        });
+        return `[data-${dataAttr}]`;
+    }
+
 }
-export function toClassSelector(className: ElementClass): string {
-    return '.' + className;
-}
-export function toNameSelector(elementName: ElementName): string {
-    return `[name="${elementName}"]`;
-}
-export function toDataSelector(elementData: ElementData): string {
-    const dataAttr = elementData.replace(/([A-Z])/g, m => {
-        return '-' + m.toLowerCase();
-    });
-    return `[data-${dataAttr}]`;
-}
+
 

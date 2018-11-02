@@ -1,5 +1,5 @@
 import OptionsBase from "./options-base";
-import { ElementId, ElementName, toNameSelector } from "../share/define/element-names";
+import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
 import { INotItemSetting, NotItemSetting } from "../share/setting/not-item-setting";
 
 export default class OptionsNotItems extends OptionsBase<Array<INotItemSetting>> {
@@ -85,7 +85,7 @@ export default class OptionsNotItems extends OptionsBase<Array<INotItemSetting>>
         this.setByName(clonedElement, ElementName.optionsNotItemRemove, elm => elm.addEventListener('click', e => {
             e.preventDefault();
 
-            const itemGroupElement = e.srcElement!.closest(toNameSelector(ElementName.optionsNotItemGroup));
+            const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsNotItemGroup));
             itemGroupElement!.remove();
         }));
 

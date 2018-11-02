@@ -2,7 +2,7 @@ import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHi
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
-import { ElementClass, ElementData, ElementId, toClassSelector, toDataSelector } from "../share/define/element-names";
+import { ElementClass, ElementData, ElementId, SelectorConverter } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
 import { QueryBase } from "../share/query/query-base";
@@ -111,7 +111,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     }
 
     protected switchHideItems() {
-        const items = document.querySelectorAll(toClassSelector(ElementClass.hidden));
+        const items = document.querySelectorAll(SelectorConverter.fromClass(ElementClass.hidden));
         if (!items.length) {
             return;
         }
@@ -202,7 +202,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         }
 
         const targetMap = new Map<string, HTMLElement>();
-        for (const element of document.querySelectorAll(toDataSelector(ElementData.hideId))) {
+        for (const element of document.querySelectorAll(SelectorConverter.fromData(ElementData.hideId))) {
             const htmlELement = element as HTMLElement;
             targetMap.set(htmlELement.dataset[ElementData.hideId]!, htmlELement);
         }

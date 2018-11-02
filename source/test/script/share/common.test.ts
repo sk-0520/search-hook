@@ -82,7 +82,7 @@ describe('merge', () => {
 
 });
 
-describe('merge', () => {
+describe('isNullOrEmpty', () => {
     it('empty', () => {
         assert.isTrue(isNullOrEmpty(null));
         assert.isTrue(isNullOrEmpty(undefined));
