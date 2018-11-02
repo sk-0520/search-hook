@@ -1,7 +1,7 @@
 import { Setting } from '../browser/setting';
-import { IHideRequestBridgeData, IBridgeData } from '../share/bridge/bridge-data';
+import { IHideRequestBridgeData, IServiceBridgeData, IOutputLogBridgeData, IBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { ActionBase } from '../share/common';
+import { ActionBase, Exception } from '../share/common';
 import { ServiceKind } from '../share/define/service-kind';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
@@ -9,6 +9,7 @@ import { BackgroundServiceBase, ISettingItems } from './background-base';
 import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
+import { Logger, LogKind } from '../share/logger';
 
 export default class Background extends ActionBase {
 
@@ -69,20 +70,65 @@ export default class Background extends ActionBase {
 
                 // 未調査: 自アドオンの接続だけ？
                 const message = rawMessage as BridgeMeesage<IBridgeData>;
-                const service = this.backgroundServiceMap.get(message.data.service)!;
 
                 switch (message.kind) {
                     case BridgeMeesageKind.notWordRequest:
-                        service.receiveNotWordRequestMessage(this.port, message);
+                    case BridgeMeesageKind.hideRequest:
+                        const serviceMessage = message as BridgeMeesage<IServiceBridgeData>;
+                        const service = this.backgroundServiceMap.get(serviceMessage.data.service)!;
+                        switch (serviceMessage.kind) {
+                            case BridgeMeesageKind.notWordRequest:
+                                service.receiveNotWordRequestMessage(this.port, serviceMessage);
+                                break;
+
+                            case BridgeMeesageKind.hideRequest:
+                                service.receiveHideRequestMessage(this.port, message as BridgeMeesage<IHideRequestBridgeData>);
+                                break;
+
+                            default:
+                                break;
+                        }
                         break;
 
-                    case BridgeMeesageKind.hideRequest:
-                        service.receiveHideRequestMessage(this.port, message as BridgeMeesage<IHideRequestBridgeData>);
+                    case BridgeMeesageKind.outputLog:
+                        this.receiveOutputLogMessage(message as BridgeMeesage<IOutputLogBridgeData>);
                         break;
                 }
-
             });
         });
     }
+
+    private receiveOutputLogMessage(message: BridgeMeesage<IOutputLogBridgeData>): void {
+        const clientLogger = new Logger('(Bridge)' + message.data.name);
+        switch (message.data.logKind) {
+            case LogKind.trace:
+                clientLogger.trace(message.data.message);
+                break;
+
+            case LogKind.debug:
+                clientLogger.debug(message.data.message);
+                break;
+
+            case LogKind.information:
+                clientLogger.log(message.data.message);
+                break;
+
+            case LogKind.warning:
+                clientLogger.warn(message.data.message);
+                break;
+
+            case LogKind.error:
+                clientLogger.error(message.data.message);
+                break;
+
+            case LogKind.table:
+                clientLogger.table(JSON.parse(message.data.message));
+                break;
+
+            default:
+                throw new Exception(message);
+        }
+    }
+
 }
 

@@ -1,48 +1,6 @@
+import { Logger, ILogger } from "./logger";
+
 // contents script, background script 共有
-
-export class Logger {
-    public readonly name: string;
-
-    constructor(name: string) {
-        this.name = name;
-    }
-
-    public trace(value: string): void {
-        console.trace(`<SH> ${this.name} ${value}`);
-    }
-    public debug(value: string): void {
-        console.debug(`<SH> ${this.name} ${value}`);
-    }
-    public log(value: string): void {
-        console.log(`<SH> ${this.name} ${value}`);
-    }
-    public warn(value: string): void {
-        console.warn(`<SH> ${this.name} ${value}`);
-    }
-    public error(value: string): void {
-        console.error(`<SH> ${this.name} ${value}`);
-    }
-
-    public table(value: any): void {
-        console.table(value);
-    }
-
-    public dumpTrace(value: any): void {
-        this.trace(JSON.stringify(value));
-    }
-    public dumpDebug(value: any): void {
-        this.debug(JSON.stringify(value));
-    }
-    public dumpLog(value: any): void {
-        this.log(JSON.stringify(value));
-    }
-    public dumpWarn(value: any): void {
-        this.warn(JSON.stringify(value));
-    }
-    public dumpError(value: any): void {
-        this.error(JSON.stringify(value));
-    }
-}
 
 /**
  * ソースに対して上書きを行う。
@@ -80,7 +38,7 @@ export abstract class LoggingBase {
 
     private readonly loggerEntity: Logger;
     
-    protected get logger() {
+    protected get logger(): ILogger {
         return this.loggerEntity;
     }
 

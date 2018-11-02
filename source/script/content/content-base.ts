@@ -1,12 +1,13 @@
-import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, BridgeData } from "../share/bridge/bridge-data";
+import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, ServiceBridgeData } from "../share/bridge/bridge-data";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
-import { ActionBase, Exception, isNullOrEmpty, Logger } from "../share/common";
+import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
 import { ElementClass, ElementData, ElementId, SelectorConverter } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
 import { QueryBase } from "../share/query/query-base";
 import { ContentLogger } from "./content-logger";
+import { Logger, ILogger } from "../share/logger";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -29,9 +30,9 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected port?: browser.runtime.Port;
     protected notWords?: ReadonlyArray<string>;
 
-    private contentLogger?: Logger;
+    private contentLogger?: ILogger;
 
-    protected get logger(): Logger {
+    protected get logger(): ILogger {
         return this.contentLogger || super.logger;
     }
 
@@ -56,7 +57,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         this.port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.notWordRequest,
-                new BridgeData(this.service)
+                new ServiceBridgeData(this.service)
             )
         );
 
