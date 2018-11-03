@@ -1,6 +1,6 @@
 import { LoggingBase } from "../../share/common";
 import { IService, ServiceKind } from "../../share/define/service-kind";
-import { IHideCheker } from "../hide-item-stocker";
+import { IHideMatcher } from "../hide-item-stocker";
 
 export abstract class HideCheckerBase extends LoggingBase implements IService {
 
@@ -11,7 +11,7 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
     }
 
 
-    private matchUrlCore(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
+    private matchUrlCore(linkValue: string, checkers: ReadonlyArray<IHideMatcher>): boolean {
 
         let url: URL;
         try {
@@ -33,11 +33,11 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         return checkers.some(i => i.match(urlValue));
     }
 
-    protected matchSimpleUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
+    protected matchSimpleUrl(linkValue: string, checkers: ReadonlyArray<IHideMatcher>): boolean {
         return this.matchUrlCore(linkValue, checkers);
     }
 
-    protected matchQueryUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>): boolean {
+    protected matchQueryUrl(linkValue: string, checkers: ReadonlyArray<IHideMatcher>): boolean {
         try {
             const index = linkValue.indexOf('?');
             if (index !== -1) {
@@ -58,7 +58,7 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         return false;
     }
 
-    public matchUrl(linkValue: string, checkers: ReadonlyArray<IHideCheker>) {
+    public matchUrl(linkValue: string, checkers: ReadonlyArray<IHideMatcher>) {
 
         // 普通パターン
         if (this.matchSimpleUrl(linkValue, checkers)) {

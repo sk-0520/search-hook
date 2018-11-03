@@ -2,27 +2,30 @@ import { IHideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hid
 import { LoggingBase, Exception } from "../share/common";
 import { MatchKind } from "../share/define/match-kind";
 
-export interface IHideCheker {
+export interface IHideMatcher {
     item: IHideItemSetting;
     match: (s: string) => boolean;
 }
 
 export class HideItemStocker extends LoggingBase {
-    private hideItemGroup = new Map<string, Array<IReadOnlyHideItemSetting>>();
-    private hideCheckerGroup = new Map<string, Array<IHideCheker>>();
+    public static readonly applicationKey = '';
+
+    private hideItemGroup = new Map<string, ReadonlyArray<IReadOnlyHideItemSetting>>();
+    private hideMatcherGroup = new Map<string, ReadonlyArray<IHideMatcher>>();
 
     public get hideItems(): ReadonlyMap<string, ReadonlyArray<IReadOnlyHideItemSetting>> {
         return this.hideItemGroup;
     }
-    public get hideCheckers(): ReadonlyMap<string, ReadonlyArray<IHideCheker>> {
-        return this.hideCheckerGroup;
+    public get hideMatchers(): ReadonlyMap<string, ReadonlyArray<IHideMatcher>> {
+        return this.hideMatcherGroup;
     }
 
     constructor() {
         super('HideStocker');
+
     }
 
-    private getCheckers(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): Array<IHideCheker> {
+    private getCheckers(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): Array<IHideMatcher> {
         return hideItems.map(i => {
             let func: (s: string) => boolean;
 
@@ -80,14 +83,14 @@ export class HideItemStocker extends LoggingBase {
             return {
                 item: i,
                 match: func,
-            } as IHideCheker;
+            } as IHideMatcher;
         });
     }
     
-    public import(key: string, items: Array<IReadOnlyHideItemSetting>) {
+    public importHideItems(key: string, items: ReadonlyArray<IReadOnlyHideItemSetting>) {
         this.hideItemGroup.set(key, items);
         const chekers = this.getCheckers(items);
-        this.hideCheckerGroup.set(key, chekers);
+        this.hideMatcherGroup.set(key, chekers);
     }
 
 }
