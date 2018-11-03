@@ -11,6 +11,8 @@ import { BackgroundServiceBase, ISettingItems } from './background-base';
 import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
 import BridgeLoger from './bridgelogger';
+import { IDeliverySetting, IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
+import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
 
 export default class Background extends ActionBase {
 
@@ -30,22 +32,33 @@ export default class Background extends ActionBase {
         this.logger.log('loading');
 
         const setting = new Setting();
-        return setting.loadMainSettingAsync().then(
-            result => this.startBackground(setting.tuneMainSetting(result)),
+        return Promise.all([
+            setting.loadMainSettingAsync(),
+            setting.loadDeliverySettingAsync(),
+        ]).then(
+            result => {
+                const mainSetting = setting.tuneMainSetting(result[0]);
+                const deliverySetting = setting.tuneDeliverySetting(result[1]);
+        
+                this.startBackground(mainSetting, deliverySetting);
+            },
             error => this.logger.dumpError(error)
         );
     }
 
-    private startBackground(setting: IMainSetting) {
+    private startBackground(mainSetting: IMainSetting, deliverySetting: IDeliverySetting) {
         this.logger.log('start');
-        this.logger.debug(JSON.stringify(setting));
+        this.logger.debug('MAIN: ' + JSON.stringify(mainSetting));
+        this.logger.debug('DELIVERY: ' + JSON.stringify(deliverySetting));
 
         const settingItems: ISettingItems = {
-            notItems: setting.notItems,
-            hideItems: setting.hideItems,
+            notItems: mainSetting.notItems,
+            hideItems: mainSetting.hideItems,
         };
-        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(setting.service.google, settingItems));
-        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(setting.service.google, settingItems));
+        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(mainSetting.service.google, settingItems));
+        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(mainSetting.service.google, settingItems));
+
+        this.buildDeliverySetting(mainSetting.deliveryHideItems, deliverySetting, this.backgroundServiceMap);
 
         for (const [key, service] of this.backgroundServiceMap) {
             this.logger.debug(`build service ${key}`);
@@ -53,6 +66,16 @@ export default class Background extends ActionBase {
         }
 
         this.accept();
+    }
+
+    private buildDeliverySetting(
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>, 
+        deliverySetting: IReadOnlyDeliverySetting, 
+        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
+    ): void {
+        for(const service of serviceMap.values()) {
+            service.importDeliveryHideItems(deliveryHideItems, deliverySetting);
+        }
     }
 
     private accept() {

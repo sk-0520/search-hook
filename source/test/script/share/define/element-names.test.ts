@@ -1,5 +1,5 @@
 import { describe, it } from "mocha";
-import { assert } from "chai"
+import { assert } from "chai";
 import { SelectorConverter, ElementId, ElementClass, ElementName, ElementData } from "../../../../script/share/define/element-names";
 
 describe('SelectorConverter', () => {

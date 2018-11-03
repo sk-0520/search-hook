@@ -1,5 +1,6 @@
 import { LoggingBase, merge } from "../share/common";
 import { IMainSetting, MainSetting } from "../share/setting/main-setting";
+import { IDeliverySetting, DeliverySetting } from "../share/setting/delivery-setting";
 
 export class Setting extends LoggingBase {
 
@@ -7,15 +8,19 @@ export class Setting extends LoggingBase {
         super('Setting');
     }
 
-    public loadMainSettingAsync(): Promise<IMainSetting | null> {
-        const getting = browser.storage.local.get('setting');
+    private loadAsync<TSetting>(storageKey: string, objectKey: string): Promise<TSetting | null> {
+        const getting = browser.storage.local.get(storageKey);
         return getting.then(o => {
-            if (!o || !o.setting) {
+            if (!o || !o[storageKey]) {
                 return null;
             }
 
-            return (o.setting as any) as IMainSetting;
+            return (o[storageKey] as any) as TSetting;
         });
+    }
+
+    public loadMainSettingAsync(): Promise<IMainSetting | null> {
+        return this.loadAsync<IMainSetting>('setting', 'setting');
     }
 
     public tuneMainSetting(setting: IMainSetting | null): MainSetting {
@@ -41,5 +46,21 @@ export class Setting extends LoggingBase {
                 this.logger.error(error);
             }
         );
+    }
+
+    public loadDeliverySettingAsync(): Promise<IDeliverySetting | null> {
+        return this.loadAsync<IDeliverySetting>('delivery', 'setting');
+    }
+
+    public tuneDeliverySetting(setting: IDeliverySetting | null): DeliverySetting {
+        let baseSetting = new DeliverySetting();
+
+        if (setting) {
+            baseSetting = merge(baseSetting, setting);
+        }
+
+        this.logger.dumpDebug(baseSetting);
+
+        return baseSetting;
     }
 }

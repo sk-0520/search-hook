@@ -1,16 +1,19 @@
-import { LoggingBase, isNullOrEmpty, Exception } from '../share/common';
-import { IService, ServiceKind } from '../share/define/service-kind';
-import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
-import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { QueryBase } from '../share/query/query-base';
-import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
-import { MatchKind } from '../share/define/match-kind';
+import { HideResponseBridgeData, IHideRequestBridgeData, IHideRequestItem, IHideResponseItem, IServiceBridgeData, NotWordResponseBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { NotWordResponseBridgeData, IHideRequestBridgeData, IHideResponseItem, IHideRequestItem, HideResponseBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
+import { Exception, isNullOrEmpty, LoggingBase } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
+import { MatchKind } from '../share/define/match-kind';
+import { IService, ServiceKind } from '../share/define/service-kind';
+import { QueryBase } from '../share/query/query-base';
+import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
+import { IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
+import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
+import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
-import { HideItemStocker } from './hide-item-stocker';
+import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
+import { DeliveryHideItemConverter } from './delivery-hide-item-converter';
 import { HideCheckerBase } from './hide-checker/hide-checker-base';
+import { HideItemStocker } from './hide-item-stocker';
 
 /** Fxから持ってきた */
 export interface IRequestDetails {
@@ -36,7 +39,6 @@ export interface ISettingItems {
 }
 
 export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IReadOnlyServiceSetting> extends LoggingBase implements IService {
-
     public abstract readonly service: ServiceKind;
     protected abstract readonly filter: browser.webRequest.RequestFilter;
     //abstract readonly extraInfoSpec?: Array<U>;
@@ -104,6 +106,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         });
     }
 
+
     protected abstract redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined;
 
     public registerRedirect(): void {
@@ -146,6 +149,19 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         this.logger.debug('queryString: ' + queryString);
 
         return queryString;
+    }
+
+    public importDeliveryHideItems(deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>, deliverySetting: IReadOnlyDeliverySetting): void {
+        const converter = new DeliveryHideItemConverter();
+        for(const deliveryHideItem of deliveryHideItems) {
+            const deliveryHideLines = deliverySetting.hideItems.get(deliveryHideItem.url);
+            if(!deliveryHideItems) {
+                continue;
+            }
+            const hideItems = converter.convertItems(deliveryHideLines!, deliveryHideItem.service);
+            const enabledHideItems = this.getEnabledHideItems(hideItems);
+            this.hideItemStocker.importHideItems(deliveryHideItem.url, enabledHideItems);
+        }
     }
 
     public receiveNotWordRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
