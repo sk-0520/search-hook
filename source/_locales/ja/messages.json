@@ -122,13 +122,9 @@
     "message": "外部設定一覧",
     "description": "[Options] [delivery hide item] [list] title"
   },
-  "optionsDeliveryHideItemListHeaderItem": {
-    "message": "定義データ",
+  "optionsDeliveryHideItemListHeaderName": {
+    "message": "名前",
     "description": "[Options] [delivery hide item] [list] [header] name"
-  },
-  "optionsDeliveryHideItemListHeaderDetail": {
-    "message": "詳細",
-    "description": "[Options] [delivery hide item] [list] [header] detail"
   },
   
   "optionsWhitelistTitle": {

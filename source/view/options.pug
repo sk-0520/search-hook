@@ -165,10 +165,27 @@ html
             table.items.list
               thead
                 tr
-                  th(data-locale="optionsDeliveryHideItemListHeaderItem")
-                  th(data-locale="optionsDeliveryHideItemListHeaderDetail")
+                  th(data-locale="optionsDeliveryHideItemListHeaderName") [名前]
+                  th(data-locale="commonEnabled") [有効]
+                  th(data-locale="commonRemove") [削除]
               tbody#delivery-hide-item-list
-
+                template
+                  tr(name="delivery-hide-item-group")
+                    td
+                      span(name="delivery-hide-item-name")
+                      input(name="delivery-hide-item-setting" type="hidden")
+                    td
+                      ul.horizontal
+                        li
+                          label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                            input(name="delivery-hide-item-service-google" type="checkbox")
+                            img.icon(src="./service-icon-google.svg")
+                        li
+                          label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                            input(name="delivery-hide-item-service-bing" type="checkbox")
+                            img.icon(src="./service-icon-bing.svg")
+                    td
+                      button(name="delivery-hide-item-remove" data-locale="commonRemove") [削除]
 
       fieldset
         legend(data-locale="optionsWhitelistTitle") [非表示ホワイトリスト]
@@ -177,7 +194,7 @@ html
 
       button(type="submit" data-locale="optionsSave") [保存]
 
-    details.impexp.setting.WE___search-hook-_-_-locale-root
+    details.impexp.WE___search-hook-_-_-locale-root
       summary(data-locale="optionsImportExportTitle") [Import/Export]
       p(data-locale="optionsImportExportDescription") [本機能は全設定データをテキストとして表示・取り込むものです。設定を簡単に持ち運ぶことを目的にしています。]
       p.alert(data-locale="optionsImportExportDescriptionAlert") [取り込みにおいて正しいデータであることを期待しています。]

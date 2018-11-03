@@ -20,9 +20,9 @@ export enum ElementId {
     optionsHideItemInputServiceBing  = 'view-input-is-enabled-bing',
     optionsHideItemInputAdd  = 'command-view-add-hide-item',
 
+    optionsDeliveryHideItemList = 'delivery-hide-item-list',
     optionsDeliveryHideItemRegisterInputUrl = 'delivery-hide-item-register-input-url',
     optionsDeliveryHideItemRegisterImport = 'command-delivery-hide-item-register-import',
-    optionsDeliveryHideItemList = 'delivery-hide-item-list',
 
     optionsInportExportExport = 'command-imp-exp-export',
     optionsInportExportCopy = 'command-imp-exp-copy',
@@ -53,6 +53,14 @@ export enum ElementName {
     optionsHideItemServiceGoogle = 'view-hide-item-service-google',
     optionsHideItemServiceBing = 'view-hide-item-service-bing',
     optionsHideItemRemove = 'view-hide-item-remove',
+
+    optionsDeliveryHideItemGroup = 'delivery-hide-item-group',
+    optionsDeliveryHideItemSetting = 'delivery-hide-item-setting',
+    optionsDeliveryHideItemName = 'delivery-hide-item-name',
+    optionsDeliveryHideItemServiceGoogle = 'delivery-hide-item-service-google',
+    optionsDeliveryHideItemServiceBing = 'delivery-hide-item-service-bing',
+    optionsDeliveryHideItemRemove = 'delivery-hide-item-remove',
+
 }
 
 export enum ElementData {

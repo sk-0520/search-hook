@@ -1,8 +1,9 @@
-import { IDeliveryHideSetting } from "../share/setting/delivery-hide-setting";
+import { IDeliveryHideSetting, DeliveryHideSetting } from "../share/setting/delivery-hide-setting";
 import OptionsBase from "./options-base";
-import { ElementId } from "../share/define/element-names";
+import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
 import { DeliveryHideItemGetter } from "../browser/delivery-hide-item";
-import { isNullOrEmpty } from "../share/common";
+import { isNullOrEmpty, merge } from "../share/common";
+import { ServiceEnabledSetting } from "../share/setting/service-enabled-setting";
 
 export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliveryHideSetting>> {
 
@@ -21,12 +22,53 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         );
     }
 
-    public restore(setting: IDeliveryHideSetting[]): void {
-        //throw new Error("Method not implemented.");
+    public restore(setting: Array<IDeliveryHideSetting>): void {
+        const parent = this.getParentElement();
+        for (const item of setting) {
+            this.addDeliveryHideItemCore(parent, item);
+        }
     }
-    
-    public export(): IDeliveryHideSetting[] {
-        throw new Error("Method not implemented.");
+
+    public export(): Array<IDeliveryHideSetting> {
+        const result = new Array<IDeliveryHideSetting>();
+        const parentElement = this.getParentElement();
+        const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+
+        for(const element of elements) {
+            const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
+            const setting = JSON.parse(rawSetting) as IDeliveryHideSetting;
+            setting.service = new ServiceEnabledSetting();
+            setting.service.google = this.getInputByName(element, ElementName.optionsDeliveryHideItemServiceGoogle).checked;
+            setting.service.bing = this.getInputByName(element, ElementName.optionsDeliveryHideItemServiceBing).checked;
+
+            result.push(setting);
+        }
+
+        return result;
+    }
+
+    private addDeliveryHideItem(setting: IDeliveryHideSetting) {
+        const parent = this.getParentElement();
+        this.addDeliveryHideItemCore(parent, setting);
+    }
+    private addDeliveryHideItemCore(parent: Element, item: IDeliveryHideSetting) {
+
+        const templateElement = parent.querySelector("template")!;
+        const clonedElement = document.importNode(templateElement.content, true);
+
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemSetting, elm => elm.value = JSON.stringify(item));
+
+        const nameElement = clonedElement.querySelector(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemName)) as HTMLElement;
+        nameElement.textContent = item.name;
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemServiceGoogle, elm => elm.checked = item.service.google);
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemServiceBing, elm => elm.checked = item.service.bing);
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemRemove, elm => elm.addEventListener('click', e => {
+            e.preventDefault();
+
+            const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+            itemGroupElement!.remove();
+        }));
+        parent.appendChild(clonedElement);
     }
 
     private changeEnabledImport(isEnabled: boolean) {
@@ -53,13 +95,35 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const getter = new DeliveryHideItemGetter();
         return getter.getAsync(url).then(
             result => {
-                if(isNullOrEmpty(result)) {
-                    alert('error');
+                if (isNullOrEmpty(result)) {
+                    alert('error: HTTP(S)');
                     return;
                 }
 
                 const data = getter.split(result!);
-                alert(JSON.stringify(data));
+                if (isNullOrEmpty(data.header.name)) {
+                    alert('error: empty name');
+                    return;
+                }
+                if (isNullOrEmpty(data.header.version)) {
+                    alert('error: empty version');
+                    return;
+                }
+
+                if (!data.lines.length || data.lines.every(s => isNullOrEmpty(s))) {
+                    alert('error: empty data');
+                    return;
+                }
+                // URL の補正
+                data.header.url = url;
+
+                // 反映
+                const setting = new DeliveryHideSetting();
+                merge(setting, data.header);
+                setting.service.google = true;
+                setting.service.bing = true;
+
+                this.addDeliveryHideItem(setting);
             }
         );
     }
