@@ -11,7 +11,7 @@ import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { DeliveryHideItemConverter } from './delivery-hide-item-converter';
+import { DeliveryHideItemConverter } from '../browser/delivery-hide-item';
 import { HideCheckerBase } from './hide-checker/hide-checker-base';
 import { HideItemStocker } from './hide-item-stocker';
 

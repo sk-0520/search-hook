@@ -20,6 +20,10 @@ export enum ElementId {
     optionsHideItemInputServiceBing  = 'view-input-is-enabled-bing',
     optionsHideItemInputAdd  = 'command-view-add-hide-item',
 
+    optionsDeliveryHideItemRegisterInputUrl = 'delivery-hide-item-register-input-url',
+    optionsDeliveryHideItemRegisterImport = 'command-delivery-hide-item-register-import',
+    optionsDeliveryHideItemList = 'delivery-hide-item-list',
+
     optionsInportExportExport = 'command-imp-exp-export',
     optionsInportExportCopy = 'command-imp-exp-copy',
     optionsInportExportExportArea = 'imp-exp-export-area',

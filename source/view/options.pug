@@ -147,11 +147,28 @@ html
               td
                 button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]
 
-      fieldset
-        legend(data-locale="optionsDeliveryTitle") [外部非表示設定]
+      fieldset.delivery-hide-item
+        legend(data-locale="optionsDeliveryHideItemTitle") [外部非表示設定]
         p
-          strong TODO
-          | , reserve permissions: <all_urls>
+          span(data-locale="optionsDeliveryHideItemDescription") [外部の非表示設定を読み込むことで特定のジャンルごとに非表示設定を最新化できます。]
+        dl
+          dt 
+            span(data-locale="optionsDeliveryHideItemRegisterTitle") [外部設定の登録]
+          dd
+            label
+              span(data-locale="optionsDeliveryHideItemRegisterUrl") [URL:]
+              input#delivery-hide-item-register-input-url
+            button#command-delivery-hide-item-register-import(data-locale="optionsDeliveryHideItemRegisterImport") [取り込む]
+          dt 
+            span(data-locale="optionsDeliveryHideItemListTitle") [外部設定一覧]
+          dd
+            table.items.list
+              thead
+                tr
+                  th(data-locale="optionsDeliveryHideItemListHeaderItem")
+                  th(data-locale="optionsDeliveryHideItemListHeaderDetail")
+              tbody#delivery-hide-item-list
+
 
       fieldset
         legend(data-locale="optionsWhitelistTitle") [非表示ホワイトリスト]

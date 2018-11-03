@@ -98,11 +98,39 @@
     "description": "[Options] [hide item] [header] match"
   },
 
-  "optionsDeliveryTitle": {
+  "optionsDeliveryHideItemTitle": {
     "message": "外部非表示設定",
-    "description": "[Options] [delivery item] title"
+    "description": "[Options] [delivery hide item] title"
   },
-
+  "optionsDeliveryHideItemDescription": {
+    "message": "外部の非表示設定を読み込むことで特定のジャンルごとに非表示設定を最新化できます。",
+    "description": "[Options] [delivery hide item] description"
+  },
+  "optionsDeliveryHideItemRegisterTitle": {
+    "message": "外部設定の登録",
+    "description": "[Options] [delivery hide item] [register] title"
+  },
+  "optionsDeliveryHideItemRegisterUrl": {
+    "message": "URL:",
+    "description": "[Options] [delivery hide item] [register] URL"
+  },
+  "optionsDeliveryHideItemRegisterImport": {
+    "message": "取り込む",
+    "description": "[Options] [delivery hide item] [register] import"
+  },
+  "optionsDeliveryHideItemListTitle": {
+    "message": "外部設定一覧",
+    "description": "[Options] [delivery hide item] [list] title"
+  },
+  "optionsDeliveryHideItemListHeaderItem": {
+    "message": "定義データ",
+    "description": "[Options] [delivery hide item] [list] [header] name"
+  },
+  "optionsDeliveryHideItemListHeaderDetail": {
+    "message": "詳細",
+    "description": "[Options] [delivery hide item] [list] [header] detail"
+  },
+  
   "optionsWhitelistTitle": {
     "message": "非表示ホワイトリスト",
     "description": "[Options] [whitelist item] title"

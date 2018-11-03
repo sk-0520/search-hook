@@ -1,6 +1,20 @@
 import { IReadOnlyServiceEnabledSetting, ServiceEnabledSetting, IServiceEnabledSetting } from "./service-enabled-setting";
 
-export interface IReadOnlyDeliveryHideSetting {
+export interface IReadOnlyDeliveryHideHeaderSetting {
+    readonly url: string;
+    readonly name: string;
+    readonly version: string;
+    readonly author: string;
+}
+
+export interface IDeliveryHideHeaderSetting extends IReadOnlyDeliveryHideHeaderSetting {
+    url: string;
+    name: string;
+    version: string;
+    author: string;
+}
+
+export interface IReadOnlyDeliveryHideSetting extends IReadOnlyDeliveryHideHeaderSetting {
     readonly url: string;
     readonly name: string;
     readonly version: string;
@@ -8,7 +22,7 @@ export interface IReadOnlyDeliveryHideSetting {
     readonly service: IReadOnlyServiceEnabledSetting;
 }
 
-export interface IDeliveryHideSetting extends IReadOnlyDeliveryHideSetting {
+export interface IDeliveryHideSetting extends IDeliveryHideHeaderSetting, IReadOnlyDeliveryHideSetting {
     url: string;
     name: string;
     version: string;
