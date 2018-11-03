@@ -1,0 +1,41 @@
+fieldset
+  legend(data-locale="optionsNotItemTitle") [検索除外]
+  table.list
+    thead
+      tr
+        th(data-locale="optionsNotItemHeaderWord") [除外ワード]
+        th(data-locale="commonEnabled") [有効]
+        th(data-locale="commonRemove") [削除]
+    tbody#engine-not-word-list
+      template
+        tr(name="engine-not-item-group")
+          td
+            input(name="engine-not-item-word" type="text")
+          td
+            ul.horizontal
+              li
+                label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                  input(name="engine-not-item-service-google", type="checkbox")
+                  img.icon(src="./service-icon-google.svg")
+              li
+                label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                  input(name="engine-not-item-service-bing" type="checkbox")
+                  img.icon(src="./service-icon-bing.svg")
+          td
+            button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
+    tfoot.input
+      tr
+        td
+          input#engine-input-not-word(type="text")
+        td
+          ul.horizontal
+            li
+              label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                input#engine-input-is-enabled-google(type="checkbox" checked)
+                img.icon(src="./service-icon-google.svg")
+            li
+              label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                input#engine-input-is-enabled-bing(type="checkbox" checked)
+                img.icon(src="./service-icon-bing.svg")
+        td
+          button#command-engine-add-not-item(type="button" data-locale="commonAdd") add

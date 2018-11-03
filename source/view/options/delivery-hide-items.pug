@@ -1,0 +1,39 @@
+fieldset.delivery-hide-item
+  legend(data-locale="optionsDeliveryHideItemTitle") [外部非表示設定]
+  p
+    span(data-locale="optionsDeliveryHideItemDescription") [外部の非表示設定を読み込むことで特定のジャンルごとに非表示設定を最新化できます。]
+  dl
+    dt 
+      span(data-locale="optionsDeliveryHideItemRegisterTitle") [外部設定の登録]
+    dd
+      label
+        span(data-locale="optionsDeliveryHideItemRegisterUrl") [URL:]
+        input#delivery-hide-item-register-input-url
+      button#command-delivery-hide-item-register-import(data-locale="optionsDeliveryHideItemRegisterImport") [取り込む]
+    dt 
+      span(data-locale="optionsDeliveryHideItemListTitle") [外部設定一覧]
+    dd
+      table.items.list
+        thead
+          tr
+            th(data-locale="optionsDeliveryHideItemListHeaderName") [名前]
+            th(data-locale="commonEnabled") [有効]
+            th(data-locale="commonRemove") [削除]
+        tbody#delivery-hide-item-list
+          template
+            tr(name="delivery-hide-item-group")
+              td
+                span(name="delivery-hide-item-name")
+                input(name="delivery-hide-item-setting" type="hidden")
+              td
+                ul.horizontal
+                  li
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
+                      input(name="delivery-hide-item-service-google" type="checkbox")
+                      img.icon(src="./service-icon-google.svg")
+                  li
+                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
+                      input(name="delivery-hide-item-service-bing" type="checkbox")
+                      img.icon(src="./service-icon-bing.svg")
+              td
+                button(name="delivery-hide-item-remove" data-locale="commonRemove") [削除]
