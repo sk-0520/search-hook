@@ -1,3 +1,5 @@
+include mixin-service
+
 fieldset
   legend(data-locale="optionsHideItemTitle") [非表示設定]
   p
@@ -29,15 +31,7 @@ fieldset
                   input(name="view-hide-item-match-case" type="checkbox")
                   img.icon(src="./case-sensitive.svg" data-locale="@EMPTY" data-locale-attribute-title="commonCaseSensitive")
           td
-            ul.horizontal
-              li
-                label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
-                  input(name="view-hide-item-service-google" type="checkbox")
-                  img.icon(src="./service-icon-google.svg")
-              li
-                label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
-                  input(name="view-hide-item-service-bing" type="checkbox")
-                  img.icon(src="./service-icon-bing.svg")
+            +createEnabledServiceName("view-hide-item-service-google", "view-hide-item-service-bing")
           td
             button(name="view-hide-item-remove" data-locale="commonRemove") [削除]
       // script
@@ -58,14 +52,6 @@ fieldset
                 input#view-input-hide-match-case(type="checkbox")
                 img.icon(src="./case-sensitive.svg" data-locale="@EMPTY" data-locale-attribute-title="commonCaseSensitive")
         td
-          ul.horizontal
-            li
-              label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
-                input#view-input-is-enabled-google(type="checkbox" checked)
-                img.icon(src="./service-icon-google.svg")
-            li
-              label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
-                input#view-input-is-enabled-bing(type="checkbox" checked)
-                img.icon(src="./service-icon-bing.svg")
+          +createEnabledServiceId("view-input-is-enabled-google", "view-input-is-enabled-bing")(checked)
         td
           button#command-view-add-hide-item(type="button" data-locale="commonAdd") [追加]

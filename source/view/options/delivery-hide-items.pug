@@ -1,3 +1,5 @@
+include mixin-service
+
 fieldset.delivery-hide-item
   legend(data-locale="optionsDeliveryHideItemTitle") [外部非表示設定]
   p
@@ -26,14 +28,6 @@ fieldset.delivery-hide-item
                 span(name="delivery-hide-item-name")
                 input(name="delivery-hide-item-setting" type="hidden")
               td
-                ul.horizontal
-                  li
-                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceGoogle")
-                      input(name="delivery-hide-item-service-google" type="checkbox")
-                      img.icon(src="./service-icon-google.svg")
-                  li
-                    label(data-locale="@EMPTY" data-locale-attribute-title="commonServiceBing")
-                      input(name="delivery-hide-item-service-bing" type="checkbox")
-                      img.icon(src="./service-icon-bing.svg")
+                +createEnabledServiceName("delivery-hide-item-service-google", "delivery-hide-item-service-bing")
               td
                 button(name="delivery-hide-item-remove" data-locale="commonRemove") [削除]

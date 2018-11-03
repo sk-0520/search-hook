@@ -1,0 +1,28 @@
+mixin _createEnabledService(value, title, iconPath)
+    li
+        label(data-locale="@EMPTY" data-locale-attribute-title=title)
+            if value.id && value.name
+                input(type="checkbox" id=value.id name=value.name )&attributes(attributes)
+            else if value.id
+                input(type="checkbox" id=value.id)&attributes(attributes)
+            else if value.name
+                input(type="checkbox" name=value.name)&attributes(attributes)
+            else
+                strong !!ERROR!! #{JSON.stringify(value)}
+            img.icon(src=iconPath)
+
+mixin createEnabledService(google, bing)
+    ul.horizontal
+        +_createEnabledService(google, "commonServiceGoogle", "./service-icon-google.svg")&attributes(attributes)
+        +_createEnabledService(bing, "commonServiceBing", "./service-icon-bing.svg")&attributes(attributes)
+
+mixin createEnabledServiceName(googleName, bingName)
+    - var google = { name: googleName }
+    - var bing = { name: bingName }
+    +createEnabledService(google, bing)&attributes(attributes)
+
+mixin createEnabledServiceId(googleId, bingId)
+    - var google = { id: googleId }
+    - var bing = { id: bingId }
+    +createEnabledService(google, bing)&attributes(attributes)
+
