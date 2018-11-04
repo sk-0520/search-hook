@@ -4,6 +4,11 @@ import { HideItemSetting, IHideItemSetting } from "../share/setting/hide-item-se
 import { IServiceEnabledSetting } from "../share/setting/service-enabled-setting";
 import { IDeliveryHideHeaderSetting } from "../share/setting/delivery-hide-setting";
 
+export interface IDeliveryCheckResult {
+    success: boolean;
+    message: string;
+}
+
 export class DeliveryHideItemConverter extends LoggingBase {
     constructor() {
         super('DeliveryHideItemConverter');
@@ -189,7 +194,38 @@ export class DeliveryHideItemGetter extends LoggingBase {
             },
             lines: lines.slice(headerSeparator.index + 1).map(l => l.line.trim()),
         };
-
     }
+
+    private createSuccess(): IDeliveryCheckResult {
+        return { success: true, message: '' };
+    }
+    private createError(message: string): IDeliveryCheckResult {
+        return { success: false, message };
+    }
+
+    public checkResult(result: string | null): IDeliveryCheckResult {
+        if (isNullOrEmpty(result)) {
+            return this.createError('error: HTTP(S)');
+        }
+
+        return this.createSuccess();
+    }
+
+    public checkData(data: IDeliveryHideItemData): IDeliveryCheckResult {
+        if (isNullOrEmpty(data.header.name)) {
+            return this.createError('error: empty name');
+        }
+
+        if (isNullOrEmpty(data.header.version)) {
+            return this.createError('error: empty version');
+        }
+
+        if (!data.lines.length || data.lines.every(s => isNullOrEmpty(s))) {
+            return this.createError('error: empty data');
+        }
+
+        return this.createSuccess();
+    }
+
 }
 

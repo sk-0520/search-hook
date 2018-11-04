@@ -108,25 +108,19 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const getter = new DeliveryHideItemGetter();
         return getter.getAsync(url).then(
             result => {
-                if (isNullOrEmpty(result)) {
-                    alert('error: HTTP(S)');
+                const checkedResult = getter.checkResult(result);
+                if (!checkedResult.success) {
+                    alert(checkedResult.message);
                     return Promise.resolve(false);
                 }
 
                 const data = getter.split(result!);
-                if (isNullOrEmpty(data.header.name)) {
-                    alert('error: empty name');
-                    return Promise.resolve(false);
-                }
-                if (isNullOrEmpty(data.header.version)) {
-                    alert('error: empty version');
+                const checkedData = getter.checkData(data);
+                if (!checkedData.success) {
+                    alert(checkedData.message);
                     return Promise.resolve(false);
                 }
 
-                if (!data.lines.length || data.lines.every(s => isNullOrEmpty(s))) {
-                    alert('error: empty data');
-                    return Promise.resolve(false);
-                }
                 // URL の補正
                 data.header.url = url;
 
