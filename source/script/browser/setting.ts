@@ -8,15 +8,21 @@ export class Setting extends LoggingBase {
         super('Setting');
     }
 
-    private loadAsync<TSetting>(storageKey: string): Promise<TSetting | null> {
-        const getting = browser.storage.local.get(storageKey);
-        return getting.then(o => {
-            if (!o || !o[storageKey]) {
-                return null;
-            }
+    private async loadAsync<TSetting>(storageKey: string): Promise<TSetting | null> {
+        // const getting = browser.storage.local.get(storageKey);
+        // return getting.then(o => {
+        //     if (!o || !o[storageKey]) {
+        //         return null;
+        //     }
 
-            return (o[storageKey] as any) as TSetting;
-        });
+        //     return (o[storageKey] as any) as TSetting;
+        // });
+        const raw = await browser.storage.local.get(storageKey);
+        if(!raw || !(storageKey in raw)) {
+            return null;
+        }
+
+        return (raw[storageKey] as any) as TSetting;
     }
 
     public loadMainSettingAsync(): Promise<IMainSetting | null> {
