@@ -106,6 +106,14 @@
     "message": "外部の非表示設定を読み込むことで特定のジャンルごとに非表示設定を最新化できます。",
     "description": "[Options] [delivery hide item] description"
   },
+  "optionsDeliveryHideItemDescriptionLink": {
+    "message": "外部設定の仕様はこちらを参照してください。",
+    "description": "[Options] [delivery hide item] description link"
+  },
+  "optionsDeliveryHideItemDescriptionLinkUrl": {
+    "message": "https://bitbucket.org/sk_0520/search-hook/src/master/documents/specification/delivery-hide-item.md",
+    "description": "[Options] [delivery hide item] description link url"
+  },
   "optionsDeliveryHideItemRegisterTitle": {
     "message": "外部設定の登録",
     "description": "[Options] [delivery hide item] [register] title"

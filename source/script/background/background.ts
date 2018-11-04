@@ -1,19 +1,18 @@
 import { Setting } from '../browser/setting';
 import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { ActionBase, Exception, splitLines } from '../share/common';
+import { ActionBase, Exception } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
-import { LogKind, Logger } from '../share/logger';
+import { LogKind } from '../share/logger';
+import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
+import { IDeliverySetting, IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { BackgroundServiceBase, ISettingItems } from './background-base';
 import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
 import BridgeLoger from './bridgelogger';
-import { IDeliverySetting, IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
-import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
-import { DeliveryHideItemGetter } from '../browser/delivery-hide-item';
 
 export default class Background extends ActionBase {
 
