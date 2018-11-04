@@ -6,12 +6,14 @@ import OptionsService from './options-service';
 import OptionsHideItems from './options-hide-items';
 import { Locale } from '../share/locale';
 import OptionsExportImport from './options-exp-imp';
+import OptionsDeliveryHideItems from './options-delivery-hide-items';
 
 export default class Options extends ActionBase {
 
     private optionsService = new OptionsService();
     private optionsNotItems = new OptionsNotItems();
     private optionsHideItems = new OptionsHideItems();
+    private optionsDeliveryHideItems = new OptionsDeliveryHideItems();
 
     private optionsExpImp = new OptionsExportImport();
 
@@ -27,6 +29,7 @@ export default class Options extends ActionBase {
         this.optionsService.initialize();
         this.optionsNotItems.initialize();
         this.optionsHideItems.initialize();
+        this.optionsDeliveryHideItems.initialize();
 
         this.optionsExpImp.initialize();
 
@@ -47,6 +50,7 @@ export default class Options extends ActionBase {
         this.optionsService.restore(setting.service);
         this.optionsNotItems.restore(setting.notItems);
         this.optionsHideItems.restore(setting.hideItems);
+        this.optionsDeliveryHideItems.restore(setting.deliveryHideItems);
     }
 
     private save(e: Event): void {
@@ -56,10 +60,10 @@ export default class Options extends ActionBase {
         mainSetting.service = this.optionsService.export();
         mainSetting.notItems = this.optionsNotItems.export();
         mainSetting.hideItems = this.optionsHideItems.export();
+        mainSetting.deliveryHideItems = this.optionsDeliveryHideItems.export();
 
         const setting = new Setting();
         setting.saveMainSettingAsync(mainSetting, true);
     }
-
 
 }

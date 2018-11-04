@@ -1,7 +1,8 @@
-import { ActionBase } from "../share/common";
+import { ActionBase, splitLines } from "../share/common";
 import { ElementId } from "../share/define/element-names";
 import { Setting } from "../browser/setting";
 import { IMainSetting } from "../share/setting/main-setting";
+import { DeliveryHideItemGetter } from "../browser/delivery-hide-item";
 
 export default class OptionsExportImport extends ActionBase {
 
@@ -45,7 +46,13 @@ export default class OptionsExportImport extends ActionBase {
         document.execCommand("copy");
     }
 
+    private changeEnabledImport(isEnabled: boolean) {
+        const element = document.getElementById(ElementId.optionsInportExportImport) as HTMLInputElement;
+        element.disabled = !isEnabled;
+    }
+
     private import(): void {
+        this.changeEnabledImport(false);
         const textArea = this.getTextArea();
         try {
             const inputMainSetting = JSON.parse(textArea.value) as IMainSetting;
@@ -55,11 +62,30 @@ export default class OptionsExportImport extends ActionBase {
             const tunedMainSetting = setting.tuneMainSetting(inputMainSetting);
             this.logger.dumpLog(tunedMainSetting);
 
-            setting.saveMainSettingAsync(tunedMainSetting, true);
+            const getter = new DeliveryHideItemGetter();
+            Promise.all(tunedMainSetting.deliveryHideItems.map(i => {
+                return getter.getAsync(i.url).then(result => {
+                    const checkedResult = getter.checkResult(result);
+                    if (!checkedResult.success) {
+                        this.logger.error(checkedResult.message);
+                        return Promise.resolve();
+                    }
 
+                    const data = getter.split(result!);
+                    const checkedData = getter.checkData(data);
+                    if (!checkedData.success) {
+                        this.logger.error(checkedData.message);
+                        return Promise.resolve();
+                    }
+                    return setting.mergeDeliverySettingAsync(data.header.url, splitLines(result!));
+                });
+            })).then(r => {
+                setting.saveMainSettingAsync(tunedMainSetting, true);
+            });
         } catch (ex) {
             this.logger.error(ex);
             alert(ex);
+            this.changeEnabledImport(true);
         }
     }
 }

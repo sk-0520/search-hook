@@ -5,6 +5,8 @@ import { ActionBase, Exception } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
 import { LogKind } from '../share/logger';
+import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
+import { IDeliverySetting, IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { BackgroundServiceBase, ISettingItems } from './background-base';
@@ -30,22 +32,33 @@ export default class Background extends ActionBase {
         this.logger.log('loading');
 
         const setting = new Setting();
-        return setting.loadMainSettingAsync().then(
-            result => this.startBackground(setting.tuneMainSetting(result)),
+        return Promise.all([
+            setting.loadMainSettingAsync(),
+            setting.loadDeliverySettingAsync(),
+        ]).then(
+            result => {
+                const mainSetting = setting.tuneMainSetting(result[0]);
+                const deliverySetting = setting.tuneDeliverySetting(result[1]);
+
+                this.startBackground(mainSetting, deliverySetting);
+            },
             error => this.logger.dumpError(error)
         );
     }
 
-    private startBackground(setting: IMainSetting) {
+    private startBackground(mainSetting: IMainSetting, deliverySetting: IDeliverySetting) {
         this.logger.log('start');
-        this.logger.debug(JSON.stringify(setting));
+        this.logger.debug('MAIN: ' + JSON.stringify(mainSetting));
+        this.logger.debug('DELIVERY: ' + JSON.stringify(deliverySetting));
 
         const settingItems: ISettingItems = {
-            notItems: setting.notItems,
-            hideItems: setting.hideItems,
+            notItems: mainSetting.notItems,
+            hideItems: mainSetting.hideItems,
         };
-        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(setting.service.google, settingItems));
-        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(setting.service.google, settingItems));
+        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(mainSetting.service.google, settingItems));
+        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(mainSetting.service.google, settingItems));
+
+        this.buildDeliverySetting(mainSetting.deliveryHideItems, deliverySetting, this.backgroundServiceMap);
 
         for (const [key, service] of this.backgroundServiceMap) {
             this.logger.debug(`build service ${key}`);
@@ -53,6 +66,34 @@ export default class Background extends ActionBase {
         }
 
         this.accept();
+    }
+
+    private buildDeliverySetting(
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
+        deliverySetting: IReadOnlyDeliverySetting,
+        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
+    ): void {
+        for (const service of serviceMap.values()) {
+            service.importDeliveryHideItems(deliveryHideItems, deliverySetting);
+        }
+
+        // 適当に更新する, TODO: タイミング等々の整理
+        this.reloadDeliveryHideItems(deliveryHideItems, serviceMap);
+    }
+
+    private reloadDeliveryHideItems(
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
+        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
+    ) {
+        this.reloadDeliveryHideItemsCore(deliveryHideItems, serviceMap);
+    }
+
+    private reloadDeliveryHideItemsCore(
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
+        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
+    ) {
+        // async 使えるようにしてからやった方がいいわ
+        this.logger.debug('TODO!');
     }
 
     private accept() {

@@ -22,6 +22,10 @@
 		{
 			"name": "Style",
 			"path": "source/style",
+		},
+		{
+			"name": "Document",
+			"path": "documents/specification",
 		}
 	],
 	"settings": {

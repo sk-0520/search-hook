@@ -2,6 +2,8 @@ import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
 import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
 import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
+import HideCheckerBing from './hide-checker/hide-checker-bing';
+import { HideCheckerBase } from './hide-checker/hide-checker-base';
 
 export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
 
@@ -19,6 +21,10 @@ export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOn
 
     public constructor(setting: IReadOnlyBingServiceSetting, settingItems: ISettingItems) {
         super('Background Bing', setting, settingItems);
+    }
+
+    protected createHideChecker(): HideCheckerBase {
+        return new HideCheckerBing();
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {

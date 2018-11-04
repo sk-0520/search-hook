@@ -2,6 +2,8 @@ import { ServiceKind } from '../share/define/service-kind';
 import GoogleQuery from '../share/query/query-google';
 import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
 import { IReadOnlyGoogleServiceSetting } from '../share/setting/service-setting-google';
+import HideCheckerGoogle from './hide-checker/hide-checker-google';
+import { HideCheckerBase } from './hide-checker/hide-checker-base';
 
 export default class BackgroundServiceGoogle extends BackgroundServiceBase<IReadOnlyGoogleServiceSetting> {
 
@@ -19,6 +21,10 @@ export default class BackgroundServiceGoogle extends BackgroundServiceBase<IRead
 
     public constructor(setting: IReadOnlyGoogleServiceSetting, settingItems: ISettingItems) {
         super('Background Google', setting, settingItems);
+    }
+
+    protected createHideChecker(): HideCheckerBase {
+        return new HideCheckerGoogle();
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {

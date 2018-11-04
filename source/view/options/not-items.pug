@@ -1,0 +1,27 @@
+include mixin-service
+
+fieldset
+  legend(data-locale="optionsNotItemTitle") [検索除外]
+  table.list
+    thead
+      tr
+        th(data-locale="optionsNotItemHeaderWord") [除外ワード]
+        th(data-locale="commonEnabled") [有効]
+        th(data-locale="commonRemove") [削除]
+    tbody#engine-not-word-list
+      template
+        tr(name="engine-not-item-group")
+          td
+            input(name="engine-not-item-word" type="text")
+          td
+            +createEnabledServiceName("engine-not-item-service-google", "engine-not-item-service-bing")
+          td
+            button(name="engine-not-item-remove" data-locale="commonRemove") [削除]
+    tfoot.input
+      tr
+        td
+          input#engine-input-not-word(type="text")
+        td
+          +createEnabledServiceId("engine-input-is-enabled-google", "engine-input-is-enabled-bing")(checked)
+        td
+          button#command-engine-add-not-item(type="button" data-locale="commonAdd") add
