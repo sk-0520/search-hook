@@ -84,6 +84,18 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
 
         const url = inputUrl.trim();
 
+        // すでに登録済みならなんもしない
+        const parentElement = this.getParentElement();
+        const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+        for(const element of elements) {
+            const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
+            const setting = JSON.parse(rawSetting) as IDeliveryHideSetting;
+            if(url === setting.url) {
+                this.logger.log(`registered: ${url}`);
+                return Promise.resolve();
+            }
+        }
+        
         this.changeEnabledImport(false);
         return this.importAsync(url).then(
             () => this.changeEnabledImport(true)

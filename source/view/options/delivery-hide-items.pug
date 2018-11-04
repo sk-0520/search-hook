@@ -11,7 +11,7 @@ fieldset.delivery-hide-item
       label
         span(data-locale="optionsDeliveryHideItemRegisterUrl") [URL:]
         input#delivery-hide-item-register-input-url
-      button#command-delivery-hide-item-register-import(data-locale="optionsDeliveryHideItemRegisterImport") [取り込む]
+      button#command-delivery-hide-item-register-import(type="button" data-locale="optionsDeliveryHideItemRegisterImport") [取り込む]
     dt 
       span(data-locale="optionsDeliveryHideItemListTitle") [外部設定一覧]
     dd
@@ -30,4 +30,4 @@ fieldset.delivery-hide-item
               td
                 +createEnabledServiceName("delivery-hide-item-service-google", "delivery-hide-item-service-bing")
               td
-                button(name="delivery-hide-item-remove" data-locale="commonRemove") [削除]
+                button(name="delivery-hide-item-remove" type="button" data-locale="commonRemove") [削除]

@@ -11,8 +11,6 @@ export class Setting extends LoggingBase {
     private loadAsync<TSetting>(storageKey: string): Promise<TSetting | null> {
         const getting = browser.storage.local.get(storageKey);
         return getting.then(o => {
-            this.logger.error('storageKey:' + storageKey);
-            this.logger.dumpError(o);
             if (!o || !o[storageKey]) {
                 return null;
             }
@@ -67,8 +65,6 @@ export class Setting extends LoggingBase {
     }
 
     private saveDeliverySettingAsync(deliverySetting: IDeliverySetting): Promise<void> {
-        this.logger.warn(('????????????????????'));
-        this.logger.dumpError(deliverySetting);
         return browser.storage.local.set({
             delivery: deliverySetting as any
         });
@@ -77,10 +73,7 @@ export class Setting extends LoggingBase {
     public mergeDeliverySettingAsync(key: string, lines: ReadonlyArray<string>): Promise<void> {
         return this.loadDeliverySettingAsync().then(result => {
             const setting = this.tuneDeliverySetting(result);
-            this.logger.warn(('@@@@@@@@@@@@@@(' + key + ')'));
-            this.logger.dumpWarn(setting);
             setting.hideItems[key] = lines as Array<string>;
-            this.logger.dumpWarn(setting);
             return this.saveDeliverySettingAsync(setting);
             // tslint:disable-next-line
         }).then(r => { });

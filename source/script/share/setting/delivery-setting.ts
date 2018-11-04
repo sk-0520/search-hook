@@ -10,4 +10,3 @@ export interface IDeliverySetting extends IReadOnlyDeliverySetting {
 export class DeliverySetting implements IDeliverySetting {
     public hideItems: { [key: string]: Array<string> } = { };
 }
-
