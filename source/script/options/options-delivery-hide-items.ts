@@ -1,10 +1,10 @@
-import { IDeliveryHideSetting, DeliveryHideSetting } from "../share/setting/delivery-hide-setting";
-import OptionsBase from "./options-base";
-import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
 import { DeliveryHideItemGetter } from "../browser/delivery-hide-item";
-import { isNullOrEmpty, merge, splitLines } from "../share/common";
-import { ServiceEnabledSetting } from "../share/setting/service-enabled-setting";
 import { Setting } from "../browser/setting";
+import { merge, splitLines } from "../share/common";
+import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
+import { DeliveryHideSetting, IDeliveryHideSetting } from "../share/setting/delivery-hide-setting";
+import { ServiceEnabledSetting } from "../share/setting/service-enabled-setting";
+import OptionsBase from "./options-base";
 
 export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliveryHideSetting>> {
 
@@ -84,18 +84,6 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
 
         const url = inputUrl.trim();
 
-        // すでに登録済みならなんもしない
-        const parentElement = this.getParentElement();
-        const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
-        for(const element of elements) {
-            const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
-            const setting = JSON.parse(rawSetting) as IDeliveryHideSetting;
-            if(url === setting.url) {
-                this.logger.log(`registered: ${url}`);
-                return Promise.resolve();
-            }
-        }
-        
         this.changeEnabledImport(false);
         return this.importAsync(url).then(
             () => this.changeEnabledImport(true)
@@ -130,6 +118,18 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
                 hideSetting.service.google = true;
                 hideSetting.service.bing = true;
 
+                // すでに登録済みなら削除しておく
+                const parentElement = this.getParentElement();
+                const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+                for(const element of elements) {
+                    const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
+                    const currentSetting = JSON.parse(rawSetting) as IDeliveryHideSetting;
+                    if(url === currentSetting.url) {
+                        element.remove();
+                        break;
+                    }
+                }
+                this.logger.dumpDebug('save: ' + result!);
                 this.addDeliveryHideItem(hideSetting);
 
                 // データそのものは書き込んでおく

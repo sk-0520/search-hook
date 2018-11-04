@@ -1,10 +1,10 @@
 import { Setting } from '../browser/setting';
 import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { ActionBase, Exception } from '../share/common';
+import { ActionBase, Exception, splitLines } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
-import { LogKind } from '../share/logger';
+import { LogKind, Logger } from '../share/logger';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
 import { BackgroundServiceBase, ISettingItems } from './background-base';
@@ -13,6 +13,7 @@ import BackgroundServiceGoogle from './background-google';
 import BridgeLoger from './bridgelogger';
 import { IDeliverySetting, IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
 import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
+import { DeliveryHideItemGetter } from '../browser/delivery-hide-item';
 
 export default class Background extends ActionBase {
 
@@ -39,7 +40,7 @@ export default class Background extends ActionBase {
             result => {
                 const mainSetting = setting.tuneMainSetting(result[0]);
                 const deliverySetting = setting.tuneDeliverySetting(result[1]);
-        
+
                 this.startBackground(mainSetting, deliverySetting);
             },
             error => this.logger.dumpError(error)
@@ -69,13 +70,31 @@ export default class Background extends ActionBase {
     }
 
     private buildDeliverySetting(
-        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>, 
-        deliverySetting: IReadOnlyDeliverySetting, 
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
+        deliverySetting: IReadOnlyDeliverySetting,
         serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
     ): void {
-        for(const service of serviceMap.values()) {
+        for (const service of serviceMap.values()) {
             service.importDeliveryHideItems(deliveryHideItems, deliverySetting);
         }
+
+        // 適当に更新する, TODO: タイミング等々の整理
+        this.reloadDeliveryHideItems(deliveryHideItems, serviceMap);
+    }
+
+    private reloadDeliveryHideItems(
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
+        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
+    ) {
+        this.reloadDeliveryHideItemsCore(deliveryHideItems, serviceMap);
+    }
+
+    private reloadDeliveryHideItemsCore(
+        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
+        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
+    ) {
+        // async 使えるようにしてからやった方がいいわ
+        this.logger.debug('TODO!');
     }
 
     private accept() {
