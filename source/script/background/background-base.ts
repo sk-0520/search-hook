@@ -154,7 +154,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
     public importDeliveryHideItems(deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>, deliverySetting: IReadOnlyDeliverySetting): void {
         const converter = new DeliveryHideItemConverter();
         for(const deliveryHideItem of deliveryHideItems) {
-            const deliveryHideLines = deliverySetting.hideItems.get(deliveryHideItem.url);
+            const deliveryHideLines = deliverySetting.hideItems[deliveryHideItem.url];
             if(!deliveryHideItems) {
                 continue;
             }
