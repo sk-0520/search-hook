@@ -8,9 +8,11 @@ export class Setting extends LoggingBase {
         super('Setting');
     }
 
-    private loadAsync<TSetting>(storageKey: string, objectKey: string): Promise<TSetting | null> {
+    private loadAsync<TSetting>(storageKey: string): Promise<TSetting | null> {
         const getting = browser.storage.local.get(storageKey);
         return getting.then(o => {
+            this.logger.error('storageKey:' + storageKey);
+            this.logger.dumpError(o);
             if (!o || !o[storageKey]) {
                 return null;
             }
@@ -20,7 +22,7 @@ export class Setting extends LoggingBase {
     }
 
     public loadMainSettingAsync(): Promise<IMainSetting | null> {
-        return this.loadAsync<IMainSetting>('setting', 'setting');
+        return this.loadAsync<IMainSetting>('setting');
     }
 
     public tuneMainSetting(setting: IMainSetting | null): MainSetting {
@@ -49,7 +51,7 @@ export class Setting extends LoggingBase {
     }
 
     public loadDeliverySettingAsync(): Promise<IDeliverySetting | null> {
-        return this.loadAsync<IDeliverySetting>('delivery', 'setting');
+        return this.loadAsync<IDeliverySetting>('delivery');
     }
 
     public tuneDeliverySetting(setting: IDeliverySetting | null): DeliverySetting {
@@ -63,4 +65,38 @@ export class Setting extends LoggingBase {
 
         return baseSetting;
     }
+
+    private saveDeliverySettingAsync(deliverySetting: IDeliverySetting): Promise<void> {
+        this.logger.warn(('????????????????????'));
+        this.logger.dumpError(deliverySetting);
+        return browser.storage.local.set({
+            delivery: deliverySetting as any
+        });
+    }
+
+    public mergeDeliverySettingAsync(key: string, lines: ReadonlyArray<string>): Promise<void> {
+        return this.loadDeliverySettingAsync().then(result => {
+            const setting = this.tuneDeliverySetting(result);
+            this.logger.warn(('@@@@@@@@@@@@@@(' + key + ')'));
+            this.logger.dumpWarn(setting);
+            setting.hideItems[key] = lines as Array<string>;
+            this.logger.dumpWarn(setting);
+            return this.saveDeliverySettingAsync(setting);
+            // tslint:disable-next-line
+        }).then(r => { });
+    }
+
+    public deleteDeliverySettingAsync(key: string): Promise<boolean> {
+        // async使わな何がなんだか
+        return this.loadDeliverySettingAsync().then(result => {
+            const setting = this.tuneDeliverySetting(result);
+            const success = key in setting.hideItems;
+            if (success) {
+                delete setting.hideItems[key];
+                return this.saveDeliverySettingAsync(setting).then(r => success);
+            }
+            return Promise.resolve(Promise.resolve(false));
+        }).then(r => r);
+    }
+
 }

@@ -72,3 +72,7 @@ export function isNullOrEmpty(s: string|null|undefined): boolean {
     return !(s && s !== '');
 }
 
+export function splitLines(content: string): Array<string> {
+    return content.split(/\r?\n/);
+}
+

@@ -1,4 +1,4 @@
-import { isNullOrEmpty, LoggingBase, Exception } from "../share/common";
+import { isNullOrEmpty, LoggingBase, Exception, splitLines } from "../share/common";
 import { MatchKind } from "../share/define/match-kind";
 import { HideItemSetting, IHideItemSetting } from "../share/setting/hide-item-setting";
 import { IServiceEnabledSetting } from "../share/setting/service-enabled-setting";
@@ -118,7 +118,7 @@ export class DeliveryHideItemGetter extends LoggingBase {
     }
 
     public split(content: string): IDeliveryHideItemData {
-        const lines = content.split(/\r?\n/).map((s, i) => {
+        const lines = splitLines(content).map((s, i) => {
             return { line: s, index: i };
         });
 

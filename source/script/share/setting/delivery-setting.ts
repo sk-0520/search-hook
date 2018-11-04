@@ -1,13 +1,13 @@
 
 export interface IReadOnlyDeliverySetting {
-    readonly hideItems: ReadonlyMap<string, ReadonlyArray<string>>;
+    readonly hideItems: { [key: string]: ReadonlyArray<string> };
 }
 
 export interface IDeliverySetting extends IReadOnlyDeliverySetting {
-    hideItems: Map<string, Array<string>>;
+    hideItems: { [key: string]: Array<string> };
 }
 
 export class DeliverySetting implements IDeliverySetting {
-    public hideItems = new Map<string, Array<string>>();
+    public hideItems: { [key: string]: Array<string> } = { };
 }
 

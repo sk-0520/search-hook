@@ -2,8 +2,9 @@ import { IDeliveryHideSetting, DeliveryHideSetting } from "../share/setting/deli
 import OptionsBase from "./options-base";
 import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
 import { DeliveryHideItemGetter } from "../browser/delivery-hide-item";
-import { isNullOrEmpty, merge } from "../share/common";
+import { isNullOrEmpty, merge, splitLines } from "../share/common";
 import { ServiceEnabledSetting } from "../share/setting/service-enabled-setting";
+import { Setting } from "../browser/setting";
 
 export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliveryHideSetting>> {
 
@@ -91,39 +92,43 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         );
     }
 
-    private importAsync(url: string): Promise<void> {
+    private importAsync(url: string): Promise<boolean> {
         const getter = new DeliveryHideItemGetter();
         return getter.getAsync(url).then(
             result => {
                 if (isNullOrEmpty(result)) {
                     alert('error: HTTP(S)');
-                    return;
+                    return Promise.resolve(false);
                 }
 
                 const data = getter.split(result!);
                 if (isNullOrEmpty(data.header.name)) {
                     alert('error: empty name');
-                    return;
+                    return Promise.resolve(false);
                 }
                 if (isNullOrEmpty(data.header.version)) {
                     alert('error: empty version');
-                    return;
+                    return Promise.resolve(false);
                 }
 
                 if (!data.lines.length || data.lines.every(s => isNullOrEmpty(s))) {
                     alert('error: empty data');
-                    return;
+                    return Promise.resolve(false);
                 }
                 // URL の補正
                 data.header.url = url;
 
                 // 反映
-                const setting = new DeliveryHideSetting();
-                merge(setting, data.header);
-                setting.service.google = true;
-                setting.service.bing = true;
+                const hideSetting = new DeliveryHideSetting();
+                merge(hideSetting, data.header);
+                hideSetting.service.google = true;
+                hideSetting.service.bing = true;
 
-                this.addDeliveryHideItem(setting);
+                this.addDeliveryHideItem(hideSetting);
+
+                // データそのものは書き込んでおく
+                const setting = new Setting();
+                return setting.mergeDeliverySettingAsync(hideSetting.url, splitLines(result!)).then(r => true);
             }
         );
     }
