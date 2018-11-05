@@ -35,7 +35,7 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const parentElement = this.getParentElement();
         const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
 
-        for(const element of elements) {
+        for (const element of elements) {
             const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
             const setting = JSON.parse(rawSetting) as IDeliveryHideSetting;
             setting.service = new ServiceEnabledSetting();
@@ -77,7 +77,7 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         element.disabled = !isEnabled;
     }
 
-    private importFromUserInputAsync(e: MouseEvent): Promise<void> {
+    private async importFromUserInputAsync(e: MouseEvent): Promise<void> {
         e.preventDefault();
 
         const inputUrl = this.getInputById(ElementId.optionsDeliveryHideItemRegisterInputUrl).value;
@@ -85,57 +85,56 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const url = inputUrl.trim();
 
         this.changeEnabledImport(false);
-        return this.importAsync(url).then(
-            () => this.changeEnabledImport(true)
-        ).catch(
-            ex => this.changeEnabledImport(true)
-        );
+        try {
+            await this.importAsync(url);
+        } finally {
+            this.changeEnabledImport(true);
+        }
     }
 
-    private importAsync(url: string): Promise<boolean> {
+    private async importAsync(url: string): Promise<boolean> {
         const getter = new DeliveryHideItemGetter();
-        return getter.getAsync(url).then(
-            result => {
-                const checkedResult = getter.checkResult(result);
-                if (!checkedResult.success) {
-                    alert(checkedResult.message);
-                    return Promise.resolve(false);
-                }
+        const result = await getter.getAsync(url);
 
-                const data = getter.split(result!);
-                const checkedData = getter.checkData(data);
-                if (!checkedData.success) {
-                    alert(checkedData.message);
-                    return Promise.resolve(false);
-                }
+        const checkedResult = getter.checkResult(result);
+        if (!checkedResult.success) {
+            alert(checkedResult.message);
+            return false;
+        }
 
-                // URL の補正
-                data.header.url = url;
+        const data = getter.split(result!);
+        const checkedData = getter.checkData(data);
+        if (!checkedData.success) {
+            alert(checkedData.message);
+            return false;
+        }
 
-                // 反映
-                const hideSetting = new DeliveryHideSetting();
-                merge(hideSetting, data.header);
-                hideSetting.service.google = true;
-                hideSetting.service.bing = true;
+        // URL の補正
+        data.header.url = url;
 
-                // すでに登録済みなら削除しておく
-                const parentElement = this.getParentElement();
-                const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
-                for(const element of elements) {
-                    const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
-                    const currentSetting = JSON.parse(rawSetting) as IDeliveryHideSetting;
-                    if(url === currentSetting.url) {
-                        element.remove();
-                        break;
-                    }
-                }
-                this.logger.dumpDebug('save: ' + result!);
-                this.addDeliveryHideItem(hideSetting);
+        // 反映
+        const hideSetting = new DeliveryHideSetting();
+        merge(hideSetting, data.header);
+        hideSetting.service.google = true;
+        hideSetting.service.bing = true;
 
-                // データそのものは書き込んでおく
-                const setting = new Setting();
-                return setting.mergeDeliverySettingAsync(hideSetting.url, splitLines(result!)).then(r => true);
+        // すでに登録済みなら削除しておく
+        const parentElement = this.getParentElement();
+        const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+        for (const element of elements) {
+            const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
+            const currentSetting = JSON.parse(rawSetting) as IDeliveryHideSetting;
+            if (url === currentSetting.url) {
+                element.remove();
+                break;
             }
-        );
+        }
+        this.logger.dumpDebug('save: ' + result!);
+        this.addDeliveryHideItem(hideSetting);
+
+        // データそのものは書き込んでおく
+        const setting = new Setting();
+        await setting.mergeDeliverySettingAsync(hideSetting.url, splitLines(result!));
+        return true;
     }
 }
