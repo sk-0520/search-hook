@@ -31,6 +31,9 @@
 	"settings": {
 		"files.exclude": {
 			".cache": true,
+			".nyc_output": true,
+			"dist": true,
+			"artifacts": true,
 			"node_modules": true,
 			"package-lock.json": true
 		}
