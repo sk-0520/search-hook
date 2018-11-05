@@ -1,4 +1,4 @@
-import { isNullOrEmpty, LoggingBase, Exception, splitLines } from "../share/common";
+import { isNullOrEmpty, LoggingBase, splitLines } from "../share/common";
 import { MatchKind } from "../share/define/match-kind";
 import { HideItemSetting, IHideItemSetting } from "../share/setting/hide-item-setting";
 import { IServiceEnabledSetting } from "../share/setting/service-enabled-setting";
@@ -100,26 +100,21 @@ export class DeliveryHideItemGetter extends LoggingBase {
         super('DeliveryHideItemGetter');
     }
 
-    public getAsync(url: string): Promise<string | null> {
-        return fetch(url, {
-            cache: 'no-cache',
-            redirect: 'follow',
-        }).then(
-            result => {
-                if (result.ok) {
-                    return result.text();
-                } else {
-                    throw new Exception(result);
-                }
+    public async getAsync(url: string): Promise<string | null> {
+        try {
+            const response = await fetch(url, {
+                cache: 'no-cache',
+                redirect: 'follow',
+            });
+    
+            if (response.ok) {
+                return await response.text();
             }
-        ).then(
-            result => {
-                return result;
-            }
-        ).catch(ex => {
+        } catch(ex) {
             this.logger.dumpError(ex);
-            return null;
-        });
+        }
+
+        return null;
     }
 
     public split(content: string): IDeliveryHideItemData {

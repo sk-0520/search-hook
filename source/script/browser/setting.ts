@@ -9,16 +9,8 @@ export class Setting extends LoggingBase {
     }
 
     private async loadAsync<TSetting>(storageKey: string): Promise<TSetting | null> {
-        // const getting = browser.storage.local.get(storageKey);
-        // return getting.then(o => {
-        //     if (!o || !o[storageKey]) {
-        //         return null;
-        //     }
-
-        //     return (o[storageKey] as any) as TSetting;
-        // });
         const raw = await browser.storage.local.get(storageKey);
-        if(!raw || !(storageKey in raw)) {
+        if (!raw || !(storageKey in raw)) {
             return null;
         }
 
@@ -41,17 +33,18 @@ export class Setting extends LoggingBase {
         return baseSetting;
     }
 
-    public saveMainSettingAsync(mainSetting: IMainSetting, isReload: boolean): Promise<void> {
-        return browser.storage.local.set({
-            setting: mainSetting as any
-        }).then(
-            result => {
+    public async saveMainSettingAsync(mainSetting: IMainSetting, isReload: boolean): Promise<void> {
+        try {
+            await browser.storage.local.set({
+                setting: mainSetting as any
+            });
+
+            if (isReload) {
                 browser.runtime.reload();
-            },
-            error => {
-                this.logger.error(error);
             }
-        );
+        } catch (ex) {
+            this.logger.dumpError(ex);
+        }
     }
 
     public loadDeliverySettingAsync(): Promise<IDeliverySetting | null> {
@@ -76,26 +69,27 @@ export class Setting extends LoggingBase {
         });
     }
 
-    public mergeDeliverySettingAsync(key: string, lines: ReadonlyArray<string>): Promise<void> {
-        return this.loadDeliverySettingAsync().then(result => {
-            const setting = this.tuneDeliverySetting(result);
-            setting.hideItems[key] = lines as Array<string>;
-            return this.saveDeliverySettingAsync(setting);
-            // tslint:disable-next-line
-        }).then(r => { });
+    public async mergeDeliverySettingAsync(key: string, lines: ReadonlyArray<string>): Promise<void> {
+        const result = await this.loadDeliverySettingAsync();
+
+        const setting = this.tuneDeliverySetting(result);
+        setting.hideItems[key] = lines as Array<string>;
+        return this.saveDeliverySettingAsync(setting);
     }
 
-    public deleteDeliverySettingAsync(key: string): Promise<boolean> {
+    public async deleteDeliverySettingAsync(key: string): Promise<boolean> {
+        const result = await this.loadDeliverySettingAsync();
+
         // async使わな何がなんだか
-        return this.loadDeliverySettingAsync().then(result => {
-            const setting = this.tuneDeliverySetting(result);
-            const success = key in setting.hideItems;
-            if (success) {
-                delete setting.hideItems[key];
-                return this.saveDeliverySettingAsync(setting).then(r => success);
-            }
-            return Promise.resolve(Promise.resolve(false));
-        }).then(r => r);
+        const setting = this.tuneDeliverySetting(result);
+        const success = key in setting.hideItems;
+        if (success) {
+            delete setting.hideItems[key];
+            await this.saveDeliverySettingAsync(setting);
+            return success;
+        }
+
+        return false;
     }
 
 }
