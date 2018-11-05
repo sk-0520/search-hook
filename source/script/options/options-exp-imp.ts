@@ -17,7 +17,7 @@ export default class OptionsExportImport extends ActionBase {
     public initialize(): void {
         document.getElementById(ElementId.optionsInportExportExport)!.addEventListener(
             'click',
-            e => this.export()
+            e => this.exportAsync()
         );
         document.getElementById(ElementId.optionsInportExportCopy)!.addEventListener(
             'click',
@@ -25,19 +25,19 @@ export default class OptionsExportImport extends ActionBase {
         );
         document.getElementById(ElementId.optionsInportExportImport)!.addEventListener(
             'click',
-            e => this.import()
+            e => this.importExport()
         );
     }
 
-    private export(): void {
+    private async exportAsync(): Promise<void> {
         const setting = new Setting();
-        setting.loadMainSettingAsync().then(
-            s => {
-                const mainSetting = setting.tuneMainSetting(s);
-                this.getTextArea().value = JSON.stringify(mainSetting, undefined, 2);
-            },
-            error => this.logger.error(error)
-        );
+        try {
+            const baseSetting = await setting.loadMainSettingAsync();
+            const mainSetting = setting.tuneMainSetting(baseSetting);
+            this.getTextArea().value = JSON.stringify(mainSetting, undefined, 2);
+        } catch (ex) {
+            this.logger.dumpError(ex);
+        }
     }
 
     private copy(): void {
@@ -51,7 +51,7 @@ export default class OptionsExportImport extends ActionBase {
         element.disabled = !isEnabled;
     }
 
-    private import(): void {
+    private async importExport(): Promise<void> {
         this.changeEnabledImport(false);
         const textArea = this.getTextArea();
         try {
@@ -63,25 +63,23 @@ export default class OptionsExportImport extends ActionBase {
             this.logger.dumpLog(tunedMainSetting);
 
             const getter = new DeliveryHideItemGetter();
-            Promise.all(tunedMainSetting.deliveryHideItems.map(i => {
-                return getter.getAsync(i.url).then(result => {
-                    const checkedResult = getter.checkResult(result);
-                    if (!checkedResult.success) {
-                        this.logger.error(checkedResult.message);
-                        return Promise.resolve();
-                    }
+            for (const item of tunedMainSetting.deliveryHideItems) {
+                const result = await getter.getAsync(item.url);
+                const checkedResult = getter.checkResult(result);
+                if (!checkedResult.success) {
+                    this.logger.error(checkedResult.message);
+                    continue;
+                }
 
-                    const data = getter.split(result!);
-                    const checkedData = getter.checkData(data);
-                    if (!checkedData.success) {
-                        this.logger.error(checkedData.message);
-                        return Promise.resolve();
-                    }
-                    return setting.mergeDeliverySettingAsync(data.header.url, splitLines(result!));
-                });
-            })).then(r => {
-                setting.saveMainSettingAsync(tunedMainSetting, true);
-            });
+                const data = getter.split(result!);
+                const checkedData = getter.checkData(data);
+                if (!checkedData.success) {
+                    this.logger.error(checkedData.message);
+                    continue;
+                }
+                await setting.mergeDeliverySettingAsync(data.header.url, splitLines(result!));
+            }
+            await setting.saveMainSettingAsync(tunedMainSetting, true);
         } catch (ex) {
             this.logger.error(ex);
             alert(ex);
