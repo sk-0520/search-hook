@@ -1,5 +1,6 @@
+import { getDeliveryHideItemAsync } from '../browser/delivery-hide-item';
 import { Setting } from '../browser/setting';
-import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
+import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IRegisterDeliveryHideRequestData, IServiceBridgeData, RegisterDeliveryHideResponseData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
 import { ActionBase, Exception } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
@@ -135,6 +136,10 @@ export default class Background extends ActionBase {
                     case BridgeMeesageKind.outputLog:
                         this.receiveOutputLogMessage(message as BridgeMeesage<IOutputLogBridgeData>);
                         break;
+
+                    case BridgeMeesageKind.registerDeliveryHideRequest:
+                        this.receiveRegisterDeliveryHideMessageAsync(message as BridgeMeesage<IRegisterDeliveryHideRequestData>);
+                        break;
                 }
             });
         });
@@ -170,6 +175,62 @@ export default class Background extends ActionBase {
             default:
                 throw new Exception(message);
         }
+    }
+
+    private async receiveRegisterDeliveryHideMessageAsync(message: BridgeMeesage<IRegisterDeliveryHideRequestData>): Promise<void> {
+
+        const responseSender = (success: boolean, errorMessage: string) => {
+            this.port!.postMessage(
+                new BridgeMeesage(
+                    BridgeMeesageKind.registerDeliveryHideResponse,
+                    new RegisterDeliveryHideResponseData(message.data, success, errorMessage)
+                )
+            );
+        };
+            
+        const successSender = () => {
+            responseSender(true, '');
+        };
+        const errorSender = (errorMessage: string) => {
+            responseSender(false, errorMessage);
+        };
+
+        const setting = new Setting();
+        const mainSetting = await setting.loadMainSettingAsync();
+        if(!mainSetting) {
+            errorSender('MainSetting is null... :(');
+            return;
+        }
+
+        this.logger.debug("import!");
+
+        const result = await getDeliveryHideItemAsync(message.data.url);
+        if (!result.success) {
+            errorSender(result.message!);
+            return;
+        }
+
+        // 既に存在するなら削除
+        const existsIndex = mainSetting.deliveryHideItems.findIndex(i => i.url === message.data.url);
+        if(existsIndex !== -1) {
+            mainSetting.deliveryHideItems.splice(existsIndex, 1);
+        }
+
+        const hideSetting = result.setting!;
+        mainSetting.deliveryHideItems.push(hideSetting);
+        await setting.mergeDeliverySettingAsync(hideSetting.url, result.lines!);
+        await setting.saveMainSettingAsync(mainSetting, false);
+
+        const deliverySetting: IReadOnlyDeliverySetting = {
+            hideItems: {
+                [hideSetting.url]: result.lines!,
+            }
+        };
+        for (const service of this.backgroundServiceMap.values()) {
+            service.importDeliveryHideItems([hideSetting], deliverySetting);
+        }
+
+        successSender();
     }
 
 }

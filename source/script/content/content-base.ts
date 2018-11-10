@@ -23,13 +23,8 @@ export interface IHideElementSelector {
 
 }
 
-export abstract class ContentServiceBase extends ActionBase implements IService {
-
-    public abstract readonly service: ServiceKind;
-
+export abstract class ContentBase extends ActionBase {
     protected port?: browser.runtime.Port;
-    protected notWords?: ReadonlyArray<string>;
-
     private contentLogger?: ILogger;
 
     protected get logger(): ILogger {
@@ -39,10 +34,6 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     constructor(name: string) {
         super(name);
     }
-
-    protected abstract createQuery(): QueryBase;
-    protected abstract getQueryInputElement(): HTMLInputElement;
-    protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
 
     protected connect() {
         this.port = browser.runtime.connect();
@@ -54,20 +45,47 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             this.receiveMessage(baseMessage);
         });
 
-        this.port.postMessage(
-            new BridgeMeesage(
-                BridgeMeesageKind.notWordRequest,
-                new ServiceBridgeData(this.service)
-            )
-        );
-
-        const hideElementSelectors = this.getHideElementSelectors();
-        this.requestHideItems(hideElementSelectors);
     }
 
-    private receiveMessage(baseMessage: BridgeMeesageBase) {
+    protected receiveMessage(baseMessage: BridgeMeesageBase) {
         this.logger.debug("CLIENT RECV!");
         this.logger.debug(JSON.stringify(baseMessage));
+    }
+
+}
+
+export abstract class ContentServiceBase extends ContentBase implements IService {
+
+    public abstract readonly service: ServiceKind;
+
+    protected notWords?: ReadonlyArray<string>;
+
+    constructor(name: string) {
+        super(name);
+    }
+
+    protected abstract createQuery(): QueryBase;
+    protected abstract getQueryInputElement(): HTMLInputElement;
+    protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
+
+    protected connect() {
+        super.connect();
+
+        if(this.port) {
+            this.port.postMessage(
+                new BridgeMeesage(
+                    BridgeMeesageKind.notWordRequest,
+                    new ServiceBridgeData(this.service)
+                )
+            );
+    
+            const hideElementSelectors = this.getHideElementSelectors();
+            this.requestHideItems(hideElementSelectors);
+        }
+    }
+
+    protected receiveMessage(baseMessage: BridgeMeesageBase) {
+        super.receiveMessage(baseMessage);
 
         switch (baseMessage.kind) {
 

@@ -38,6 +38,16 @@
     "description": "bing"
   },
 
+  "commonSuccess" : {
+    "message": "成功",
+    "description": "success"
+  },
+  "commonError" : {
+    "message": "エラー",
+    "description": "error"
+  },
+
+
   "matchKindPartial": {
     "message": "部分一致",
     "description": "MatchKind.partial"
@@ -176,6 +186,28 @@
   "optionsImportExportImport": {
     "message": "取り込み",
     "description": "[Options] [ImportExport] import"
+  },
+
+  "deliveryHideItemLinkImport" : {
+    "message": "この外部非表示設定を取り込みますか",
+    "description": "import [delivery hide item]?"
+  },
+  "deliveryHideItemErrorHttp" : {
+    "message": "何らかの通信エラー",
+    "description": "HTTP(s) error"
+  },
+  "deliveryHideItemErrorKeyEmpty" : {
+    "message": "必須項目 `$KEY$` が未設定",
+    "description": "$KEY$ is empty",
+    "placeholders": {
+      "KEY" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "deliveryHideItemErrorDataEmpty" : {
+    "message": "対象データなし",
+    "description": "data is empty"
   }
   
 

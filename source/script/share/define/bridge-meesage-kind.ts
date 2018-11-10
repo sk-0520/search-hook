@@ -10,5 +10,9 @@ export enum BridgeMeesageKind {
     hideResponse = 'hide-res',
 
     /** ログ出力 */
-    outputLog = 'log'
+    outputLog = 'log',
+
+    /** 外部非表示設定登録要求 */
+    registerDeliveryHideRequest = 'delivery-hide-req',
+    registerDeliveryHideResponse = 'delivery-hide-res',
 }

@@ -1,8 +1,8 @@
-import { isNullOrEmpty, LoggingBase, splitLines } from "../share/common";
+import { isNullOrEmpty, LoggingBase, splitLines, merge } from "../share/common";
 import { MatchKind } from "../share/define/match-kind";
 import { HideItemSetting, IHideItemSetting } from "../share/setting/hide-item-setting";
 import { IServiceEnabledSetting } from "../share/setting/service-enabled-setting";
-import { IDeliveryHideHeaderSetting } from "../share/setting/delivery-hide-setting";
+import { IDeliveryHideHeaderSetting, DeliveryHideSetting, IDeliveryHideSetting } from "../share/setting/delivery-hide-setting";
 
 export interface IDeliveryCheckResult {
     success: boolean;
@@ -201,13 +201,13 @@ export class DeliveryHideItemGetter extends LoggingBase {
     private createSuccess(): IDeliveryCheckResult {
         return { success: true, message: '' };
     }
-    private createError(message: string): IDeliveryCheckResult {
-        return { success: false, message };
+    private createError(msg: string): IDeliveryCheckResult {
+        return { success: false, message: msg };
     }
 
     public checkResult(result: string | null): IDeliveryCheckResult {
         if (isNullOrEmpty(result)) {
-            return this.createError('error: HTTP(S)');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorHttp'));
         }
 
         return this.createSuccess();
@@ -215,15 +215,15 @@ export class DeliveryHideItemGetter extends LoggingBase {
 
     public checkData(data: IDeliveryHideItemData): IDeliveryCheckResult {
         if (isNullOrEmpty(data.header.name)) {
-            return this.createError('error: empty name');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorKeyEmpty', 'name' ));
         }
 
         if (isNullOrEmpty(data.header.version)) {
-            return this.createError('error: empty version');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorKeyEmpty', 'version' ));
         }
 
         if (!data.lines.length || data.lines.every(s => isNullOrEmpty(s))) {
-            return this.createError('error: empty data');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorDataEmpty', 'version' ));
         }
 
         return this.createSuccess();
@@ -231,3 +231,54 @@ export class DeliveryHideItemGetter extends LoggingBase {
 
 }
 
+export interface IDeliveryHideItemResult {
+    success: boolean;
+    message?: string;
+    content?: string;
+    header?: IDeliveryHideHeaderSetting;
+    lines?: Array<string>;
+    setting?: IDeliveryHideSetting;
+}
+
+export async function getDeliveryHideItemAsync(url: string): Promise<IDeliveryHideItemResult> {
+    const getter = new DeliveryHideItemGetter();
+    const result = await getter.getAsync(url);
+
+    const checkedResult = getter.checkResult(result);
+    if (!checkedResult.success) {
+        return {
+            success: false,
+            message: checkedResult.message,
+            content: result,
+        } as IDeliveryHideItemResult;
+    }
+
+    const data = getter.split(result!);
+    // URL の補正
+    data.header.url = url;
+
+    const checkedData = getter.checkData(data);
+    if (!checkedData.success) {
+        return {
+            success: false,
+            message: checkedData.message,
+            content: result,
+            header: data.header,
+        } as IDeliveryHideItemResult;
+    }
+
+    // 反映
+    const hideSetting = new DeliveryHideSetting();
+    merge(hideSetting, data.header);
+    hideSetting.service.google = true;
+    hideSetting.service.bing = true;
+    
+    return {
+        success: true,
+        message: checkedResult.message,
+        content: result,
+        header: data.header,
+        setting: hideSetting,
+        lines: splitLines(result!),
+    } as IDeliveryHideItemResult;
+}
