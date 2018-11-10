@@ -25,6 +25,10 @@
     "message": "バージョン",
     "description": "version"
   },
+  "commonUpdate": {
+    "message": "更新",
+    "description": "update"
+  },
   "commonServiceGoogle": {
     "message": "Google",
     "description": "google"

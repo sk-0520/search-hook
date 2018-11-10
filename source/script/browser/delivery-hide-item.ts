@@ -129,6 +129,7 @@ export class DeliveryHideItemGetter extends LoggingBase {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: lines.map(l => l.line.trim()),
             };
@@ -155,9 +156,10 @@ export class DeliveryHideItemGetter extends LoggingBase {
             name: '',
             version: '',
             author: '',
-        };
+            website: '',
+        } as IDeliveryHideHeaderSetting;
 
-        const regex = /\#\s*((?:name)|(?:version)|(?:author))\s*:\s*(.*)/;
+        const regex = /\#\s*((?:name)|(?:version)|(?:author)|(?:website))\s*:\s*(.*)/;
         for (const maybeHeader of maybeHeaders) {
             const macth = regex.exec(maybeHeader.line);
             if (macth) {
@@ -170,8 +172,12 @@ export class DeliveryHideItemGetter extends LoggingBase {
                         obj.version = macth[2].trim();
                         break;
 
-                    case 'author':
+                        case 'author':
                         obj.author = macth[2].trim();
+                        break;
+
+                        case 'website':
+                        obj.website = macth[2].trim();
                         break;
 
                     default:
@@ -186,6 +192,7 @@ export class DeliveryHideItemGetter extends LoggingBase {
                 name: obj.name,
                 author: obj.author,
                 version: obj.version,
+                website: obj.website,
             },
             lines: lines.slice(headerSeparator.index + 1).map(l => l.line.trim()),
         };

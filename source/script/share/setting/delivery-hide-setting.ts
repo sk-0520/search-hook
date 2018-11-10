@@ -12,6 +12,7 @@ export interface IDeliveryHideHeaderSetting extends IReadOnlyDeliveryHideHeaderS
     name: string;
     version: string;
     author: string;
+    website: string;
 }
 
 export interface IReadOnlyDeliveryHideSetting extends IReadOnlyDeliveryHideHeaderSetting {
@@ -19,6 +20,7 @@ export interface IReadOnlyDeliveryHideSetting extends IReadOnlyDeliveryHideHeade
     readonly name: string;
     readonly version: string;
     readonly author: string;
+    readonly website: string;
     readonly service: IReadOnlyServiceEnabledSetting;
 }
 
@@ -27,6 +29,7 @@ export interface IDeliveryHideSetting extends IDeliveryHideHeaderSetting, IReadO
     name: string;
     version: string;
     author: string;
+    website: string;
     service: IServiceEnabledSetting;
 }
 
@@ -35,5 +38,6 @@ export class DeliveryHideSetting implements IDeliveryHideSetting {
     public name = '';
     public version = '';
     public author = '';
+    public website = '';
     public service = new ServiceEnabledSetting();
 }

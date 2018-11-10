@@ -57,6 +57,27 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const templateElement = parent.querySelector("template")!;
         const clonedElement = document.importNode(templateElement.content, true);
 
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemRemove, elm => elm.addEventListener('click', e => {
+            e.preventDefault();
+
+            const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+            itemGroupElement!.remove();
+        }));
+
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemUpdate, elm => elm.addEventListener('click', async e => {
+            e.preventDefault();
+
+            const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup))!;
+
+            elm.disabled = true;
+            try {
+                const url = this.getInputByName(itemGroupElement!, ElementName.optionsDeliveryHideItemUrl).value;
+                await this.importAsync(url);
+            } finally {
+                elm.disabled = false;
+            }
+        }));
+
         this.setDeliveryHideItem(clonedElement, item);
 
         parent.appendChild(clonedElement);
@@ -74,12 +95,6 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         
         this.setByName(targetElement, ElementName.optionsDeliveryHideItemServiceGoogle, elm => elm.checked = item.service.google);
         this.setByName(targetElement, ElementName.optionsDeliveryHideItemServiceBing, elm => elm.checked = item.service.bing);
-        this.setByName(targetElement, ElementName.optionsDeliveryHideItemRemove, elm => elm.addEventListener('click', e => {
-            e.preventDefault();
-
-            const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
-            itemGroupElement!.remove();
-        }));
     }
 
     private changeEnabledImportCommand(isEnabled: boolean) {
