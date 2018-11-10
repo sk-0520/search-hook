@@ -24,11 +24,13 @@ export enum ElementId {
     optionsDeliveryHideItemRegisterInputUrl = 'delivery-hide-item-register-input-url',
     optionsDeliveryHideItemRegisterImport = 'command-delivery-hide-item-register-import',
 
-    optionWhitelistList = 'whitelist-list',
-    optionWhitelistInputWord = 'whitelist-input-word',
-    optionWhitelistInputMatchKind = 'whitelist-input-match-kind',
-    optionWhitelistInputMatchCase = 'whitelist-input-match-case',
-    optionWhitelistInputAdd = 'command-add-whitelist',
+    optionsWhitelistList = 'whitelist-list',
+    optionsWhitelistInputWord = 'whitelist-input-word',
+    optionsWhitelistInputMatchKind = 'whitelist-input-match-kind',
+    optionsWhitelistInputMatchCase = 'whitelist-input-match-case',
+    optionsWhitelistInputServiceGoogle = 'whitelist-input-is-enabled-google',
+    optionsWhitelistInputServiceBing = 'whitelist-input-is-enabled-bing',
+    optionsWhitelistInputAdd = 'command-add-whitelist',
 
     optionsInportExportExport = 'command-imp-exp-export',
     optionsInportExportCopy = 'command-imp-exp-copy',

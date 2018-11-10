@@ -7,6 +7,7 @@ import OptionsHideItems from './options-hide-items';
 import { Locale } from '../share/locale';
 import OptionsExportImport from './options-exp-imp';
 import OptionsDeliveryHideItems from './options-delivery-hide-items';
+import OptionsWhitelistItems from './options-whitelist';
 
 export default class Options extends ActionBase {
 
@@ -14,6 +15,7 @@ export default class Options extends ActionBase {
     private optionsNotItems = new OptionsNotItems();
     private optionsHideItems = new OptionsHideItems();
     private optionsDeliveryHideItems = new OptionsDeliveryHideItems();
+    private optionsWhitelistItems = new OptionsWhitelistItems();
 
     private optionsExpImp = new OptionsExportImport();
 
@@ -30,6 +32,7 @@ export default class Options extends ActionBase {
         this.optionsNotItems.initialize();
         this.optionsHideItems.initialize();
         this.optionsDeliveryHideItems.initialize();
+        this.optionsWhitelistItems.initialize();
 
         this.optionsExpImp.initialize();
 
@@ -51,6 +54,8 @@ export default class Options extends ActionBase {
         this.optionsNotItems.restore(setting.notItems);
         this.optionsHideItems.restore(setting.hideItems);
         this.optionsDeliveryHideItems.restore(setting.deliveryHideItems);
+        this.optionsWhitelistItems.restore(setting.whitelistItems);
+
     }
 
     private save(e: Event): void {
@@ -61,6 +66,7 @@ export default class Options extends ActionBase {
         mainSetting.notItems = this.optionsNotItems.export();
         mainSetting.hideItems = this.optionsHideItems.export();
         mainSetting.deliveryHideItems = this.optionsDeliveryHideItems.export();
+        mainSetting.whitelistItems = this.optionsWhitelistItems.export();
 
         const setting = new Setting();
         setting.saveMainSettingAsync(mainSetting, true);
