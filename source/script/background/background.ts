@@ -1,11 +1,11 @@
 import { Setting } from '../browser/setting';
-import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IServiceBridgeData } from '../share/bridge/bridge-data';
+import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IServiceBridgeData, IRegisterDeliveryHideRequestData, RegisterDeliveryHideResponseData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { ActionBase, Exception } from '../share/common';
+import { ActionBase, Exception, merge, splitLines } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
 import { LogKind } from '../share/logger';
-import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
+import { IReadOnlyDeliveryHideSetting, DeliveryHideSetting } from '../share/setting/delivery-hide-setting';
 import { IDeliverySetting, IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
 import { IMainSetting } from '../share/setting/main-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
@@ -13,6 +13,7 @@ import { BackgroundServiceBase, ISettingItems } from './background-base';
 import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
 import BridgeLoger from './bridgelogger';
+import { DeliveryHideItemGetter } from '../browser/delivery-hide-item';
 
 export default class Background extends ActionBase {
 
@@ -135,6 +136,10 @@ export default class Background extends ActionBase {
                     case BridgeMeesageKind.outputLog:
                         this.receiveOutputLogMessage(message as BridgeMeesage<IOutputLogBridgeData>);
                         break;
+
+                    case BridgeMeesageKind.registerDeliveryHideRequest:
+                        this.receiveRegisterDeliveryHideMessageAsync(message as BridgeMeesage<IRegisterDeliveryHideRequestData>);
+                        break;
                 }
             });
         });
@@ -170,6 +175,74 @@ export default class Background extends ActionBase {
             default:
                 throw new Exception(message);
         }
+    }
+
+    private async receiveRegisterDeliveryHideMessageAsync(message: BridgeMeesage<IRegisterDeliveryHideRequestData>): Promise<void> {
+
+        const errorSender = (errorMessage: string) => {
+            this.port!.postMessage(
+                new BridgeMeesage(
+                    BridgeMeesageKind.registerDeliveryHideResponse,
+                    new RegisterDeliveryHideResponseData(message.data, false, errorMessage)
+                )
+            );
+        };
+
+        const setting = new Setting();
+        const mainSetting = await setting.loadMainSettingAsync();
+        if(!mainSetting) {
+            errorSender('mainSetting is null... :(');
+            return;
+        }
+
+        if(mainSetting.deliveryHideItems.some(i => i.url === message.data.url)) {
+            errorSender('exists url: ' + message.data.url);
+            return;
+        }
+
+        this.logger.debug("import!");
+
+        const getter = new DeliveryHideItemGetter();
+        const result = await getter.getAsync(message.data.url);
+
+        const checkedResult = getter.checkResult(result);
+        if (!checkedResult.success) {
+            errorSender(checkedResult.message);
+            return;
+        }
+
+        const data = getter.split(result!);
+        const checkedData = getter.checkData(data);
+        if (!checkedData.success) {
+            errorSender(checkedResult.message);
+            return;
+        }
+
+        // URL の補正
+        data.header.url = message.data.url;
+        this.logger.debug(data.header.url);
+
+        // 反映
+        const hideSetting = new DeliveryHideSetting();
+        merge(hideSetting, data.header);
+        hideSetting.service.google = true;
+        hideSetting.service.bing = true;
+
+        mainSetting.deliveryHideItems.push(hideSetting);
+        const lines = splitLines(result!);
+        await setting.mergeDeliverySettingAsync(hideSetting.url, lines);
+        await setting.saveMainSettingAsync(mainSetting, false);
+
+        const deliverySetting: IReadOnlyDeliverySetting = {
+            hideItems: {
+                [hideSetting.url]: lines,
+            }
+        };
+        for (const service of this.backgroundServiceMap.values()) {
+            service.importDeliveryHideItems([hideSetting], deliverySetting);
+        }
+
+        return;
     }
 
 }

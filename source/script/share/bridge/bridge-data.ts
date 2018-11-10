@@ -99,3 +99,36 @@ export class OutputLogBridgeData extends BridgeData implements IOutputLogBridgeD
         this.logKind = logKind;
     }
 }
+
+export interface IRegisterDeliveryHideRequestData extends IBridgeData {
+    readonly url: string;
+}
+
+export class RegisterDeliveryHideRequestData extends BridgeData implements IRegisterDeliveryHideRequestData {
+    public readonly url: string;
+
+    constructor(url: string) {
+        super();
+        this.url = url;
+    }
+}
+
+
+export interface IRegisterDeliveryHideResponseData extends IBridgeData {
+    readonly request: IRegisterDeliveryHideRequestData;
+    readonly success: boolean;
+    readonly message: string;
+}
+
+export class RegisterDeliveryHideResponseData extends BridgeData implements IRegisterDeliveryHideResponseData {
+    public readonly request: IRegisterDeliveryHideRequestData;
+    public readonly success: boolean;
+    public readonly message: string;
+
+    constructor(request: IRegisterDeliveryHideRequestData, success: boolean, message: string) {
+        super();
+        this.request = request;
+        this.success = success;
+        this.message = message;
+    }
+}
