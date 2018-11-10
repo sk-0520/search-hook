@@ -179,13 +179,20 @@ export default class Background extends ActionBase {
 
     private async receiveRegisterDeliveryHideMessageAsync(message: BridgeMeesage<IRegisterDeliveryHideRequestData>): Promise<void> {
 
-        const errorSender = (errorMessage: string) => {
+        const responseSender = (success: boolean, errorMessage: string) => {
             this.port!.postMessage(
                 new BridgeMeesage(
                     BridgeMeesageKind.registerDeliveryHideResponse,
-                    new RegisterDeliveryHideResponseData(message.data, false, errorMessage)
+                    new RegisterDeliveryHideResponseData(message.data, success, errorMessage)
                 )
             );
+        };
+            
+        const successSender = () => {
+            responseSender(true, '');
+        };
+        const errorSender = (errorMessage: string) => {
+            responseSender(false, errorMessage);
         };
 
         const setting = new Setting();
@@ -242,7 +249,7 @@ export default class Background extends ActionBase {
             service.importDeliveryHideItems([hideSetting], deliverySetting);
         }
 
-        return;
+        successSender();
     }
 
 }

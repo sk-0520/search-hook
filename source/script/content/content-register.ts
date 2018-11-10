@@ -70,7 +70,11 @@ export class ContentRegister extends ContentBase {
     }
 
     private receiveRegisterDeliveryHideMessage(message: BridgeMeesage<IRegisterDeliveryHideResponseData>): void {
-        this.logger.debug('%');
+        if(message.data.success) {
+            alert('success');
+        } else {
+            alert(message.data.message);
+        }
     }
 
 }
