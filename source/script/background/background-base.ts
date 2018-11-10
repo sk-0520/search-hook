@@ -123,6 +123,14 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         );
     }
 
+    private removeWhitelistHitItems(responseStock: ReadonlyMap<string, IHideResponseItem>): Array<IHideResponseItem> {
+        const checker = this.createHideChecker();
+
+        return Array.from(responseStock.values()).filter(i => {
+            return !checker.matchUrl(i.request.linkValue, this.hideItemStocker.whitelistMatchers);
+        });
+    }
+
     public receiveHideRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
         if (!message.data.items.length) {
             this.logger.debug('hide element 0');
@@ -163,13 +171,16 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             }
         }
 
+        // ホワイトリストに該当するものを除外
+        const filterdItems = this.removeWhitelistHitItems(responseStock);
+
         port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.hideResponse,
                 new HideResponseBridgeData(
                     this.service,
                     this.setting.enabled,
-                    Array.from(responseStock.values())
+                    filterdItems
                 )
             )
         );

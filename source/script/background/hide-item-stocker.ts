@@ -1,9 +1,11 @@
-import { IHideItemSetting, IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
+import { IReadOnlyHideItemSetting } from "../share/setting/hide-item-setting";
 import { LoggingBase, Exception } from "../share/common";
 import { MatchKind } from "../share/define/match-kind";
+import { IReadOnlyWordMatchItemSetting } from "../share/setting/word-match-item-setting";
+import { IReadOnlyWhitelistItemSetting } from "../share/setting/whitelist-item-setting";
 
-export interface IHideMatcher {
-    item: IHideItemSetting;
+export interface IWordMatcher {
+    item: IReadOnlyWordMatchItemSetting;
     match: (s: string) => boolean;
 }
 
@@ -11,13 +13,18 @@ export class HideItemStocker extends LoggingBase {
     public static readonly applicationKey = '';
 
     private hideItemGroup = new Map<string, ReadonlyArray<IReadOnlyHideItemSetting>>();
-    private hideMatcherGroup = new Map<string, ReadonlyArray<IHideMatcher>>();
+    private hideMatcherGroup = new Map<string, ReadonlyArray<IWordMatcher>>();
+    private whitelistItems = new Array<IWordMatcher>();
 
     public get hideItems(): ReadonlyMap<string, ReadonlyArray<IReadOnlyHideItemSetting>> {
         return this.hideItemGroup;
     }
-    public get hideMatchers(): ReadonlyMap<string, ReadonlyArray<IHideMatcher>> {
+    public get hideMatchers(): ReadonlyMap<string, ReadonlyArray<IWordMatcher>> {
         return this.hideMatcherGroup;
+    }
+
+    public get whitelistMatchers(): ReadonlyArray<IWordMatcher> {
+        return this.whitelistItems;
     }
 
     constructor() {
@@ -25,7 +32,7 @@ export class HideItemStocker extends LoggingBase {
 
     }
 
-    private getCheckers(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): Array<IHideMatcher> {
+    private getCheckers(hideItems: ReadonlyArray<IReadOnlyWordMatchItemSetting>): Array<IWordMatcher> {
         return hideItems.map(i => {
             let func: (s: string) => boolean;
 
@@ -83,7 +90,7 @@ export class HideItemStocker extends LoggingBase {
             return {
                 item: i,
                 match: func,
-            } as IHideMatcher;
+            } as IWordMatcher;
         });
     }
     
@@ -93,5 +100,8 @@ export class HideItemStocker extends LoggingBase {
         this.hideMatcherGroup.set(key, chekers);
     }
 
+    public setWhitelistItems(items: ReadonlyArray<IReadOnlyWhitelistItemSetting>) {
+        this.whitelistItems = this.getCheckers(items);
+    }
 }
 

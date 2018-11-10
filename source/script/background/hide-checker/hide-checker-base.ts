@@ -1,6 +1,6 @@
 import { LoggingBase, checkService } from "../../share/common";
 import { IService, ServiceKind } from "../../share/define/service-kind";
-import { IHideMatcher } from "../hide-item-stocker";
+import { IWordMatcher } from "../hide-item-stocker";
 
 export abstract class HideCheckerBase extends LoggingBase implements IService {
 
@@ -11,7 +11,7 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
     }
 
 
-    private matchUrlCore(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
+    private matchUrlCore(linkValue: string, hideMachers: ReadonlyArray<IWordMatcher>): boolean {
         let url: URL;
         try {
             url = new URL(linkValue);
@@ -32,11 +32,11 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         return hideMachers.some(i => i.match(urlValue));
     }
 
-    protected matchSimpleUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
+    protected matchSimpleUrl(linkValue: string, hideMachers: ReadonlyArray<IWordMatcher>): boolean {
         return this.matchUrlCore(linkValue, hideMachers);
     }
 
-    protected matchQueryUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
+    protected matchQueryUrl(linkValue: string, hideMachers: ReadonlyArray<IWordMatcher>): boolean {
         try {
             const index = linkValue.indexOf('?');
             if (index !== -1) {
@@ -57,10 +57,10 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         return false;
     }
 
-    public matchUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>) {
+    public matchUrl(linkValue: string, hideMachers: ReadonlyArray<IWordMatcher>) {
 
         const enabledHideMachers = hideMachers.filter(i => checkService(this.service, i.item.service));
-        if(!enabledHideMachers.length) {
+        if (!enabledHideMachers.length) {
             return false;
         }
 
