@@ -157,6 +157,18 @@
     "message": "非表示ホワイトリスト",
     "description": "[Options] [whitelist item] title"
   },
+  "optionsWhitelistDescription": {
+    "message": "非表示対象となった項目を表示対象に切り替えます。",
+    "description": "[Options] [whitelist item] description"
+  },
+  "optionsWhitelistHeaderWord": {
+    "message": "表示対象ワード",
+    "description": "[Options] [whitelist item] [header] word"
+  },
+  "optionsWhitelistHeaderMatch": {
+    "message": "比較方法",
+    "description": "[Options] [whitelist item] [header] match"
+  },
 
   "optionsSave": {
     "message": "保存",
