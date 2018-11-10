@@ -54,10 +54,6 @@ export class Locale extends LoggingBase {
                     element.textContent = localeValue;
                 }
             }
-        } else {
-            this.logger.dumpDebug(element.dataset);
-            this.logger.dumpDebug(element.dataset[ElementData.localeAttributes]);
-
         }
 
         // 属性割り当て(locale-attributesが設定されている項目に限定)
