@@ -1,8 +1,7 @@
-import { DeliveryHideItemGetter } from "../browser/delivery-hide-item";
+import { getDeliveryHideItemAsync } from "../browser/delivery-hide-item";
 import { Setting } from "../browser/setting";
-import { merge, splitLines } from "../share/common";
 import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
-import { DeliveryHideSetting, IDeliveryHideSetting } from "../share/setting/delivery-hide-setting";
+import { IDeliveryHideSetting } from "../share/setting/delivery-hide-setting";
 import { ServiceEnabledSetting } from "../share/setting/service-enabled-setting";
 import OptionsBase from "./options-base";
 
@@ -131,32 +130,15 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
     }
 
     private async importAsync(url: string): Promise<boolean> {
-        const getter = new DeliveryHideItemGetter();
-        const result = await getter.getAsync(url);
+        const result = await getDeliveryHideItemAsync(url);
 
-        const checkedResult = getter.checkResult(result);
-        if (!checkedResult.success) {
-            alert(checkedResult.message);
+        if (!result.success) {
+            alert(result.message!);
             return false;
         }
 
-        const data = getter.split(result!);
-        const checkedData = getter.checkData(data);
-        if (!checkedData.success) {
-            alert(checkedData.message);
-            return false;
-        }
-
-        // URL の補正
-        data.header.url = url;
-
-        // 反映
-        const hideSetting = new DeliveryHideSetting();
-        merge(hideSetting, data.header);
-        hideSetting.service.google = true;
-        hideSetting.service.bing = true;
-
-        this.logger.dumpDebug('save: ' + result!);
+        this.logger.dumpDebug('save: ' + result.content!);
+        const  hideSetting = result.setting!;
         const targetElement = this.getSettingElementByUrl(hideSetting.url);
         if(targetElement) {
             this.setDeliveryHideItem(targetElement, hideSetting);
@@ -166,7 +148,7 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
 
         // データそのものは書き込んでおく
         const setting = new Setting();
-        await setting.mergeDeliverySettingAsync(hideSetting.url, splitLines(result!));
+        await setting.mergeDeliverySettingAsync(hideSetting.url, result.lines!);
         return true;
     }
 }
