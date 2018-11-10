@@ -2,9 +2,9 @@ import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
 import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
 import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
-import { HideCheckerBase } from './hide-checker/hide-checker-base';
-import HideCheckerBing from './hide-checker/hide-checker-bing';
 import { HideItemStocker } from './hide-item-stocker';
+import { WordMatcherBase } from './word-matcher/word-matcher-base';
+import { WordMatcherBing } from './word-matcher/word-matcher-bing';
 
 export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
 
@@ -24,8 +24,8 @@ export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOn
         super('Background Bing', setting, settingItems, hideItemStocker);
     }
 
-    protected createHideChecker(): HideCheckerBase {
-        return new HideCheckerBing();
+    protected createWordMatcher(): WordMatcherBase {
+        return new WordMatcherBing();
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {

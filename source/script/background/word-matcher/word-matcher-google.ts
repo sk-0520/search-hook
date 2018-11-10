@@ -1,7 +1,7 @@
-import { HideCheckerBase } from "./hide-checker-base";
+import { WordMatcherBase } from "./word-matcher-base";
 import { ServiceKind } from "../../share/define/service-kind";
 
-export default class HideCheckerGoogle extends HideCheckerBase {
+export class WordMatcherGoogle extends WordMatcherBase {
 
     public get service() {
         return ServiceKind.google;

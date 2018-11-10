@@ -6,8 +6,8 @@ import { IService, ServiceKind } from '../share/define/service-kind';
 import { QueryBase } from '../share/query/query-base';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { HideCheckerBase } from './hide-checker/hide-checker-base';
 import { HideItemStocker } from './hide-item-stocker';
+import { WordMatcherBase } from './word-matcher/word-matcher-base';
 
 /** Fxから持ってきた */
 export interface IRequestDetails {
@@ -54,7 +54,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         this.logger.dumpDebug(this.hideItemStocker);
     }
 
-    protected abstract createHideChecker(): HideCheckerBase;
+    protected abstract createWordMatcher(): WordMatcherBase;
 
     protected getEnabledNotItemWords(notItems: ReadonlyArray<IReadOnlyNotItemSetting>): Array<string> {
         return notItems.filter(i => {
@@ -124,10 +124,10 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
     }
 
     private removeWhitelistHitItems(responseStock: ReadonlyMap<string, IHideResponseItem>): Array<IHideResponseItem> {
-        const checker = this.createHideChecker();
+        const wordMatcher = this.createWordMatcher();
 
         return Array.from(responseStock.values()).filter(i => {
-            return !checker.matchUrl(i.request.linkValue, this.hideItemStocker.whitelistMatchers);
+            return !wordMatcher.matchUrl(i.request.linkValue, this.hideItemStocker.whitelistMatchers);
         });
     }
 
@@ -144,7 +144,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             } as IHideResponseItem;
         }
 
-        const hideChecker = this.createHideChecker();
+        const wordMatcher = this.createWordMatcher();
         const responseStock = new Map<string, IHideResponseItem>();
         for (const [key, matchers] of this.hideItemStocker.hideMatchers) {
 
@@ -156,7 +156,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
                     continue;
                 }
 
-                if (hideChecker.matchUrl(request.linkValue, matchers)) {
+                if (wordMatcher.matchUrl(request.linkValue, matchers)) {
                     responseStock.set(request.dataValue, createResponseItem(request, true));
                 }
 
