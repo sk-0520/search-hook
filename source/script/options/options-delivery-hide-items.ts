@@ -57,8 +57,9 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const templateElement = parent.querySelector("template")!;
         const clonedElement = document.importNode(templateElement.content, true);
 
+        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemUrl, elm => elm.value = item.url);
         this.setByName(clonedElement, ElementName.optionsDeliveryHideItemSetting, elm => elm.value = JSON.stringify(item));
-
+        
         const nameElement = clonedElement.querySelector(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemName)) as HTMLElement;
         nameElement.textContent = item.name;
         this.setByName(clonedElement, ElementName.optionsDeliveryHideItemServiceGoogle, elm => elm.checked = item.service.google);

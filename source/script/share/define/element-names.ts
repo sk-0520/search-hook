@@ -55,6 +55,7 @@ export enum ElementName {
     optionsHideItemRemove = 'view-hide-item-remove',
 
     optionsDeliveryHideItemGroup = 'delivery-hide-item-group',
+    optionsDeliveryHideItemUrl = 'delivery-hide-item-url',
     optionsDeliveryHideItemSetting = 'delivery-hide-item-setting',
     optionsDeliveryHideItemName = 'delivery-hide-item-name',
     optionsDeliveryHideItemServiceGoogle = 'delivery-hide-item-service-google',
