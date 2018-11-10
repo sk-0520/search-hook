@@ -57,23 +57,32 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         const templateElement = parent.querySelector("template")!;
         const clonedElement = document.importNode(templateElement.content, true);
 
-        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemUrl, elm => elm.value = item.url);
-        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemSetting, elm => elm.value = JSON.stringify(item));
-        
-        const nameElement = clonedElement.querySelector(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemName)) as HTMLElement;
+        this.setDeliveryHideItem(clonedElement, item);
+
+        parent.appendChild(clonedElement);
+    }
+
+    private setDeliveryHideItem(targetElement: Element | DocumentFragment, item: IDeliveryHideSetting): void {
+        this.setByName(targetElement, ElementName.optionsDeliveryHideItemUrl, elm => elm.value = item.url);
+        this.setByName(targetElement, ElementName.optionsDeliveryHideItemSetting, elm => elm.value = JSON.stringify(item));
+
+        const nameElement = targetElement.querySelector(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemName)) as HTMLElement;
         nameElement.textContent = item.name;
-        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemServiceGoogle, elm => elm.checked = item.service.google);
-        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemServiceBing, elm => elm.checked = item.service.bing);
-        this.setByName(clonedElement, ElementName.optionsDeliveryHideItemRemove, elm => elm.addEventListener('click', e => {
+
+        const versionElement = targetElement.querySelector(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemVersion)) as HTMLElement;
+        versionElement.textContent = item.version;
+        
+        this.setByName(targetElement, ElementName.optionsDeliveryHideItemServiceGoogle, elm => elm.checked = item.service.google);
+        this.setByName(targetElement, ElementName.optionsDeliveryHideItemServiceBing, elm => elm.checked = item.service.bing);
+        this.setByName(targetElement, ElementName.optionsDeliveryHideItemRemove, elm => elm.addEventListener('click', e => {
             e.preventDefault();
 
             const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
             itemGroupElement!.remove();
         }));
-        parent.appendChild(clonedElement);
     }
 
-    private changeEnabledImport(isEnabled: boolean) {
+    private changeEnabledImportCommand(isEnabled: boolean) {
         const element = this.getInputById(ElementId.optionsDeliveryHideItemRegisterImport);
         element.disabled = !isEnabled;
     }
@@ -85,12 +94,25 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
 
         const url = inputUrl.trim();
 
-        this.changeEnabledImport(false);
+        this.changeEnabledImportCommand(false);
         try {
             await this.importAsync(url);
         } finally {
-            this.changeEnabledImport(true);
+            this.changeEnabledImportCommand(true);
         }
+    }
+
+    private getSettingElementByUrl(url: string): Element | null {
+        const parentElement = this.getParentElement();
+        const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
+        for (const element of elements) {
+            const urlValue = this.getInputByName(element, ElementName.optionsDeliveryHideItemUrl).value;
+            if (url === urlValue) {
+                return element;
+            }
+        }
+
+        return null;
     }
 
     private async importAsync(url: string): Promise<boolean> {
@@ -119,19 +141,13 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
         hideSetting.service.google = true;
         hideSetting.service.bing = true;
 
-        // すでに登録済みなら削除しておく
-        const parentElement = this.getParentElement();
-        const elements = parentElement.querySelectorAll(SelectorConverter.fromName(ElementName.optionsDeliveryHideItemGroup));
-        for (const element of elements) {
-            const rawSetting = this.getInputByName(element, ElementName.optionsDeliveryHideItemSetting).value;
-            const currentSetting = JSON.parse(rawSetting) as IDeliveryHideSetting;
-            if (url === currentSetting.url) {
-                element.remove();
-                break;
-            }
-        }
         this.logger.dumpDebug('save: ' + result!);
-        this.addDeliveryHideItem(hideSetting);
+        const targetElement = this.getSettingElementByUrl(hideSetting.url);
+        if(targetElement) {
+            this.setDeliveryHideItem(targetElement, hideSetting);
+        } else {
+            this.addDeliveryHideItem(hideSetting);
+        }
 
         // データそのものは書き込んでおく
         const setting = new Setting();

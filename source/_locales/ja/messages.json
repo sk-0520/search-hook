@@ -19,7 +19,11 @@
   },
   "commonCaseSensitive": {
     "message": "大文字小文字を区別",
-    "description": "remove"
+    "description": "case sensitive"
+  },
+  "commonVersion": {
+    "message": "バージョン",
+    "description": "version"
   },
   "commonServiceGoogle": {
     "message": "Google",
