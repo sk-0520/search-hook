@@ -6,8 +6,8 @@ import { IService, ServiceKind } from '../share/define/service-kind';
 import { QueryBase } from '../share/query/query-base';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { HideCheckerBase } from './hide-checker/hide-checker-base';
 import { HideItemStocker } from './hide-item-stocker';
+import { WordMatcherBase } from './word-matcher/word-matcher-base';
 
 /** Fxから持ってきた */
 export interface IRequestDetails {
@@ -54,7 +54,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         this.logger.dumpDebug(this.hideItemStocker);
     }
 
-    protected abstract createHideChecker(): HideCheckerBase;
+    protected abstract createWordMatcher(): WordMatcherBase;
 
     protected getEnabledNotItemWords(notItems: ReadonlyArray<IReadOnlyNotItemSetting>): Array<string> {
         return notItems.filter(i => {
@@ -123,6 +123,14 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         );
     }
 
+    private removeWhitelistHitItems(responseStock: ReadonlyMap<string, IHideResponseItem>): Array<IHideResponseItem> {
+        const wordMatcher = this.createWordMatcher();
+
+        return Array.from(responseStock.values()).filter(i => {
+            return !wordMatcher.matchUrl(i.request.linkValue, this.hideItemStocker.whitelistMatchers);
+        });
+    }
+
     public receiveHideRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IHideRequestBridgeData>): any {
         if (!message.data.items.length) {
             this.logger.debug('hide element 0');
@@ -136,7 +144,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             } as IHideResponseItem;
         }
 
-        const hideChecker = this.createHideChecker();
+        const wordMatcher = this.createWordMatcher();
         const responseStock = new Map<string, IHideResponseItem>();
         for (const [key, matchers] of this.hideItemStocker.hideMatchers) {
 
@@ -148,7 +156,7 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
                     continue;
                 }
 
-                if (hideChecker.matchUrl(request.linkValue, matchers)) {
+                if (wordMatcher.matchUrl(request.linkValue, matchers)) {
                     responseStock.set(request.dataValue, createResponseItem(request, true));
                 }
 
@@ -163,13 +171,16 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
             }
         }
 
+        // ホワイトリストに該当するものを除外
+        const filterdItems = this.removeWhitelistHitItems(responseStock);
+
         port.postMessage(
             new BridgeMeesage(
                 BridgeMeesageKind.hideResponse,
                 new HideResponseBridgeData(
                     this.service,
                     this.setting.enabled,
-                    Array.from(responseStock.values())
+                    filterdItems
                 )
             )
         );

@@ -1,8 +1,8 @@
 import { LoggingBase, checkService } from "../../share/common";
 import { IService, ServiceKind } from "../../share/define/service-kind";
-import { IHideMatcher } from "../hide-item-stocker";
+import { IWordMatcher } from "../hide-item-stocker";
 
-export abstract class HideCheckerBase extends LoggingBase implements IService {
+export abstract class WordMatcherBase extends LoggingBase implements IService {
 
     public abstract readonly service: ServiceKind;
 
@@ -10,13 +10,22 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         super(name);
     }
 
+    private toUrl(linkUrl: string): URL|null {
+        if(!linkUrl.startsWith('http')) {
+            return null;
+        }
 
-    private matchUrlCore(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
-        let url: URL;
         try {
-            url = new URL(linkValue);
+            return new URL(linkUrl);
         } catch (ex) {
             this.logger.error(ex);
+            return null;
+        }        
+    }
+
+    private matchUrlCore(linkValue: string, wordMachers: ReadonlyArray<IWordMatcher>): boolean {
+        const url = this.toUrl(linkValue);
+        if(!url) {
             return false;
         }
 
@@ -29,14 +38,14 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
             urlValue += url.search;
         }
 
-        return hideMachers.some(i => i.match(urlValue));
+        return wordMachers.some(i => i.match(urlValue));
     }
 
-    protected matchSimpleUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
-        return this.matchUrlCore(linkValue, hideMachers);
+    protected matchSimpleUrl(linkValue: string, wordMachers: ReadonlyArray<IWordMatcher>): boolean {
+        return this.matchUrlCore(linkValue, wordMachers);
     }
 
-    protected matchQueryUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
+    protected matchQueryUrl(linkValue: string, wordMachers: ReadonlyArray<IWordMatcher>): boolean {
         try {
             const index = linkValue.indexOf('?');
             if (index !== -1) {
@@ -47,7 +56,7 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
                     const query = params.get('q')!;
                     this.logger.debug('q: ' + query);
 
-                    return this.matchUrlCore(query, hideMachers);
+                    return this.matchUrlCore(query, wordMachers);
                 }
             }
         } catch (ex) {
@@ -57,20 +66,20 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         return false;
     }
 
-    public matchUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>) {
+    public matchUrl(linkValue: string, wordMachers: ReadonlyArray<IWordMatcher>) {
 
-        const enabledHideMachers = hideMachers.filter(i => checkService(this.service, i.item.service));
-        if(!enabledHideMachers.length) {
+        const enabledWordMachers = wordMachers.filter(i => checkService(this.service, i.item.service));
+        if (!enabledWordMachers.length) {
             return false;
         }
 
         // 普通パターン
-        if (this.matchSimpleUrl(linkValue, enabledHideMachers)) {
+        if (this.matchSimpleUrl(linkValue, enabledWordMachers)) {
             return true;
         }
 
         // /path?q=XXX 形式
-        if (this.matchQueryUrl(linkValue, enabledHideMachers)) {
+        if (this.matchQueryUrl(linkValue, enabledWordMachers)) {
             return true;
         }
 

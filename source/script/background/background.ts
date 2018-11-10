@@ -16,7 +16,7 @@ import BackgroundServiceGoogle from './background-google';
 import BridgeLoger from './bridgelogger';
 import { HideItemStocker } from './hide-item-stocker';
 import { MatchKind } from '../share/define/match-kind';
-import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
+import { IReadOnlyWordMatchItemSetting } from '../share/setting/word-match-item-setting';
 
 export default class Background extends ActionBase {
 
@@ -56,8 +56,11 @@ export default class Background extends ActionBase {
         this.logger.debug('MAIN: ' + JSON.stringify(mainSetting));
         this.logger.debug('DELIVERY: ' + JSON.stringify(deliverySetting));
 
-        const hideItems = this.getEnabledHideItems(mainSetting.hideItems);
+        const hideItems = this.getEnabledWordMatchItems(mainSetting.hideItems);
         this.hideItemStocker.importHideItems(HideItemStocker.applicationKey, hideItems);
+
+        const whitelistItems = this.getEnabledWordMatchItems(mainSetting.whitelistItems);
+        this.hideItemStocker.setWhitelistItems(whitelistItems);
 
         const settingItems: ISettingItems = {
             notItems: mainSetting.notItems,
@@ -75,7 +78,7 @@ export default class Background extends ActionBase {
         this.accept();
     }
 
-    private getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
+    private getEnabledWordMatchItems(hideItems: ReadonlyArray<IReadOnlyWordMatchItemSetting>): ReadonlyArray<IReadOnlyWordMatchItemSetting> {
         return hideItems.filter(i => {
             return !isNullOrEmpty(i.word);
         }).filter(i => {
@@ -104,7 +107,7 @@ export default class Background extends ActionBase {
                 continue;
             }
             const hideItems = converter.convertItems(deliveryHideLines!, deliveryHideItem.service);
-            const enabledHideItems = this.getEnabledHideItems(hideItems);
+            const enabledHideItems = this.getEnabledWordMatchItems(hideItems);
 
             this.hideItemStocker.importHideItems(deliveryHideItem.url, enabledHideItems);
         }
@@ -238,7 +241,7 @@ export default class Background extends ActionBase {
 
         const converter = new DeliveryHideItemConverter();
         const hideItems = converter.convertItems(result.lines!, hideSetting.service);
-        const enabledHideItems = this.getEnabledHideItems(hideItems);
+        const enabledHideItems = this.getEnabledWordMatchItems(hideItems);
 
         this.hideItemStocker.importHideItems(hideSetting.url, enabledHideItems);
 

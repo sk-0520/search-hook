@@ -2,9 +2,9 @@ import { ServiceKind } from '../share/define/service-kind';
 import GoogleQuery from '../share/query/query-google';
 import { IReadOnlyGoogleServiceSetting } from '../share/setting/service-setting-google';
 import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
-import { HideCheckerBase } from './hide-checker/hide-checker-base';
-import HideCheckerGoogle from './hide-checker/hide-checker-google';
 import { HideItemStocker } from './hide-item-stocker';
+import { WordMatcherBase } from './word-matcher/word-matcher-base';
+import { WordMatcherGoogle } from './word-matcher/word-matcher-google';
 
 export default class BackgroundServiceGoogle extends BackgroundServiceBase<IReadOnlyGoogleServiceSetting> {
 
@@ -24,8 +24,8 @@ export default class BackgroundServiceGoogle extends BackgroundServiceBase<IRead
         super('Background Google', setting, settingItems, hideItemStocker);
     }
 
-    protected createHideChecker(): HideCheckerBase {
-        return new HideCheckerGoogle();
+    protected createWordMatcher(): WordMatcherBase {
+        return new WordMatcherGoogle();
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {

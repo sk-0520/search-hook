@@ -1,20 +1,19 @@
 import { IMatchSetting, IReadOnlyMatchSetting, MatchSetting } from "./match-setting";
 import { IReadOnlyServiceEnabledSetting, IServiceEnabledSetting, ServiceEnabledSetting } from "./service-enabled-setting";
-import { IReadOnlyWordMatchItemSetting, IWordMatchItemSetting, WordMatchItemSetting } from "./word-match-item-setting";
 
-export interface IReadOnlyHideItemSetting extends IReadOnlyWordMatchItemSetting {
+export interface IReadOnlyWordMatchItemSetting {
     readonly word: string;
     readonly match: IReadOnlyMatchSetting;
     readonly service: IReadOnlyServiceEnabledSetting;
 }
 
-export interface IHideItemSetting extends IReadOnlyHideItemSetting, IWordMatchItemSetting {
+export interface IWordMatchItemSetting extends IReadOnlyWordMatchItemSetting {
     word: string;
     match: IMatchSetting;
     service: IServiceEnabledSetting;
 }
 
-export class HideItemSetting extends WordMatchItemSetting implements IHideItemSetting {
+export class WordMatchItemSetting implements IWordMatchItemSetting {
     public word = '';
     public match = new MatchSetting();
     public service = new ServiceEnabledSetting();
