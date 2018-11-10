@@ -110,10 +110,10 @@ export abstract class ContentServiceBase extends ContentBase implements IService
 
         this.notWords = eraseMessage.data.items;
 
-        this.attacQueryElement();
+        this.attachQueryElement();
     }
 
-    protected attacQueryElement() {
+    protected attachQueryElement() {
         if (!this.notWords) {
             return;
         }
