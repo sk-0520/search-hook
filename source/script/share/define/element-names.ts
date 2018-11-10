@@ -55,8 +55,11 @@ export enum ElementName {
     optionsHideItemRemove = 'view-hide-item-remove',
 
     optionsDeliveryHideItemGroup = 'delivery-hide-item-group',
+    optionsDeliveryHideItemUrl = 'delivery-hide-item-url',
     optionsDeliveryHideItemSetting = 'delivery-hide-item-setting',
     optionsDeliveryHideItemName = 'delivery-hide-item-name',
+    optionsDeliveryHideItemVersion = 'delivery-hide-item-version',
+    optionsDeliveryHideItemUpdate = 'delivery-hide-item-update',
     optionsDeliveryHideItemServiceGoogle = 'delivery-hide-item-service-google',
     optionsDeliveryHideItemServiceBing = 'delivery-hide-item-service-bing',
     optionsDeliveryHideItemRemove = 'delivery-hide-item-remove',
