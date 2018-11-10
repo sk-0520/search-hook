@@ -42,7 +42,7 @@ export class ContentRegister extends ContentBase {
                 linkElement.addEventListener('click', e => {
                     e.preventDefault();
                     
-                    if(confirm('message')) {
+                    if(confirm(browser.i18n.getMessage('deliveryHideItemLinkImport'))) {
                         this.registerHideItemAsync(urlValue);
                     }
                 });

@@ -35,6 +35,19 @@ export class Setting extends LoggingBase {
 
     public async saveMainSettingAsync(mainSetting: IMainSetting, isReload: boolean): Promise<void> {
         try {
+            const deliverySetting = await this.loadDeliverySettingAsync();
+            if(deliverySetting) {
+                // 本体設定と紐づく外部設定のみを生かす(要はゴミ掃除)
+                const newDeliverySetting = new DeliverySetting();
+                // 非表示設定
+                for(const item of mainSetting.deliveryHideItems) {
+                    if(item.url in deliverySetting.hideItems) {
+                        newDeliverySetting.hideItems[item.url] = deliverySetting.hideItems[item.url];
+                    }
+                }
+                await this.saveDeliverySettingAsync(newDeliverySetting);
+            }
+            
             await browser.storage.local.set({
                 setting: mainSetting as any
             });

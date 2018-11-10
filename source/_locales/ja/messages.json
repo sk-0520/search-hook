@@ -188,6 +188,10 @@
     "description": "[Options] [ImportExport] import"
   },
 
+  "deliveryHideItemLinkImport" : {
+    "message": "この外部非表示設定を取り込みますか",
+    "description": "import [delivery hide item]?"
+  },
   "deliveryHideItemErrorHttp" : {
     "message": "何らかの通信エラー",
     "description": "HTTP(s) error"
