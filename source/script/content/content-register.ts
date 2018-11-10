@@ -71,9 +71,9 @@ export class ContentRegister extends ContentBase {
 
     private receiveRegisterDeliveryHideMessage(message: BridgeMeesage<IRegisterDeliveryHideResponseData>): void {
         if(message.data.success) {
-            alert('success');
+            alert(browser.i18n.getMessage('commonSuccess'));
         } else {
-            alert(message.data.message);
+            alert(browser.i18n.getMessage('commonError') + "\r\n" + message.data.message);
         }
     }
 

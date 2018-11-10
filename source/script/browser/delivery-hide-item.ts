@@ -201,13 +201,13 @@ export class DeliveryHideItemGetter extends LoggingBase {
     private createSuccess(): IDeliveryCheckResult {
         return { success: true, message: '' };
     }
-    private createError(message: string): IDeliveryCheckResult {
-        return { success: false, message };
+    private createError(msg: string): IDeliveryCheckResult {
+        return { success: false, message: msg };
     }
 
     public checkResult(result: string | null): IDeliveryCheckResult {
         if (isNullOrEmpty(result)) {
-            return this.createError('error: HTTP(S)');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorHttp'));
         }
 
         return this.createSuccess();
@@ -215,15 +215,15 @@ export class DeliveryHideItemGetter extends LoggingBase {
 
     public checkData(data: IDeliveryHideItemData): IDeliveryCheckResult {
         if (isNullOrEmpty(data.header.name)) {
-            return this.createError('error: empty name');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorKeyEmpty', 'name' ));
         }
 
         if (isNullOrEmpty(data.header.version)) {
-            return this.createError('error: empty version');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorKeyEmpty', 'version' ));
         }
 
         if (!data.lines.length || data.lines.every(s => isNullOrEmpty(s))) {
-            return this.createError('error: empty data');
+            return this.createError(browser.i18n.getMessage('deliveryHideItemErrorDataEmpty', 'version' ));
         }
 
         return this.createSuccess();
@@ -261,7 +261,7 @@ export async function getDeliveryHideItemAsync(url: string): Promise<IDeliveryHi
     if (!checkedData.success) {
         return {
             success: false,
-            message: checkedResult.message,
+            message: checkedData.message,
             content: result,
             header: data.header,
         } as IDeliveryHideItemResult;

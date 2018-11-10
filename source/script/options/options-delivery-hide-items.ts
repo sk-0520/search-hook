@@ -131,7 +131,7 @@ export default class OptionsDeliveryHideItems extends OptionsBase<Array<IDeliver
 
     private async importAsync(url: string): Promise<boolean> {
         const result = await getDeliveryHideItemAsync(url);
-
+        
         if (!result.success) {
             alert(result.message!);
             return false;

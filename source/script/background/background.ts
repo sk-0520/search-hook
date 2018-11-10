@@ -198,12 +198,7 @@ export default class Background extends ActionBase {
         const setting = new Setting();
         const mainSetting = await setting.loadMainSettingAsync();
         if(!mainSetting) {
-            errorSender('mainSetting is null... :(');
-            return;
-        }
-
-        if(mainSetting.deliveryHideItems.some(i => i.url === message.data.url)) {
-            errorSender('exists url: ' + message.data.url);
+            errorSender('MainSetting is null... :(');
             return;
         }
 
@@ -213,6 +208,12 @@ export default class Background extends ActionBase {
         if (!result.success) {
             errorSender(result.message!);
             return;
+        }
+
+        // 既に存在するなら削除
+        const existsIndex = mainSetting.deliveryHideItems.findIndex(i => i.url === message.data.url);
+        if(existsIndex !== -1) {
+            mainSetting.deliveryHideItems.splice(existsIndex, 1);
         }
 
         const hideSetting = result.setting!;
