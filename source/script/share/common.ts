@@ -1,4 +1,6 @@
 import { Logger, ILogger } from "./logger";
+import { ServiceKind } from "./define/service-kind";
+import { IReadOnlyServiceEnabledSetting } from "./setting/service-enabled-setting";
 
 // contents script, background script 共有
 
@@ -37,7 +39,7 @@ export function merge<T>(source: T, overwrite: T): T {
 export abstract class LoggingBase {
 
     private readonly loggerEntity: Logger;
-    
+
     protected get logger(): ILogger {
         return this.loggerEntity;
     }
@@ -68,7 +70,7 @@ export class Exception {
     }
 }
 
-export function isNullOrEmpty(s: string|null|undefined): boolean {
+export function isNullOrEmpty(s: string | null | undefined): boolean {
     return !(s && s !== '');
 }
 
@@ -76,3 +78,15 @@ export function splitLines(content: string): Array<string> {
     return content.split(/\r?\n/);
 }
 
+export function checkService(service: ServiceKind, setting: IReadOnlyServiceEnabledSetting) {
+    switch (service) {
+        case ServiceKind.google:
+            return setting.google;
+
+        case ServiceKind.bing:
+            return setting.bing;
+
+        default:
+            throw new Exception(setting);
+    }
+}

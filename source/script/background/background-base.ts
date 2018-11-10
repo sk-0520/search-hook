@@ -1,17 +1,11 @@
 import { HideResponseBridgeData, IHideRequestBridgeData, IHideRequestItem, IHideResponseItem, IServiceBridgeData, NotWordResponseBridgeData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { Exception, isNullOrEmpty, LoggingBase } from '../share/common';
+import { checkService, isNullOrEmpty, LoggingBase } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
-import { MatchKind } from '../share/define/match-kind';
 import { IService, ServiceKind } from '../share/define/service-kind';
 import { QueryBase } from '../share/query/query-base';
-import { IReadOnlyDeliveryHideSetting } from '../share/setting/delivery-hide-setting';
-import { IReadOnlyDeliverySetting } from '../share/setting/delivery-setting';
-import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
 import { IReadOnlyNotItemSetting } from '../share/setting/not-item-setting';
-import { IReadOnlyServiceEnabledSetting } from '../share/setting/service-enabled-setting';
 import { IReadOnlyServiceSetting } from '../share/setting/service-setting-base';
-import { DeliveryHideItemConverter } from '../browser/delivery-hide-item';
 import { HideCheckerBase } from './hide-checker/hide-checker-base';
 import { HideItemStocker } from './hide-item-stocker';
 
@@ -35,7 +29,6 @@ export interface IRequestDetails {
 
 export interface ISettingItems {
     notItems: ReadonlyArray<IReadOnlyNotItemSetting>;
-    hideItems: ReadonlyArray<IReadOnlyHideItemSetting>;
 }
 
 export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IReadOnlyServiceSetting> extends LoggingBase implements IService {
@@ -50,62 +43,28 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
     protected hideItemStocker: HideItemStocker;
 
-    protected constructor(name: string, setting: TReadOnlyServiceSetting, settingItems: ISettingItems) {
+    protected constructor(name: string, setting: TReadOnlyServiceSetting, settingItems: ISettingItems, hideItemStocker: HideItemStocker) {
         super(name);
 
         this.setting = setting;
 
         this.notItemWords = this.getEnabledNotItemWords(settingItems.notItems);
 
-        this.hideItemStocker = new HideItemStocker();
-        this.hideItemStocker.importHideItems(HideItemStocker.applicationKey, this.getEnabledHideItems(settingItems.hideItems));
+        this.hideItemStocker = hideItemStocker;
+        this.logger.dumpDebug(this.hideItemStocker);
     }
 
     protected abstract createHideChecker(): HideCheckerBase;
 
-    protected checkService(setting: IReadOnlyServiceEnabledSetting) {
-        switch (this.service) {
-            case ServiceKind.google:
-                return setting.google;
-
-            case ServiceKind.bing:
-                return setting.bing;
-
-            default:
-                throw new Exception(setting);
-        }
-    }
-
     protected getEnabledNotItemWords(notItems: ReadonlyArray<IReadOnlyNotItemSetting>): Array<string> {
         return notItems.filter(i => {
-            return this.checkService(i.service);
+            return checkService(this.service, i.service);
         }).filter(i => {
             return !isNullOrEmpty(i.word);
         }).map(i => {
             return i.word;
         });
     }
-
-    protected getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
-        return hideItems.filter(i => {
-            return this.checkService(i.service);
-        }).filter(i => {
-            return !isNullOrEmpty(i.word);
-        }).filter(i => {
-            if (i.match.kind === MatchKind.regex) {
-                try {
-                    new RegExp(i.word);
-                } catch (ex) {
-                    this.logger.error(ex);
-                    this.logger.dumpError(i);
-                    return false;
-                }
-            }
-
-            return true;
-        });
-    }
-
 
     protected abstract redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined;
 
@@ -151,19 +110,6 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
         return queryString;
     }
 
-    public importDeliveryHideItems(deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>, deliverySetting: IReadOnlyDeliverySetting): void {
-        const converter = new DeliveryHideItemConverter();
-        for(const deliveryHideItem of deliveryHideItems) {
-            const deliveryHideLines = deliverySetting.hideItems[deliveryHideItem.url];
-            if(!deliveryHideItems) {
-                continue;
-            }
-            const hideItems = converter.convertItems(deliveryHideLines!, deliveryHideItem.service);
-            const enabledHideItems = this.getEnabledHideItems(hideItems);
-            this.hideItemStocker.importHideItems(deliveryHideItem.url, enabledHideItems);
-        }
-    }
-
     public receiveNotWordRequestMessage(port: browser.runtime.Port, message: BridgeMeesage<IServiceBridgeData>) {
         port.postMessage(
             new BridgeMeesage(
@@ -192,26 +138,27 @@ export abstract class BackgroundServiceBase<TReadOnlyServiceSetting extends IRea
 
         const hideChecker = this.createHideChecker();
         const responseStock = new Map<string, IHideResponseItem>();
-        for(const [key, matchers] of this.hideItemStocker.hideMatchers) {
+        for (const [key, matchers] of this.hideItemStocker.hideMatchers) {
+
             this.logger.debug(`check group: ${key}`);
             let isBreak = false;
             for (const request of message.data.items) {
                 // 既に隠し対象となったものはチェックしない
-                if(responseStock.has(request.dataValue)) {
+                if (responseStock.has(request.dataValue)) {
                     continue;
                 }
 
-                if(hideChecker.matchUrl(request.linkValue, matchers)) {
+                if (hideChecker.matchUrl(request.linkValue, matchers)) {
                     responseStock.set(request.dataValue, createResponseItem(request, true));
                 }
 
                 // 全部チェックされたのであればこれ以上何かする必要はない
-                if(message.data.items.length <= responseStock.size) {
+                if (message.data.items.length <= responseStock.size) {
                     isBreak = true;
                     break;
                 }
             }
-            if(isBreak) {
+            if (isBreak) {
                 break;
             }
         }

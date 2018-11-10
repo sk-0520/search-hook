@@ -1,9 +1,10 @@
 import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
-import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
 import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
-import HideCheckerBing from './hide-checker/hide-checker-bing';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
 import { HideCheckerBase } from './hide-checker/hide-checker-base';
+import HideCheckerBing from './hide-checker/hide-checker-bing';
+import { HideItemStocker } from './hide-item-stocker';
 
 export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
 
@@ -19,8 +20,8 @@ export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOn
         return ServiceKind.bing;
     }
 
-    public constructor(setting: IReadOnlyBingServiceSetting, settingItems: ISettingItems) {
-        super('Background Bing', setting, settingItems);
+    public constructor(setting: IReadOnlyBingServiceSetting, settingItems: ISettingItems, hideItemStocker: HideItemStocker) {
+        super('Background Bing', setting, settingItems, hideItemStocker);
     }
 
     protected createHideChecker(): HideCheckerBase {

@@ -1,8 +1,8 @@
-import { getDeliveryHideItemAsync } from '../browser/delivery-hide-item';
+import { getDeliveryHideItemAsync, DeliveryHideItemConverter } from '../browser/delivery-hide-item';
 import { Setting } from '../browser/setting';
 import { IBridgeData, IHideRequestBridgeData, IOutputLogBridgeData, IRegisterDeliveryHideRequestData, IServiceBridgeData, RegisterDeliveryHideResponseData } from '../share/bridge/bridge-data';
 import { BridgeMeesage } from '../share/bridge/bridge-meesage';
-import { ActionBase, Exception } from '../share/common';
+import { ActionBase, Exception, isNullOrEmpty } from '../share/common';
 import { BridgeMeesageKind } from '../share/define/bridge-meesage-kind';
 import { ServiceKind } from '../share/define/service-kind';
 import { LogKind } from '../share/logger';
@@ -14,11 +14,15 @@ import { BackgroundServiceBase, ISettingItems } from './background-base';
 import BackgroundServiceBing from './background-bing';
 import BackgroundServiceGoogle from './background-google';
 import BridgeLoger from './bridgelogger';
+import { HideItemStocker } from './hide-item-stocker';
+import { MatchKind } from '../share/define/match-kind';
+import { IReadOnlyHideItemSetting } from '../share/setting/hide-item-setting';
 
 export default class Background extends ActionBase {
 
     protected port?: browser.runtime.Port;
     private backgroundServiceMap = new Map<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>();
+    private hideItemStocker = new HideItemStocker();
 
     public constructor() {
         super('Background');
@@ -52,12 +56,14 @@ export default class Background extends ActionBase {
         this.logger.debug('MAIN: ' + JSON.stringify(mainSetting));
         this.logger.debug('DELIVERY: ' + JSON.stringify(deliverySetting));
 
+        const hideItems = this.getEnabledHideItems(mainSetting.hideItems);
+        this.hideItemStocker.importHideItems(HideItemStocker.applicationKey, hideItems);
+
         const settingItems: ISettingItems = {
             notItems: mainSetting.notItems,
-            hideItems: mainSetting.hideItems,
         };
-        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(mainSetting.service.google, settingItems));
-        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(mainSetting.service.google, settingItems));
+        this.backgroundServiceMap.set(ServiceKind.google, new BackgroundServiceGoogle(mainSetting.service.google, settingItems, this.hideItemStocker));
+        this.backgroundServiceMap.set(ServiceKind.bing, new BackgroundServiceBing(mainSetting.service.bing, settingItems, this.hideItemStocker));
 
         this.buildDeliverySetting(mainSetting.deliveryHideItems, deliverySetting, this.backgroundServiceMap);
 
@@ -69,32 +75,41 @@ export default class Background extends ActionBase {
         this.accept();
     }
 
+    private getEnabledHideItems(hideItems: ReadonlyArray<IReadOnlyHideItemSetting>): ReadonlyArray<IReadOnlyHideItemSetting> {
+        return hideItems.filter(i => {
+            return !isNullOrEmpty(i.word);
+        }).filter(i => {
+            if (i.match.kind === MatchKind.regex) {
+                try {
+                    new RegExp(i.word);
+                } catch (ex) {
+                    this.logger.error(ex);
+                    this.logger.dumpError(i);
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    }
     private buildDeliverySetting(
         deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
         deliverySetting: IReadOnlyDeliverySetting,
         serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
     ): void {
-        for (const service of serviceMap.values()) {
-            service.importDeliveryHideItems(deliveryHideItems, deliverySetting);
+        const converter = new DeliveryHideItemConverter();
+        for(const deliveryHideItem of deliveryHideItems) {
+            const deliveryHideLines = deliverySetting.hideItems[deliveryHideItem.url];
+            if(!deliveryHideItems) {
+                continue;
+            }
+            const hideItems = converter.convertItems(deliveryHideLines!, deliveryHideItem.service);
+            const enabledHideItems = this.getEnabledHideItems(hideItems);
+
+            this.hideItemStocker.importHideItems(deliveryHideItem.url, enabledHideItems);
         }
 
         // 適当に更新する, TODO: タイミング等々の整理
-        this.reloadDeliveryHideItems(deliveryHideItems, serviceMap);
-    }
-
-    private reloadDeliveryHideItems(
-        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
-        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
-    ) {
-        this.reloadDeliveryHideItemsCore(deliveryHideItems, serviceMap);
-    }
-
-    private reloadDeliveryHideItemsCore(
-        deliveryHideItems: ReadonlyArray<IReadOnlyDeliveryHideSetting>,
-        serviceMap: ReadonlyMap<ServiceKind, BackgroundServiceBase<IReadOnlyServiceSetting>>
-    ) {
-        // async 使えるようにしてからやった方がいいわ
-        this.logger.debug('TODO!');
     }
 
     private accept() {
@@ -221,14 +236,11 @@ export default class Background extends ActionBase {
         await setting.mergeDeliverySettingAsync(hideSetting.url, result.lines!);
         await setting.saveMainSettingAsync(mainSetting, false);
 
-        const deliverySetting: IReadOnlyDeliverySetting = {
-            hideItems: {
-                [hideSetting.url]: result.lines!,
-            }
-        };
-        for (const service of this.backgroundServiceMap.values()) {
-            service.importDeliveryHideItems([hideSetting], deliverySetting);
-        }
+        const converter = new DeliveryHideItemConverter();
+        const hideItems = converter.convertItems(result.lines!, hideSetting.service);
+        const enabledHideItems = this.getEnabledHideItems(hideItems);
+
+        this.hideItemStocker.importHideItems(hideSetting.url, enabledHideItems);
 
         successSender();
     }

@@ -1,4 +1,4 @@
-import { LoggingBase } from "../../share/common";
+import { LoggingBase, checkService } from "../../share/common";
 import { IService, ServiceKind } from "../../share/define/service-kind";
 import { IHideMatcher } from "../hide-item-stocker";
 
@@ -11,8 +11,7 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
     }
 
 
-    private matchUrlCore(linkValue: string, checkers: ReadonlyArray<IHideMatcher>): boolean {
-
+    private matchUrlCore(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
         let url: URL;
         try {
             url = new URL(linkValue);
@@ -30,14 +29,14 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
             urlValue += url.search;
         }
 
-        return checkers.some(i => i.match(urlValue));
+        return hideMachers.some(i => i.match(urlValue));
     }
 
-    protected matchSimpleUrl(linkValue: string, checkers: ReadonlyArray<IHideMatcher>): boolean {
-        return this.matchUrlCore(linkValue, checkers);
+    protected matchSimpleUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
+        return this.matchUrlCore(linkValue, hideMachers);
     }
 
-    protected matchQueryUrl(linkValue: string, checkers: ReadonlyArray<IHideMatcher>): boolean {
+    protected matchQueryUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>): boolean {
         try {
             const index = linkValue.indexOf('?');
             if (index !== -1) {
@@ -48,7 +47,7 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
                     const query = params.get('q')!;
                     this.logger.debug('q: ' + query);
 
-                    return this.matchUrlCore(query, checkers);
+                    return this.matchUrlCore(query, hideMachers);
                 }
             }
         } catch (ex) {
@@ -58,15 +57,20 @@ export abstract class HideCheckerBase extends LoggingBase implements IService {
         return false;
     }
 
-    public matchUrl(linkValue: string, checkers: ReadonlyArray<IHideMatcher>) {
+    public matchUrl(linkValue: string, hideMachers: ReadonlyArray<IHideMatcher>) {
+
+        const enabledHideMachers = hideMachers.filter(i => checkService(this.service, i.item.service));
+        if(!enabledHideMachers.length) {
+            return false;
+        }
 
         // 普通パターン
-        if (this.matchSimpleUrl(linkValue, checkers)) {
+        if (this.matchSimpleUrl(linkValue, enabledHideMachers)) {
             return true;
         }
 
         // /path?q=XXX 形式
-        if (this.matchQueryUrl(linkValue, checkers)) {
+        if (this.matchQueryUrl(linkValue, enabledHideMachers)) {
             return true;
         }
 
