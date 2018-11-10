@@ -1,5 +1,5 @@
 import { ActionBase } from "../share/common";
-import { ElementName, ElementId, toNameSelector } from "../share/define/element-names";
+import { ElementName, ElementId, SelectorConverter } from "../share/define/element-names";
 
 export default abstract class OptionsBase<TSetting> extends ActionBase {
 
@@ -18,7 +18,7 @@ export default abstract class OptionsBase<TSetting> extends ActionBase {
     }
 
     protected setByName(parentElement: Element|DocumentFragment, elementName: ElementName, setter: (elm: HTMLInputElement) => void): void {
-        const element = parentElement.querySelector(toNameSelector(elementName)) as HTMLInputElement;
+        const element = parentElement.querySelector(SelectorConverter.fromName(elementName)) as HTMLInputElement;
         setter(element);
     }
 
@@ -31,6 +31,6 @@ export default abstract class OptionsBase<TSetting> extends ActionBase {
     }
 
     protected getInputByName(parentElement: Element|DocumentFragment, elementName: ElementName): HTMLInputElement {
-        return parentElement.querySelector(toNameSelector(elementName)) as HTMLInputElement;
+        return parentElement.querySelector(SelectorConverter.fromName(elementName)) as HTMLInputElement;
     }
 }

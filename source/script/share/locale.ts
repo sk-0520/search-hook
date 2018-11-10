@@ -1,4 +1,4 @@
-import { toClassSelector, ElementClass, toDataSelector, ElementData } from "./define/element-names";
+import { ElementClass, ElementData, SelectorConverter } from "./define/element-names";
 import { LoggingBase } from "./common";
 
 export class Locale extends LoggingBase {
@@ -10,10 +10,10 @@ export class Locale extends LoggingBase {
     }
 
     public attachLocaleRoot() {
-        const rootElements = document.querySelectorAll(toClassSelector(ElementClass.localeRoot));
+        const rootElements = document.querySelectorAll(SelectorConverter.fromClass(ElementClass.localeRoot));
 
         for (const element of rootElements) {
-            for (const dataElement of element.querySelectorAll(toDataSelector(ElementData.locale))) {
+            for (const dataElement of element.querySelectorAll(SelectorConverter.fromData(ElementData.locale))) {
                 this.applyLocale(dataElement as HTMLElement);
             }
         }
@@ -22,7 +22,7 @@ export class Locale extends LoggingBase {
             for (const mutation of mutations) {
                 const element = mutation.target as HTMLElement;
                 if (element) {
-                    for (const dataElement of element.querySelectorAll(toDataSelector(ElementData.locale))) {
+                    for (const dataElement of element.querySelectorAll(SelectorConverter.fromData(ElementData.locale))) {
                         this.applyLocale(dataElement as HTMLElement);
                     }
                 }
@@ -54,10 +54,6 @@ export class Locale extends LoggingBase {
                     element.textContent = localeValue;
                 }
             }
-        } else {
-            this.logger.dumpDebug(element.dataset);
-            this.logger.dumpDebug(element.dataset[ElementData.localeAttributes]);
-
         }
 
         // 属性割り当て(locale-attributesが設定されている項目に限定)

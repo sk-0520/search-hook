@@ -49,6 +49,14 @@
       "css": [
         "content-bing.css"
       ]
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-register.loader.js"
+      ]
     }
   ],
   "options_ui": {

@@ -1,7 +1,10 @@
 import { ServiceKind } from '../share/define/service-kind';
 import GoogleQuery from '../share/query/query-google';
-import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-service';
 import { IReadOnlyGoogleServiceSetting } from '../share/setting/service-setting-google';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
+import { HideItemStocker } from './hide-item-stocker';
+import { WordMatcherBase } from './word-matcher/word-matcher-base';
+import { WordMatcherGoogle } from './word-matcher/word-matcher-google';
 
 export default class BackgroundServiceGoogle extends BackgroundServiceBase<IReadOnlyGoogleServiceSetting> {
 
@@ -17,8 +20,12 @@ export default class BackgroundServiceGoogle extends BackgroundServiceBase<IRead
         return ServiceKind.google;
     }
 
-    public constructor(setting: IReadOnlyGoogleServiceSetting, settingItems: ISettingItems) {
-        super('Background Google', setting, settingItems);
+    public constructor(setting: IReadOnlyGoogleServiceSetting, settingItems: ISettingItems, hideItemStocker: HideItemStocker) {
+        super('Background Google', setting, settingItems, hideItemStocker);
+    }
+
+    protected createWordMatcher(): WordMatcherBase {
+        return new WordMatcherGoogle();
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {

@@ -1,23 +1,29 @@
 import { ServiceKind, IService } from "../define/service-kind";
+import { LogKind } from "../logger";
 
-export interface IBridgeData extends IService {
+export interface IBridgeData { }
+
+export class BridgeData implements IBridgeData { }
+
+export interface IServiceBridgeData extends IBridgeData, IService {
     readonly service: ServiceKind;
 }
 
-export class BridgeData implements IBridgeData {
+export class ServiceBridgeData extends BridgeData implements IServiceBridgeData {
     public readonly service: ServiceKind;
 
     constructor(service: ServiceKind) {
+        super();
         this.service = service;
     }
 }
 
-export interface INotWordResponseBridgeData extends IBridgeData {
+export interface INotWordResponseBridgeData extends IServiceBridgeData {
     readonly enabled: boolean;
     readonly items: ReadonlyArray<string>;
 }
 
-export class NotWordResponseBridgeData extends BridgeData implements INotWordResponseBridgeData {
+export class NotWordResponseBridgeData extends ServiceBridgeData implements INotWordResponseBridgeData {
     public readonly enabled: boolean;
     public readonly items: ReadonlyArray<string>;
 
@@ -35,11 +41,11 @@ export interface IHideRequestItem {
     linkValue: string;
 }
 
-export interface IHideRequestBridgeData extends IBridgeData {
+export interface IHideRequestBridgeData extends IServiceBridgeData {
     readonly items: ReadonlyArray<IHideRequestItem>;
 }
 
-export class HideRequestBridgeData extends BridgeData implements IHideRequestBridgeData {
+export class HideRequestBridgeData extends ServiceBridgeData implements IHideRequestBridgeData {
     public readonly items: ReadonlyArray<IHideRequestItem>;
 
     constructor(service: ServiceKind, items: ReadonlyArray<IHideRequestItem>) {
@@ -55,12 +61,12 @@ export interface IHideResponseItem {
     readonly hideTarget: boolean;
 }
 
-export interface IHideResponseBridgeData extends IBridgeData {
-     readonly enabled: boolean;
+export interface IHideResponseBridgeData extends IServiceBridgeData {
+    readonly enabled: boolean;
     readonly items: ReadonlyArray<IHideResponseItem>;
 }
 
-export class HideResponseBridgeData extends BridgeData implements IHideResponseBridgeData {
+export class HideResponseBridgeData extends ServiceBridgeData implements IHideResponseBridgeData {
     public readonly enabled: boolean;
     public readonly items: ReadonlyArray<IHideResponseItem>;
 
@@ -68,5 +74,61 @@ export class HideResponseBridgeData extends BridgeData implements IHideResponseB
         super(service);
         this.enabled = enabled;
         this.items = items;
+    }
+}
+
+export interface IOutputLogBridgeData extends IBridgeData {
+    readonly name: string;
+    readonly isText: boolean;
+    readonly message: string;
+    readonly logKind: LogKind;
+}
+
+export class OutputLogBridgeData extends BridgeData implements IOutputLogBridgeData {
+    public readonly name: string;
+    /** message が文字列かどうか。送受信で文字列になるし送信時に文字列にしてるしあんまり意味ないというか使ってないパラメータ */
+    public readonly isText: boolean;
+    public readonly message: string;
+    public readonly logKind: LogKind;
+
+    constructor(name: string, isText: boolean, message: string, logKind: LogKind) {
+        super();
+        this.name = name;
+        this.isText = isText;
+        this.message = message;
+        this.logKind = logKind;
+    }
+}
+
+export interface IRegisterDeliveryHideRequestData extends IBridgeData {
+    readonly url: string;
+}
+
+export class RegisterDeliveryHideRequestData extends BridgeData implements IRegisterDeliveryHideRequestData {
+    public readonly url: string;
+
+    constructor(url: string) {
+        super();
+        this.url = url;
+    }
+}
+
+
+export interface IRegisterDeliveryHideResponseData extends IBridgeData {
+    readonly request: IRegisterDeliveryHideRequestData;
+    readonly success: boolean;
+    readonly message: string;
+}
+
+export class RegisterDeliveryHideResponseData extends BridgeData implements IRegisterDeliveryHideResponseData {
+    public readonly request: IRegisterDeliveryHideRequestData;
+    public readonly success: boolean;
+    public readonly message: string;
+
+    constructor(request: IRegisterDeliveryHideRequestData, success: boolean, message: string) {
+        super();
+        this.request = request;
+        this.success = success;
+        this.message = message;
     }
 }

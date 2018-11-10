@@ -1,0 +1,55 @@
+include mixin-service
+
+fieldset
+  legend(data-locale="optionsWhitelistTitle") [非表示ホワイトリスト]
+  p
+    span(data-locale="optionsWhitelistDescription") [非表示対象となった項目を表示対象に切り替えます。]
+  table.list
+    thead
+      tr
+        th(data-locale="optionsWhitelistHeaderWord") [表示対象ワード]
+        th(data-locale="optionsWhitelistHeaderMatch") [比較方法]
+        th(data-locale="commonEnabled") [有効]
+        th(data-locale="commonRemove") [削除]
+    tbody#whitelist-list
+      template
+        tr(name="whitelist-group")
+          td
+            input(name="whitelist-word" type="text")
+          td
+            ul.horizontal
+              li
+                select(name="whitelist-match-kind")
+                  option(value="partial" data-locale="matchKindPartial") [部分一致]
+                  option(value="forward" data-locale="matchKindForward") [前方一致]
+                  option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                  option(value="regex"   data-locale="matchKindRegex")   [正規表現]
+              li
+                label
+                  input(name="whitelist-match-case" type="checkbox")
+                  img.icon(src="./case-sensitive.svg" data-locale="@EMPTY" data-locale-attribute-title="commonCaseSensitive")
+          td
+            +createEnabledServiceName("whitelist-service-google", "whitelist-service-bing")
+          td
+            button(name="whitelist-remove" data-locale="commonRemove") [削除]
+      // script
+    tfoot.input
+      tr
+        td
+          input#whitelist-input-word(type="text")
+        td
+          ul.horizontal
+            li
+              select#whitelist-input-match-kind
+                  option(value="partial" selected data-locale="matchKindPartial") [部分一致]
+                  option(value="forward" data-locale="matchKindForward") [前方一致]
+                  option(value="perfect" data-locale="matchKindPerfect") [完全一致]
+                  option(value="regex"   data-locale="matchKindRegex")   [正規表現]
+            li
+              label
+                input#whitelist-input-match-case(type="checkbox")
+                img.icon(src="./case-sensitive.svg" data-locale="@EMPTY" data-locale-attribute-title="commonCaseSensitive")
+        td
+          +createEnabledServiceId("whitelist-input-is-enabled-google", "whitelist-input-is-enabled-bing")(checked)
+        td
+          button#command-add-whitelist(type="button" data-locale="commonAdd") [追加]

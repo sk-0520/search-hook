@@ -4,16 +4,8 @@
 			"path": "."
 		},
 		{
-			"name": "i18n",
-			"path": "source/_locales",
-		},
-		{
 			"name": "Script",
 			"path": "source/script",
-		},
-		{
-			"name": "TEST",
-			"path": "source/test/script",
 		},
 		{
 			"name": "View",
@@ -22,11 +14,26 @@
 		{
 			"name": "Style",
 			"path": "source/style",
+		},
+		{
+			"name": "Document",
+			"path": "documents/specification",
+		},
+		{
+			"name": "TEST",
+			"path": "source/test/script",
+		},
+		{
+			"name": "i18n",
+			"path": "source/_locales",
 		}
 	],
 	"settings": {
 		"files.exclude": {
 			".cache": true,
+			".nyc_output": true,
+			"dist": true,
+			"artifacts": true,
 			"node_modules": true,
 			"package-lock.json": true
 		}

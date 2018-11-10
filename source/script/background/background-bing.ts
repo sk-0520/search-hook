@@ -1,7 +1,10 @@
 import { ServiceKind } from '../share/define/service-kind';
 import BingQuery from '../share/query/query-bing';
-import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-service';
 import { IReadOnlyBingServiceSetting } from '../share/setting/service-setting-bing';
+import { BackgroundServiceBase, IRequestDetails, ISettingItems } from './background-base';
+import { HideItemStocker } from './hide-item-stocker';
+import { WordMatcherBase } from './word-matcher/word-matcher-base';
+import { WordMatcherBing } from './word-matcher/word-matcher-bing';
 
 export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOnlyBingServiceSetting> {
 
@@ -17,8 +20,12 @@ export default class BackgroundServiceBing extends BackgroundServiceBase<IReadOn
         return ServiceKind.bing;
     }
 
-    public constructor(setting: IReadOnlyBingServiceSetting, settingItems: ISettingItems) {
-        super('Background Bing', setting, settingItems);
+    public constructor(setting: IReadOnlyBingServiceSetting, settingItems: ISettingItems, hideItemStocker: HideItemStocker) {
+        super('Background Bing', setting, settingItems, hideItemStocker);
+    }
+
+    protected createWordMatcher(): WordMatcherBase {
+        return new WordMatcherBing();
     }
 
     protected redirect(requestDetails: IRequestDetails, url: URL, notItemWords: ReadonlyArray<string>): browser.webRequest.BlockingResponse | undefined {

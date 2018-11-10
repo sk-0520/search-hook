@@ -1,7 +1,7 @@
 import { ServiceKind } from "../share/define/service-kind";
 import GoogleQuery from "../share/query/query-google";
-import { ContentServiceBase, IHideElementSelector } from "./content";
-import { QueryBase } from "../share/query/query";
+import { ContentServiceBase, IHideElementSelector } from "./content-base";
+import { QueryBase } from "../share/query/query-base";
 
 export default class ContentGoogleService extends ContentServiceBase {
 

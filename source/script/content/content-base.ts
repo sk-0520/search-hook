@@ -1,11 +1,13 @@
-import { NotWordResponseBridgeData, HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, BridgeData } from "../share/bridge/bridge-data";
+import { HideRequestBridgeData, IHideRequestItem, IHideResponseBridgeData, NotWordResponseBridgeData, ServiceBridgeData } from "../share/bridge/bridge-data";
 import { BridgeMeesage, BridgeMeesageBase } from "../share/bridge/bridge-meesage";
 import { ActionBase, Exception, isNullOrEmpty } from "../share/common";
 import { BridgeMeesageKind } from "../share/define/bridge-meesage-kind";
-import { ElementClass, ElementData, ElementId, toClassSelector, toDataSelector } from "../share/define/element-names";
+import { ElementClass, ElementData, ElementId, SelectorConverter } from "../share/define/element-names";
 import { IService, ServiceKind } from "../share/define/service-kind";
+import { ILogger } from "../share/logger";
+import { QueryBase } from "../share/query/query-base";
 import { HideItemSetting } from "../share/setting/hide-item-setting";
-import { QueryBase } from "../share/query/query";
+import { ContentLogger } from "./content-logger";
 
 export interface IHideCheker {
     item: HideItemSetting;
@@ -21,11 +23,41 @@ export interface IHideElementSelector {
 
 }
 
-export abstract class ContentServiceBase extends ActionBase implements IService {
+export abstract class ContentBase extends ActionBase {
+    protected port?: browser.runtime.Port;
+    private contentLogger?: ILogger;
+
+    protected get logger(): ILogger {
+        return this.contentLogger || super.logger;
+    }
+
+    constructor(name: string) {
+        super(name);
+    }
+
+    protected connect() {
+        this.port = browser.runtime.connect();
+
+        this.contentLogger = new ContentLogger(this.logger.name, this.port!);
+
+        this.port.onMessage.addListener(rawMessage => {
+            const baseMessage = rawMessage as BridgeMeesageBase;
+            this.receiveMessage(baseMessage);
+        });
+
+    }
+
+    protected receiveMessage(baseMessage: BridgeMeesageBase) {
+        this.logger.debug("CLIENT RECV!");
+        this.logger.debug(JSON.stringify(baseMessage));
+    }
+
+}
+
+export abstract class ContentServiceBase extends ContentBase implements IService {
 
     public abstract readonly service: ServiceKind;
 
-    protected port?: browser.runtime.Port;
     protected notWords?: ReadonlyArray<string>;
 
     constructor(name: string) {
@@ -37,26 +69,23 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     protected abstract getHideElementSelectors(): ReadonlyArray<IHideElementSelector>;
 
     protected connect() {
-        this.port = browser.runtime.connect();
-        this.port.onMessage.addListener(rawMessage => {
-            const baseMessage = rawMessage as BridgeMeesageBase;
-            this.receiveMessage(baseMessage);
-        });
+        super.connect();
 
-        this.port.postMessage(
-            new BridgeMeesage(
-                BridgeMeesageKind.notWordRequest,
-                new BridgeData(this.service)
-            )
-        );
-
-        const hideElementSelectors = this.getHideElementSelectors();
-        this.requestHideItems(hideElementSelectors);
+        if(this.port) {
+            this.port.postMessage(
+                new BridgeMeesage(
+                    BridgeMeesageKind.notWordRequest,
+                    new ServiceBridgeData(this.service)
+                )
+            );
+    
+            const hideElementSelectors = this.getHideElementSelectors();
+            this.requestHideItems(hideElementSelectors);
+        }
     }
 
-    private receiveMessage(baseMessage: BridgeMeesageBase) {
-        this.logger.debug("CLIENT RECV!");
-        this.logger.debug(JSON.stringify(baseMessage));
+    protected receiveMessage(baseMessage: BridgeMeesageBase) {
+        super.receiveMessage(baseMessage);
 
         switch (baseMessage.kind) {
 
@@ -81,10 +110,10 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
         this.notWords = eraseMessage.data.items;
 
-        this.attacQueryElement();
+        this.attachQueryElement();
     }
 
-    protected attacQueryElement() {
+    protected attachQueryElement() {
         if (!this.notWords) {
             return;
         }
@@ -111,7 +140,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
     }
 
     protected switchHideItems() {
-        const items = document.querySelectorAll(toClassSelector(ElementClass.hidden));
+        const items = document.querySelectorAll(SelectorConverter.fromClass(ElementClass.hidden));
         if (!items.length) {
             return;
         }
@@ -123,23 +152,18 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
 
     protected appendHiddenSwitch() {
 
-        const switchElement = document.createElement('input');
-        switchElement.setAttribute('id', ElementId.contentShowState);
-        switchElement.setAttribute('type', 'checkbox');
-        switchElement.checked = true;
-        switchElement.addEventListener('change', e => {
+        const switchTemplate = `
+        <div class="${ElementClass.switch}">
+            <input id="${ElementId.contentShowState}" type="checkbox" checked />
+            <label for="${ElementId.contentShowState}"></label>
+        </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', switchTemplate);
+        const switchElement = document.getElementById(ElementId.contentShowState);
+        switchElement!.addEventListener('change', e => {
             this.switchHideItems();
         });
-
-        const switchImageElement = document.createElement('label');
-        switchImageElement.setAttribute('for', ElementId.contentShowState);
-
-        const parent = document.createElement('div');
-        parent.appendChild(switchElement);
-        parent.appendChild(switchImageElement);
-        parent.classList.add(ElementClass.switch);
-
-        document.getElementsByTagName('body')[0].appendChild(parent);
     }
 
     protected requestHideItems(elementSelectors: ReadonlyArray<IHideElementSelector>) {
@@ -179,8 +203,6 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
             }
         }
 
-        this.logger.dumpDebug(hideRequestItems);
-
         if (hideRequestItems.length) {
             this.requestHideItemsCore(hideRequestItems);
         }
@@ -204,7 +226,7 @@ export abstract class ContentServiceBase extends ActionBase implements IService 
         }
 
         const targetMap = new Map<string, HTMLElement>();
-        for (const element of document.querySelectorAll(toDataSelector(ElementData.hideId))) {
+        for (const element of document.querySelectorAll(SelectorConverter.fromData(ElementData.hideId))) {
             const htmlELement = element as HTMLElement;
             targetMap.set(htmlELement.dataset[ElementData.hideId]!, htmlELement);
         }

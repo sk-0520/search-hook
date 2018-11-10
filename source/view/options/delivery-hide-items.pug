@@ -1,0 +1,40 @@
+include mixin-service
+
+fieldset.delivery-hide-item
+  legend(data-locale="optionsDeliveryHideItemTitle") [外部非表示設定]
+  p
+    span(data-locale="optionsDeliveryHideItemDescription") [外部の非表示設定を読み込むことで特定のジャンルごとに非表示設定を最新化できます。]
+  p
+    a(data-locale="optionsDeliveryHideItemDescriptionLink" data-locale-attribute-href="optionsDeliveryHideItemDescriptionLinkUrl") [外部設定の仕様はこちらを参照してください。]
+  dl
+    dt 
+      span(data-locale="optionsDeliveryHideItemRegisterTitle") [外部設定の登録]
+    dd
+      label
+        span(data-locale="optionsDeliveryHideItemRegisterUrl") [URL:]
+        input#delivery-hide-item-register-input-url
+      button#command-delivery-hide-item-register-import(type="button" data-locale="optionsDeliveryHideItemRegisterImport") [取り込む]
+    dt 
+      span(data-locale="optionsDeliveryHideItemListTitle") [外部設定一覧]
+    dd
+      table.items.list
+        thead
+          tr
+            th(data-locale="optionsDeliveryHideItemListHeaderName") [名前]
+            th(data-locale="commonVersion") [バージョン]
+            th(data-locale="commonEnabled") [有効]
+            th(data-locale="commonRemove") [削除]
+        tbody#delivery-hide-item-list
+          template
+            tr(name="delivery-hide-item-group")
+              td
+                span(name="delivery-hide-item-name")
+                input(name="delivery-hide-item-url" type="hidden")
+                input(name="delivery-hide-item-setting" type="hidden")
+              td
+                span(name="delivery-hide-item-version")
+                button(name="delivery-hide-item-update" type="button" data-locale="commonUpdate") [更新]
+              td
+                +createEnabledServiceName("delivery-hide-item-service-google", "delivery-hide-item-service-bing")
+              td
+                button(name="delivery-hide-item-remove" type="button" data-locale="commonRemove") [削除]

@@ -1,6 +1,7 @@
 import { describe, it } from "mocha";
-import { assert } from "chai"
-import { merge, isNullOrEmpty } from "../../../script/share/common";
+import { assert } from "chai";
+import { merge, isNullOrEmpty, checkService } from "../../../script/share/common";
+import { ServiceKind } from "../../../script/share/define/service-kind";
 
 describe('merge', () => {
     it('normal', () => {
@@ -82,7 +83,7 @@ describe('merge', () => {
 
 });
 
-describe('merge', () => {
+describe('isNullOrEmpty', () => {
     it('empty', () => {
         assert.isTrue(isNullOrEmpty(null));
         assert.isTrue(isNullOrEmpty(undefined));
@@ -91,3 +92,15 @@ describe('merge', () => {
         assert.isNotTrue(isNullOrEmpty("a"));
     });
 });
+
+describe('checkService', () => {
+    it('google', () => {
+        assert.isTrue(checkService(ServiceKind.google, { google: true, bing: false }));
+        assert.isFalse(checkService(ServiceKind.google, { google: false, bing: false }));
+    });
+    it('bing', () => {
+        assert.isTrue(checkService(ServiceKind.bing, { google: false, bing: true }));
+        assert.isFalse(checkService(ServiceKind.bing, { google: false, bing: false }));
+    });
+});
+

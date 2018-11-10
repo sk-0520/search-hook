@@ -1,6 +1,6 @@
 import OptionsBase from "./options-base";
 import { IHideItemSetting, HideItemSetting } from "../share/setting/hide-item-setting";
-import { toIdSelector, ElementId, ElementName, toNameSelector } from "../share/define/element-names";
+import { ElementId, ElementName, SelectorConverter } from "../share/define/element-names";
 import { MatchKind } from "../share/define/match-kind";
 
 export default class OptionsHideItems extends OptionsBase<Array<IHideItemSetting>> {
@@ -10,7 +10,7 @@ export default class OptionsHideItems extends OptionsBase<Array<IHideItemSetting
     }
 
     protected getParentElement(): Element {
-        return document.querySelector(toIdSelector(ElementId.optionsHideItemList))!;
+        return document.querySelector(SelectorConverter.fromId(ElementId.optionsHideItemList))!;
     }
 
     public initialize(): void {
@@ -92,7 +92,7 @@ export default class OptionsHideItems extends OptionsBase<Array<IHideItemSetting
         this.setByName(clonedElement, ElementName.optionsHideItemRemove, elm => elm.addEventListener('click', e => {
             e.preventDefault();
 
-            const itemGroupElement = e.srcElement!.closest(toNameSelector(ElementName.optionsHideItemGroup));
+            const itemGroupElement = e.srcElement!.closest(SelectorConverter.fromName(ElementName.optionsHideItemGroup));
             itemGroupElement!.remove();
         }));
         parent.appendChild(clonedElement);
