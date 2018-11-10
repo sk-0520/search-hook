@@ -152,23 +152,18 @@ export abstract class ContentServiceBase extends ContentBase implements IService
 
     protected appendHiddenSwitch() {
 
-        const switchElement = document.createElement('input');
-        switchElement.setAttribute('id', ElementId.contentShowState);
-        switchElement.setAttribute('type', 'checkbox');
-        switchElement.checked = true;
-        switchElement.addEventListener('change', e => {
+        const switchTemplate = `
+        <div class="${ElementClass.switch}">
+            <input id="${ElementId.contentShowState}" type="checkbox" checked />
+            <label for="${ElementId.contentShowState}"></label>
+        </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', switchTemplate);
+        const switchElement = document.getElementById(ElementId.contentShowState);
+        switchElement!.addEventListener('change', e => {
             this.switchHideItems();
         });
-
-        const switchImageElement = document.createElement('label');
-        switchImageElement.setAttribute('for', ElementId.contentShowState);
-
-        const parent = document.createElement('div');
-        parent.appendChild(switchElement);
-        parent.appendChild(switchImageElement);
-        parent.classList.add(ElementClass.switch);
-
-        document.getElementsByTagName('body')[0].appendChild(parent);
     }
 
     protected requestHideItems(elementSelectors: ReadonlyArray<IHideElementSelector>) {
