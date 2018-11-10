@@ -46,8 +46,8 @@
 
 ページを開いた際にリンクが特定の形式であれば取り込み対象として拡張機能側で特別処理を行う。
 
-`<a href="we_sh://search-hook?kind=hide&url=http(s)://example.com">...</a>`
+`<a href="we+sh://search-hook?kind=hide&url=http(s)://example.com">...</a>`
 
-* `we_sh://search-hook?`: 目印
+* `we+sh://search-hook?`: 目印
 * `kind`: 将来用
 * `url`: 取り込み対象URL

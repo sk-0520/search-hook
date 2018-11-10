@@ -6,7 +6,7 @@ import { RegisterDeliveryHideRequestData, IRegisterDeliveryHideResponseData } fr
 
 export class ContentRegister extends ContentBase {
 
-    private readonly linkHeader = 'we_sh://search-hook?';
+    private readonly linkHeader = 'we+sh://search-hook?';
 
     constructor() {
         super('ContentRegister');
