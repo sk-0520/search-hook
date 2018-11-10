@@ -96,6 +96,7 @@ describe('DeliveryHideItemGetter', () => {
                 name: '',
                 author: '',
                 version: '',
+                website: '',
             },
             lines: [''],
         }, JSON.stringify(result));
@@ -113,6 +114,7 @@ describe('DeliveryHideItemGetter', () => {
                 name: '',
                 author: '',
                 version: '',
+                website: '',
             },
             lines: ['', 'a', 'b', 'c', ''],
         }, JSON.stringify(result));
@@ -128,6 +130,7 @@ describe('DeliveryHideItemGetter', () => {
                 name: '',
                 author: '',
                 version: '',
+                website: '',
             },
             lines: ['a', 'b', 'c'],
         }, JSON.stringify(result));
@@ -142,6 +145,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: [],
             }, JSON.stringify(result));
@@ -156,6 +160,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: ['a'],
             }, JSON.stringify(result));
@@ -172,6 +177,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: ['a'],
             }, JSON.stringify(result));
@@ -189,6 +195,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: ['##', 'a'],
             }, JSON.stringify(result));
@@ -204,6 +211,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: [],
             }, JSON.stringify(result));
@@ -226,6 +234,7 @@ describe('DeliveryHideItemGetter', () => {
                         name: 'NAME',
                         author: '',
                         version: '',
+                        website: '',
                     },
                     lines: [],
                 }, JSON.stringify(result));
@@ -243,6 +252,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: [],
             }, JSON.stringify(result));
@@ -252,6 +262,7 @@ describe('DeliveryHideItemGetter', () => {
             const result = getter.split(`# name: A
 # author: B
 # version: C
+# website: D
 ##`);
             assert.deepStrictEqual(result, {
                 header: {
@@ -259,6 +270,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: 'A',
                     author: 'B',
                     version: 'C',
+                    website: 'D',
                 },
                 lines: [],
             }, JSON.stringify(result));
@@ -275,6 +287,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: 'C',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: [],
             }, JSON.stringify(result));
@@ -293,6 +306,7 @@ describe('DeliveryHideItemGetter', () => {
                     name: '',
                     author: '',
                     version: '',
+                    website: '',
                 },
                 lines: [
                     '# name: A',

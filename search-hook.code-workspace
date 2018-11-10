@@ -8,10 +8,6 @@
 			"path": "source/script",
 		},
 		{
-			"name": "TEST",
-			"path": "source/test/script",
-		},
-		{
 			"name": "View",
 			"path": "source/view",
 		},
@@ -22,6 +18,10 @@
 		{
 			"name": "Document",
 			"path": "documents/specification",
+		},
+		{
+			"name": "TEST",
+			"path": "source/test/script",
 		},
 		{
 			"name": "i18n",
