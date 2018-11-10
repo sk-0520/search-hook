@@ -10,13 +10,22 @@ export abstract class WordMatcherBase extends LoggingBase implements IService {
         super(name);
     }
 
+    private toUrl(linkUrl: string): URL|null {
+        if(!linkUrl.startsWith('http')) {
+            return null;
+        }
 
-    private matchUrlCore(linkValue: string, wordMachers: ReadonlyArray<IWordMatcher>): boolean {
-        let url: URL;
         try {
-            url = new URL(linkValue);
+            return new URL(linkUrl);
         } catch (ex) {
             this.logger.error(ex);
+            return null;
+        }        
+    }
+
+    private matchUrlCore(linkValue: string, wordMachers: ReadonlyArray<IWordMatcher>): boolean {
+        const url = this.toUrl(linkValue);
+        if(!url) {
             return false;
         }
 
