@@ -6,13 +6,7 @@ import { ElementClass, ElementData, ElementId, SelectorConverter } from "../shar
 import { IService, ServiceKind } from "../share/define/service-kind";
 import { ILogger } from "../share/logger";
 import { QueryBase } from "../share/query/query-base";
-import { HideItemSetting } from "../share/setting/hide-item-setting";
 import { ContentLogger } from "./content-logger";
-
-export interface IHideCheker {
-    item: HideItemSetting;
-    match: (s: string) => boolean;
-}
 
 export interface IHideElementSelector {
     target: string;
@@ -20,7 +14,6 @@ export interface IHideElementSelector {
     element: string;
     /** チェック対象のアンカー要素 */
     link: string;
-
 }
 
 export abstract class ContentBase extends ActionBase {
